@@ -29,7 +29,7 @@ int main(void)
 	{
 		MOTR_enc = TIM5->CNT;
 		MOTL_enc = TIM2->CNT;
-
+		
 		
 		// ### HANDLE SECTION 
 		STATE_Handle(); 

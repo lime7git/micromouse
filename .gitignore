@@ -8,3 +8,7 @@ micromouse-software/Listings/**
 micromouse-software/Objects/**
 micromouse-software/RTE/**
 micromouse-software/EventRecorderStub.scvd
+micromouse-software/micromouse.uvguix.Emil
+micromouse-software/micromouse.uvoptx
+micromouse-software/micromouse.uvprojx
+.gitattributes

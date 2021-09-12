@@ -1,0 +1,25 @@
+--cpu=Cortex-M4.fp.sp
+"dioda_ir_test\startup_stm32f401xe.o"
+"dioda_ir_test\main.o"
+"dioda_ir_test\stm32f4xx_it.o"
+"dioda_ir_test\stm32f4xx_hal_msp.o"
+"dioda_ir_test\stm32f4xx_hal_tim.o"
+"dioda_ir_test\stm32f4xx_hal_tim_ex.o"
+"dioda_ir_test\stm32f4xx_hal_rcc.o"
+"dioda_ir_test\stm32f4xx_hal_rcc_ex.o"
+"dioda_ir_test\stm32f4xx_hal_flash.o"
+"dioda_ir_test\stm32f4xx_hal_flash_ex.o"
+"dioda_ir_test\stm32f4xx_hal_flash_ramfunc.o"
+"dioda_ir_test\stm32f4xx_hal_gpio.o"
+"dioda_ir_test\stm32f4xx_hal_dma_ex.o"
+"dioda_ir_test\stm32f4xx_hal_dma.o"
+"dioda_ir_test\stm32f4xx_hal_pwr.o"
+"dioda_ir_test\stm32f4xx_hal_pwr_ex.o"
+"dioda_ir_test\stm32f4xx_hal_cortex.o"
+"dioda_ir_test\stm32f4xx_hal.o"
+"dioda_ir_test\stm32f4xx_hal_exti.o"
+"dioda_ir_test\system_stm32f4xx.o"
+--library_type=microlib --strict --scatter "DIODA_IR_TEST\DIODA_IR_TEST.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "DIODA_IR_TEST.map" -o DIODA_IR_TEST\DIODA_IR_TEST.axf

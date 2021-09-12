@@ -1,0 +1,10 @@
+cad-files\**
+pcb-design\**
+pinout-test-cubemx\**
+software-test\**
+github_token.txt
+micromouse-software\DebugConfig\**
+micromouse-software\Listings\**
+micromouse-software\Objects\**
+micromouse-software\RTE\**
+micromouse-software\EventRecorderStub.scvd

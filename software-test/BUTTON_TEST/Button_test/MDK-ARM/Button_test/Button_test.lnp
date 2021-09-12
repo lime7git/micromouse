@@ -1,0 +1,25 @@
+--cpu=Cortex-M4.fp.sp
+"button_test\startup_stm32f401xc.o"
+"button_test\main.o"
+"button_test\stm32f4xx_it.o"
+"button_test\stm32f4xx_hal_msp.o"
+"button_test\stm32f4xx_hal_tim.o"
+"button_test\stm32f4xx_hal_tim_ex.o"
+"button_test\stm32f4xx_hal_rcc.o"
+"button_test\stm32f4xx_hal_rcc_ex.o"
+"button_test\stm32f4xx_hal_flash.o"
+"button_test\stm32f4xx_hal_flash_ex.o"
+"button_test\stm32f4xx_hal_flash_ramfunc.o"
+"button_test\stm32f4xx_hal_gpio.o"
+"button_test\stm32f4xx_hal_dma_ex.o"
+"button_test\stm32f4xx_hal_dma.o"
+"button_test\stm32f4xx_hal_pwr.o"
+"button_test\stm32f4xx_hal_pwr_ex.o"
+"button_test\stm32f4xx_hal_cortex.o"
+"button_test\stm32f4xx_hal.o"
+"button_test\stm32f4xx_hal_exti.o"
+"button_test\system_stm32f4xx.o"
+--library_type=microlib --strict --scatter "Button_test\Button_test.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "Button_test.map" -o Button_test\Button_test.axf

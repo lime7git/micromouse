@@ -1,0 +1,54 @@
+Dependencies for Project '07 ADC', Target 'Target 1': (DO NOT MODIFY !)
+CompilerVersion: 5060750::V5.06 update 6 (build 750)::.\ARMCC
+F (.\HD44780.c)(0x5FD35B25)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="531" -D_RTE_ -DSTM32L496xx -D_RTE_-o .\objects\hd44780.o --omf_browse .\objects\hd44780.crf --depend .\objects\hd44780.d)
+I (HD44780.h)(0x5FD35AF2)
+I (Myfun.h)(0x600ABE2B)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l496xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm4.h)(0x5E8F2582)
+I (H:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5EC7CA5C)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E835B22)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\mpu_armv7.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\system_stm32l4xx.h)(0x5F732650)
+I (H:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5EC7CA5C)
+F (.\HD44780.h)(0x5FD35AF2)()
+F (.\main.c)(0x6032D6C5)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="531" -D_RTE_ -DSTM32L496xx -D_RTE_-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (Myfun.h)(0x600ABE2B)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l496xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm4.h)(0x5E8F2582)
+I (H:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5EC7CA5C)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E835B22)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\mpu_armv7.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\system_stm32l4xx.h)(0x5F732650)
+I (H:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5EC7CA5C)
+I (HD44780.h)(0x5FD35AF2)
+F (.\Myfun.c)(0x6032D43F)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="531" -D_RTE_ -DSTM32L496xx -D_RTE_-o .\objects\myfun.o --omf_browse .\objects\myfun.crf --depend .\objects\myfun.d)
+I (Myfun.h)(0x600ABE2B)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l496xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm4.h)(0x5E8F2582)
+I (H:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5EC7CA5C)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E835B22)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\mpu_armv7.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\system_stm32l4xx.h)(0x5F732650)
+I (H:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5EC7CA5C)
+I (HD44780.h)(0x5FD35AF2)
+F (.\Myfun.h)(0x600ABE2B)()
+F (RTE\Device\STM32L496ZGTx\startup_stm32l496xx.s)(0x5F732650)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include--pd "__UVISION_VERSION SETA 531" --pd "_RTE_ SETA 1" --pd "STM32L496xx SETA 1" --pd "_RTE_ SETA 1"--list .\listings\startup_stm32l496xx.lst --xref -o .\objects\startup_stm32l496xx.o --depend .\objects\startup_stm32l496xx.d)
+F (RTE\Device\STM32L496ZGTx\system_stm32l4xx.c)(0x5F732650)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="531" -D_RTE_ -DSTM32L496xx -D_RTE_-o .\objects\system_stm32l4xx.o --omf_browse .\objects\system_stm32l4xx.crf --depend .\objects\system_stm32l4xx.d)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l496xx.h)(0x5F732650)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm4.h)(0x5E8F2582)
+I (H:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5EC7CA5C)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E835B22)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include\mpu_armv7.h)(0x5E8F2582)
+I (C:\Users\Emil\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\system_stm32l4xx.h)(0x5F732650)

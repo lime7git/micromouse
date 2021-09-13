@@ -10,6 +10,8 @@
 extern volatile int32_t MOTR_enc;
 extern volatile int32_t MOTL_enc;
 
+static char buf[64];
+
 int main(void)
 {
 	CLOCK_Init();
@@ -27,9 +29,11 @@ int main(void)
 	
 	while(1)
 	{
-		MOTR_enc = TIM5->CNT;
-		MOTL_enc = TIM2->CNT;
+		MOTR_enc = (int32_t)TIM2->CNT;
+		MOTL_enc = (int32_t)TIM5->CNT;
 		
+		sprintf(buf, "L_enc = %i \t R_enc = %i \r\n", MOTL_enc, MOTR_enc);
+		UART1_Log(buf);
 		
 		// ### HANDLE SECTION 
 		STATE_Handle(); 

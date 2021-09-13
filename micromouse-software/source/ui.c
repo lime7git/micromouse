@@ -65,6 +65,7 @@ void STATE_Handle(void)
 			{
 				static char buf[128];
 				sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
+				UART1_Log(buf);
 				
 				BUTTON_OK.wasPressed = false;
 			}

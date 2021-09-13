@@ -15,8 +15,8 @@ void UART1_IT_Init(void)
 	GPIOA->AFR[1] |= 0x00000770;
 	
 	// USART1 setup
-	USART1->BRR = 16000000 / 115200;	// baud rate 115200
-	USART1->CR1 |=  USART_CR1_TE | USART_CR1_RE | USART_CR1_UE | USART_CR1_RXNEIE; // USART enable transmitter | reciever | USART enable | recieve interrupt
+	USART1->BRR = (16000000 / 115200);	// baud rate 115200
+	USART1->CR1 |=  USART_CR1_TE | USART_CR1_RE | USART_CR1_UE | USART_CR1_RXNEIE | USART_CR1_PCE | USART_CR1_M; // USART enable transmitter | reciever | USART enable | recieve interrupt | parity check enable | 9 bits frame
 	NVIC_EnableIRQ(USART1_IRQn);
 }
 
@@ -79,6 +79,19 @@ void COMMAND_Execute(char *command)
 	{
 		LED_Switch(LED4, OFF);
 	}		
+}
+void UART1_SendChar(char c)
+{
+	while(!(USART1->SR & USART_SR_TXE)) {}
+		
+	USART1->DR = c;
+}
+void UART1_Log(const char *message)
+{
+	while(*message)
+	{
+		UART1_SendChar(*message++);
+	}
 }
 void USART1_IRQHandler(void)
 {

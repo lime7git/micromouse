@@ -35,8 +35,7 @@ void MOTR_SET_SPEED(float speed);
 void MOTL_SET_SPEED(float speed);
 
 void ENCODERS_Init(void);
-
-extern volatile int32_t MOTR_enc;
-extern volatile int32_t MOTL_enc;
+int32_t ENCODER_LEFT_GET_VALUE(void);
+int32_t ENCODER_RIGHT_GET_VALUE(void);
 
 #endif

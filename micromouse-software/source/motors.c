@@ -1,8 +1,5 @@
 #include "motors.h"
 
-volatile int32_t MOTR_enc;
-volatile int32_t MOTL_enc;
-
 void MOTORS_Init(void)
 {
 	// clock enable for B and C ports, TIM8
@@ -121,4 +118,12 @@ void ENCODERS_Init(void)
 	TIM2->CCER |= (0 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
 	TIM2->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
 	TIM2->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
+}
+int32_t ENCODER_LEFT_GET_VALUE(void)
+{
+	return (int32_t)TIM5->CNT;
+}
+int32_t ENCODER_RIGHT_GET_VALUE(void)
+{
+	return (int32_t)TIM2->CNT;
 }

@@ -1,0 +1,25 @@
+#include "timer.h"
+#include "gpio.h"
+#include "encoders.h"
+
+void TIM7_10MS_INTERRUPT_Init(void)
+{
+		RCC->APB1ENR |= RCC_APB1ENR_TIM7EN;
+		TIM7->PSC = 160 - 1;
+		TIM7->ARR = 1000 - 1;
+		TIM7->DIER |= TIM_DIER_UIE;
+		TIM7->CR1 |= TIM_CR1_CEN;
+	
+		NVIC_EnableIRQ(TIM7_IRQn);
+}
+void TIM7_IRQHandler(void)
+{
+	if( (TIM7->SR & TIM_SR_UIF) != RESET)
+	{
+		TIM7->SR &= ~TIM_SR_UIF;
+		
+		CALCULATE_ACTUAL_POSITION(&MOUSE, &MOTOR_LEFT, &MOTOR_RIGHT);
+		MOTOR_CALCULATE_SPEED(&MOTOR_LEFT);
+		MOTOR_CALCULATE_SPEED(&MOTOR_RIGHT);
+	}
+}

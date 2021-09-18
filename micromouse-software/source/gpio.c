@@ -1,8 +1,8 @@
 #include "gpio.h"
 #include "uart.h"
 
-volatile struct BUTTONS BUTTON_OK = {false, false, 0};
-volatile struct BUTTONS BUTTON_SEL = {false, false, 0};
+volatile BUTTONS BUTTON_OK = {false, false, 0};
+volatile BUTTONS BUTTON_SEL = {false, false, 0};
 
 void GPIO_Init(void)
 {

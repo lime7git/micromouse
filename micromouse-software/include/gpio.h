@@ -27,14 +27,14 @@ typedef enum{OFF = 0, ON = 1, TOG = 2}eLEDstate;
 
 void GPIO_Init(void);
 
-struct BUTTONS{
+typedef struct {
 	bool isPressed;
 	bool wasPressed;
 	uint16_t time; // [ms]
-};
+}BUTTONS;
 
-extern volatile struct BUTTONS BUTTON_OK;
-extern volatile struct BUTTONS BUTTON_SEL;
+extern volatile BUTTONS BUTTON_OK;
+extern volatile BUTTONS BUTTON_SEL;
 
 #define CNT_2_MILISECONDS(value) (uint16_t)(value * 4.09)
 

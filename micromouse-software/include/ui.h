@@ -5,7 +5,15 @@
 #include "stm32f4xx.h"
 #include "stdbool.h"
 
-typedef enum {INIT = 0, IDLE = 1, RUN = 2, STOP = 3, TEST = 4, TEST2 = 5, CRITICAL = 15}eMouseState;
+typedef enum {INIT = 0, 
+							IDLE = 1, 
+							RUN = 2, 
+							STOP = 3, 
+							TEST = 4, 
+							TEST2 = 5, 
+							TEST3 = 6,
+							CRITICAL = 15
+}eMouseState;
 
 extern volatile eMouseState mouse_state;
 

@@ -6,11 +6,15 @@
 #include "ui.h"
 #include "motors.h"
 #include "circular_buffer.h"
-
-static char buf[64];
+#include "encoders.h"
+#include "pid.h"
+#include "controller.h"
+#include "timer.h"
 
 int main(void)
 {
+	tCircular_buffer_init(&UART_Buffer, 128);
+	
 	CLOCK_Init();
 	GPIO_Init();
 	ADC1_DMA_Init();
@@ -18,17 +22,13 @@ int main(void)
 	MOTORS_Init();
 	ENCODERS_Init();
 	BUTTON_EXTI_Init();
-	
-	tCircular_buffer_init(&UART_Buffer, 128);
 	UART1_IT_Init();
+	TIM7_10MS_INTERRUPT_Init();
 	
 	STATE_Selection();
 	
 	while(1)
 	{
-		
-		sprintf(buf, "L_enc = %i \t R_enc = %i \r\n", ENCODER_LEFT_GET_VALUE(), ENCODER_RIGHT_GET_VALUE());
-		//UART1_Log(buf);
 
 		// ### HANDLE SECTION 
 		STATE_Handle(); 

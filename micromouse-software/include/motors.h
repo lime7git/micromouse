@@ -34,8 +34,4 @@ void MOTORS_Init(void);
 void MOTR_SET_SPEED(float speed);
 void MOTL_SET_SPEED(float speed);
 
-void ENCODERS_Init(void);
-int32_t ENCODER_LEFT_GET_VALUE(void);
-int32_t ENCODER_RIGHT_GET_VALUE(void);
-
 #endif

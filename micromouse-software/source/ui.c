@@ -6,8 +6,15 @@
 #include "ui.h"
 #include "motors.h"
 #include "circular_buffer.h"
+#include "pid.h"
+#include "controller.h"
+#include "encoders.h"
 
 volatile eMouseState mouse_state;
+
+extern sMOUSE MOUSE;
+extern sMOT MOTOR_LEFT;
+extern sMOT MOTOR_RIGHT;
 
 void STATE_Selection(void)
 {
@@ -214,6 +221,12 @@ void STATE_Handle(void)
 			delay_ms(1000);
 			
 			mouse_state = IDLE;
+		}
+			else if(mouse_state == TEST3)
+		{
+			static char buf[128];
+			sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
+			UART1_Log(buf);
 		}
 }
 

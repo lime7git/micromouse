@@ -1,6 +1,5 @@
 @@@
 http://www.micromouseonline.com/
 
-A lot useful infomration about building and programing micromouse type robots.
-
+A lot useful information about building and programing micromouse type robots.
 @@@

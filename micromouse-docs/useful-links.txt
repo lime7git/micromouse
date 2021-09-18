@@ -3,3 +3,7 @@ http://www.micromouseonline.com/
 
 A lot useful information about building and programing micromouse type robots.
 @@@
+https://controllerstech.com/stm32-clock-setup-using-registers/
+
+
+@@@

@@ -7,3 +7,7 @@ https://controllerstech.com/stm32-clock-setup-using-registers/
 
 
 @@@
+https://github.com/kmakise/Micromouse
+
+Very nice micromouse project.
+@@@

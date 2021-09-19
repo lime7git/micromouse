@@ -59,174 +59,196 @@ void STATE_Selection(void)
 }
 
 void STATE_Handle(void)
-{
-	if(mouse_state == RUN)
+{	
+		switch (mouse_state)
 		{
-			volatile static int state = 0;
-		
-			LED_Switch(LED1, TOG);
-			delay_ms(250);
-		
-			
-			if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
+			case INIT:
 			{
-				static char buf[128];
-				sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
-				UART1_Log(buf);
 				
-				BUTTON_OK.wasPressed = false;
+			
+			break;
 			}
-				else if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
+			case CRITICAL:
+			{
+				BATTERY_CRITICAL_PROCEDURE();
+				delay_ms(5000);
+			
+			break;
+			}
+			case STOP:
+			{
+				MOT_STOP
+				MOT_STOP
+				MOT_STOP
+				LED_Switch(LED1, OFF);
+				LED_Switch(LED2, OFF);
+				LED_Switch(LED3, OFF);
+				LED_Switch(LED4, OFF);
+				BUZZER_Volume(0);
+			
+			break;
+			}
+			case IDLE:
+			{
+				
+			
+			break;
+			}
+			case RUN:
+			{
+				volatile static int state = 0;
+			
+				LED_Switch(LED1, TOG);
+				delay_ms(250);
+			
+				
+				if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
 				{
-					if(state < 4) state++;
-						else state = 0;
-					
-					MOT_STOP
-					LED_Switch(LED2, TOG);
+					static char buf[128];
+					sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
+					UART1_Log(buf);
 					
 					BUTTON_OK.wasPressed = false;
 				}
-					else if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
+					else if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 					{
-			
-					
+						if(state < 4) state++;
+							else state = 0;
+						
+						MOT_STOP
+						LED_Switch(LED2, TOG);
+						
 						BUTTON_OK.wasPressed = false;
 					}
-			
-			if(BUTTON_SEL.wasPressed && NORMAL_PRESS(BUTTON_SEL.time))
-			{
-				BUZZER_Buzz(32, 3, 100, 250);
+						else if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
+						{
 				
-				BUTTON_SEL.wasPressed = false;
-			}
+						
+							BUTTON_OK.wasPressed = false;
+						}
+				
+				if(BUTTON_SEL.wasPressed && NORMAL_PRESS(BUTTON_SEL.time))
+				{
+					BUZZER_Buzz(32, 3, 100, 250);
+					
+					BUTTON_SEL.wasPressed = false;
+				}
+				
+				switch(state)
+				{
+					case 0:
+						MOT_STOP
+					break;
+					case 1:
+						MOTR_SET_SPEED(25);
+					break;
+					case 2:
+						MOTR_SET_SPEED(-25);
+					break;
+					case 3:
+						MOTL_SET_SPEED(25);
+					break;
+					case 4:
+						MOTL_SET_SPEED(-25);
+					break;
+				}
 			
-			switch(state)
+			break;
+			}
+			case TEST1:
 			{
-				case 0:
+				for(uint8_t i = 0; i < 8; i++)
+				{
+					if(i < 4) LED_Switch(i, ON);
+						else LED_Switch(i - 4, OFF);
+					
+					delay_ms(250);
+				}
+				delay_ms(1000);
+				
+				BUZZER_Buzz(8, 1, 250, 500);
+				BUZZER_Buzz(32, 1, 250, 500);
+				BUZZER_Buzz(64, 1, 250, 500);
+				
+				delay_ms(1000);
+				
+				MOTR_SET_SPEED(50);
+				delay_ms(1000);
 					MOT_STOP
-				break;
-				case 1:
-					MOTR_SET_SPEED(25);
-				break;
-				case 2:
-					MOTR_SET_SPEED(-25);
-				break;
-				case 3:
-					MOTL_SET_SPEED(25);
-				break;
-				case 4:
-					MOTL_SET_SPEED(-25);
-				break;
+					delay_ms(500);
+				MOTR_SET_SPEED(-50);
+				delay_ms(1000);
+					MOT_STOP
+					delay_ms(500);
+				MOTL_SET_SPEED(50);
+				delay_ms(1000);
+					MOT_STOP
+					delay_ms(500);
+				MOTL_SET_SPEED(-50);
+				delay_ms(1000);
+					MOT_STOP
+					delay_ms(500);
+				MOTR_SET_SPEED(100);
+				MOTL_SET_SPEED(100);
+				delay_ms(1000);
+					MOT_STOP
+					delay_ms(500);
+				MOTR_SET_SPEED(-50);
+				MOTL_SET_SPEED(-50);
+				delay_ms(1000);
+					MOT_STOP
+					delay_ms(500);
+					
+				MOT_STOP
+				delay_ms(1000);
+				for(uint8_t i = 0; i < 100; i++)
+				{
+					MOTR_SET_SPEED(i);
+					MOTL_SET_SPEED(i);
+					delay_ms(50);
+				}
 				
-			}
-			
-		}
-		
-		else if(mouse_state == STOP)
-		{
-			MOT_STOP
-			MOT_STOP
-			MOT_STOP
-			LED_Switch(LED1, OFF);
-			LED_Switch(LED2, OFF);
-			LED_Switch(LED3, OFF);
-			LED_Switch(LED4, OFF);
-			BUZZER_Volume(0);
-		}
-		
-		else if(mouse_state == CRITICAL)
-		{
-			BATTERY_CRITICAL_PROCEDURE();
-			delay_ms(5000);
-		}
-		
-		else if(mouse_state == TEST)
-		{
-			for(uint8_t i = 0; i < 8; i++)
-			{
-				if(i < 4) LED_Switch(i, ON);
-					else LED_Switch(i - 4, OFF);
+				delay_ms(1000);
+				MOT_STOP
+				delay_ms(1000);
+				for(uint8_t i = 0; i < 100; i++)
+				{
+					MOTR_SET_SPEED(-i);
+					MOTL_SET_SPEED(-i);
+					delay_ms(50);
+				}
 				
-				delay_ms(250);
-			}
-			delay_ms(1000);
-			
-			BUZZER_Buzz(8, 1, 250, 500);
-			BUZZER_Buzz(32, 1, 250, 500);
-			BUZZER_Buzz(64, 1, 250, 500);
-			
-			delay_ms(1000);
-			
-			MOTR_SET_SPEED(50);
-			delay_ms(1000);
+				delay_ms(1000);
 				MOT_STOP
-				delay_ms(500);
-			MOTR_SET_SPEED(-50);
-			delay_ms(1000);
-				MOT_STOP
-				delay_ms(500);
-			MOTL_SET_SPEED(50);
-			delay_ms(1000);
-				MOT_STOP
-				delay_ms(500);
-			MOTL_SET_SPEED(-50);
-			delay_ms(1000);
-				MOT_STOP
-				delay_ms(500);
-			MOTR_SET_SPEED(100);
-			MOTL_SET_SPEED(100);
-			delay_ms(1000);
-				MOT_STOP
-				delay_ms(500);
-			MOTR_SET_SPEED(-50);
-			MOTL_SET_SPEED(-50);
-			delay_ms(1000);
-				MOT_STOP
-				delay_ms(500);
+				delay_ms(1000);
 				
-			MOT_STOP
-			delay_ms(1000);
-			for(uint8_t i = 0; i < 100; i++)
-			{
-				MOTR_SET_SPEED(i);
-				MOTL_SET_SPEED(i);
-				delay_ms(50);
+				mouse_state = IDLE;
+			
+			break;
 			}
-			
-			delay_ms(1000);
-			MOT_STOP
-			delay_ms(1000);
-			for(uint8_t i = 0; i < 100; i++)
+			case TEST2:
 			{
-				MOTR_SET_SPEED(-i);
-				MOTL_SET_SPEED(-i);
-				delay_ms(50);
+				delay_ms(2500);
+				
+				MOTR_SET_SPEED(90);
+				MOTL_SET_SPEED(-90);
+				
+				delay_ms(3000);
+				MOT_STOP
+				delay_ms(1000);
+				
+				mouse_state = IDLE;
+			
+			break;
 			}
+			case TEST3:
+			{
+				static char buf[128];
+				sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
+				UART1_Log(buf);
 			
-			delay_ms(1000);
-			MOT_STOP
-			delay_ms(1000);
-			
-			mouse_state = IDLE;
-		}
-		else if(mouse_state == TEST2)
-		{
-			delay_ms(2500);
-			
-			MOTR_SET_SPEED(90);
-			MOTL_SET_SPEED(-90);
-			
-			delay_ms(3000);
-			MOT_STOP
-			delay_ms(1000);
-			
-			mouse_state = IDLE;
-		}
-			else if(mouse_state == TEST3)
-		{
-			static char buf[128];
-			sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
-			UART1_Log(buf);
+			break;
+			}
 		}
 }
 

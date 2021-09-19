@@ -51,7 +51,6 @@ void ADC_IRQHandler(void)
 
 void BATTERY_CRITICAL_PROCEDURE(void)
 {
-	// WATCHDOG VOLTAGE EMERGENCY FUNCTION (IN FUTURE IMPLEMENT DISABLING ALL PERIPHERALS AND DO SOME EMERGENCY THINGS!)
 			static char buf[64];
 			sprintf(buf,"\r\n### BATTERY WATCHDOG ###\r\nBattery voltage = %.2f\r\n",ADC_GET_BATTERY_VOLTAGE());
 			UART1_Log(buf);

@@ -1,6 +1,13 @@
-###
-@http://www.micromouseonline.com/
+@@@
+http://www.micromouseonline.com/
 
-A lot useful infomration about building and programing micromouse type robots.
+A lot useful information about building and programing micromouse type robots.
+@@@
+https://controllerstech.com/stm32-clock-setup-using-registers/
 
-###
+
+@@@
+https://github.com/kmakise/Micromouse
+
+Very nice micromouse project.
+@@@

@@ -16,6 +16,8 @@ extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;
 
+volatile static float speedL, speedR;
+
 void STATE_Selection(void)
 {
 	volatile static uint8_t mode = 1;
@@ -243,10 +245,15 @@ void STATE_Handle(void)
 			}
 			case TEST3:
 			{
-				static char buf[128];
-				sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
-				UART1_Log(buf);
+//				static char buf[128];
+//				sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
+//				UART1_Log(buf);
 			
+//				MOTOR_LEFT.set_rpm = 30.0f;
+//				MOTOR_RIGHT.set_rpm = 60.0f;
+				
+					MOTR_SET_SPEED(speedR);
+					MOTL_SET_SPEED(speedL);
 			break;
 			}
 		}

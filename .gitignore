@@ -1,6 +1,7 @@
 cad-files/**
 pcb-design/**
 pinout-test-cubemx/**
+motor-ident/**
 software-test/**
 github_token.txt
 micromouse-software/DebugConfig/**

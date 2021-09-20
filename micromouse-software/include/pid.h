@@ -6,6 +6,8 @@
 #include "stdio.h"
 #include "stdbool.h"
 
+#define TIME_STAMP 0.01f
+
 typedef enum{
 	LEFT_MOTOR = 0,
 	RIGHT_MOTOR = 1
@@ -42,8 +44,9 @@ typedef struct{
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;
 
-void MOTOR_PID_INIT(sMOT *motor, eMOT motor_side, float kp, float ki, float kd);
-void MOTOR_PID_CONTROLLER(sMOT *motor);
+void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd);
+void MOTOR_PID_CONTROLLER(sMOT *pMOTOR);
+
 
 
 #endif

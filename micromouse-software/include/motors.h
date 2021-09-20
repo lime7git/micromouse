@@ -4,6 +4,7 @@
 #include "stm32f405xx.h"
 #include "stm32f4xx.h"
 #include "math.h"
+#include "pid.h"
 
 #define MOTR_IN1_OFF 		GPIOB->ODR &= ~GPIO_ODR_OD7;
 #define MOTR_IN1_ON 		GPIOB->ODR |= GPIO_ODR_OD7;
@@ -31,7 +32,6 @@
 #define MOTL_SET_PWM(value)		TIM8->CCR2 = value
 
 void MOTORS_Init(void);
-void MOTR_SET_SPEED(float speed);
-void MOTL_SET_SPEED(float speed);
+void MOTOR_SET_SPEED(sMOT *pMOTOR, float speed);
 
 #endif

@@ -16,7 +16,7 @@
 #endif
 
 #if BATTERY_CELLS_NUMBER == 2
-	#define ADC_WATCHDOG_HIGHER_THRESHOLD_VOLTAGE	1900	// (1850) - about 1.49V adc = 8.3V battery voltage // (1900) - ???
+	#define ADC_WATCHDOG_HIGHER_THRESHOLD_VOLTAGE	2000	// (1850) - about 1.49V adc = 8.3V battery voltage // (1900) - ???
 	#define ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE 	1480 	// about 1.19V adc = 6.6V battery voltage
 #endif
 

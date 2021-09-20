@@ -44,40 +44,51 @@ void MOTORS_Init(void)
 	TIM8->CR1 |= TIM_CR1_CEN;
 }
 
-void MOTR_SET_SPEED(float speed)
+void MOTOR_SET_SPEED(sMOT *pMOTOR, float speed)
 {
-	if(speed > 0.0f)
+	switch (pMOTOR->motorSide)
 	{
-			MOTR_SET_PWM((uint16_t)(fabsf(speed) * 10.0f));
-			MOTR_FORWARD
+		case RIGHT_MOTOR:
+		{
+			if(speed > 0.0f)
+			{
+					MOTR_SET_PWM((uint16_t)(fabsf(speed) * 9.99f));
+					MOTR_FORWARD
+			}
+			if(speed < 0.0f)	
+			{
+					MOTR_SET_PWM((uint16_t)(fabsf(speed) * 9.99f));
+					MOTR_BACKWARDS
+			}
+			if (speed > -0.1f && speed < 0.1f)
+			{
+				MOTR_SET_PWM(0);
+				MOTR_STOP
+			}
+			
+		break;
+		}
+		case LEFT_MOTOR:
+		{
+			if(speed > 0.0f)
+			{
+					MOTL_SET_PWM((uint16_t)(fabsf(speed) * 9.99f));
+					MOTL_FORWARD
+			}
+			if(speed < 0.0f)
+			{
+					MOTL_SET_PWM((uint16_t)(fabsf(speed) * 9.99f));
+					MOTL_BACKWARDS
+			}
+			if (speed > -0.1f && speed < 0.1f)
+			{
+				MOTL_SET_PWM(0);
+				MOTL_STOP
+			}	
+			
+		break;
+		}
 	}
-	if(speed < 0.0f)	
-	{
-			MOTR_SET_PWM((uint16_t)(fabsf(speed) * 10.0f));
-			MOTR_BACKWARDS
-	}
-	if (speed > -0.1f && speed < 0.1f)
-	{
-		MOTR_SET_PWM(0);
-		MOTR_STOP
-	}
-}
-void MOTL_SET_SPEED(float speed)
-{
-	if(speed > 0.0f)
-	{
-			MOTL_SET_PWM((uint16_t)(fabsf(speed) * 10.0f));
-			MOTL_FORWARD
-	}
-	if(speed < 0.0f)
-	{
-			MOTL_SET_PWM((uint16_t)(fabsf(speed) * 10.0f));
-			MOTL_BACKWARDS
-	}
-	if (speed > -0.1f && speed < 0.1f)
-	{
-		MOTL_SET_PWM(0);
-		MOTL_STOP
-	}	
+	
 }
 

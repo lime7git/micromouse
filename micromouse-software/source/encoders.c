@@ -38,25 +38,37 @@ void ENCODERS_Init(void)
 	TIM2->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
 	TIM2->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
 }
-
-int32_t ENCODER_LEFT_GET_VALUE(void)
+int32_t ENCODER_GET_VALUE(sMOT *pMOTOR)
 {
-	return (int32_t)TIM5->CNT;
-}
-int32_t ENCODER_RIGHT_GET_VALUE(void)
-{
-	return (int32_t)TIM2->CNT;
+	static int32_t value;
+	
+	switch (pMOTOR->motorSide)
+	{
+		case LEFT_MOTOR:
+		{
+			value = (int32_t)TIM5->CNT;
+		break;
+		}
+		
+		case RIGHT_MOTOR:
+		{
+			value = (int32_t)TIM2->CNT;
+		break;
+		}
+	}
+	
+	return value;
 }
 void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_RIGHT)
 {
 	pMOTOR_LEFT->encPrev = pMOTOR_LEFT->enc;
-	pMOTOR_LEFT->enc = ENCODER_LEFT_GET_VALUE();
+	pMOTOR_LEFT->enc = ENCODER_GET_VALUE(pMOTOR_LEFT);
 	pMOTOR_LEFT->encDiff = pMOTOR_LEFT->enc - pMOTOR_LEFT->encPrev;
 	pMOTOR_LEFT->dist = (float)pMOTOR_LEFT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
 	pMOTOR_LEFT->totalDist += pMOTOR_LEFT->dist;
 	
 	pMOTOR_RIGHT->encPrev = pMOTOR_RIGHT->enc;
-	pMOTOR_RIGHT->enc = ENCODER_RIGHT_GET_VALUE();
+	pMOTOR_RIGHT->enc = ENCODER_GET_VALUE(pMOTOR_RIGHT);
 	pMOTOR_RIGHT->encDiff = pMOTOR_RIGHT->enc - pMOTOR_RIGHT->encPrev;
 	pMOTOR_RIGHT->dist = (float)pMOTOR_RIGHT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
 	pMOTOR_RIGHT->totalDist += pMOTOR_RIGHT->dist;
@@ -80,17 +92,8 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 }
 void MOTOR_CALCULATE_SPEED(sMOT *pMOTOR)
 {
-	if(pMOTOR->motorSide == LEFT_MOTOR)
-	{
-			pMOTOR->pulse_per_sec = ENCODER_LEFT_GET_VALUE() - pMOTOR->prev_pulse;
-			pMOTOR->prev_pulse = ENCODER_LEFT_GET_VALUE();
-	}
+	pMOTOR->pulse_per_sec = ENCODER_GET_VALUE(pMOTOR) - pMOTOR->prev_pulse;
+	pMOTOR->prev_pulse = ENCODER_GET_VALUE(pMOTOR);
 	
-		if(pMOTOR->motorSide == RIGHT_MOTOR)
-	{
-			pMOTOR->pulse_per_sec = ENCODER_RIGHT_GET_VALUE() - pMOTOR->prev_pulse;
-			pMOTOR->prev_pulse = ENCODER_RIGHT_GET_VALUE();
-	}
-
-	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec / ENC_IMP_PER_ROTATE * 6000.0f;	
+	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec * 100.0f * 60.0f / ENC_IMP_PER_ROTATE;
 }

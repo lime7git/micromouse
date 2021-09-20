@@ -25,12 +25,15 @@ int main(void)
 	UART1_IT_Init();
 	TIM7_10MS_INTERRUPT_Init();
 	
-	STATE_Selection();
+	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 1.0f, 0.01f);
+	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.0f, 1.0f, 0.01f);
+	
+	//STATE_Selection();
+	mouse_state = TEST3;
 	
 	while(1)
 	{
-
-		// ### HANDLE SECTION 
+		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
 		
@@ -40,7 +43,5 @@ int main(void)
 				
 				BUTTON_SEL.wasPressed = false;
 			}
-		// ###	
-		
 	}
 }

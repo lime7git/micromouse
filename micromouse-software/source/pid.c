@@ -1,26 +1,47 @@
 #include "pid.h"
+#include "motors.h"
 
 sMOT MOTOR_LEFT;
 sMOT MOTOR_RIGHT;
 
-void MOTOR_PID_INIT(sMOT *motor, eMOT motor_side, float kp, float ki, float kd)
+void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd)
 {
-	motor->motorSide = motor_side;
-	motor->kp = kp;
-	motor->ki = ki;
-	motor->kd = kd;
+	pMOTOR->motorSide = motor_side;
+	pMOTOR->kp = kp;
+	pMOTOR->ki = ki;
+	pMOTOR->kd = kd;
 	
-	motor->set_rpm = 0.0f;
-	motor->act_rpm = 0.0f;
-	motor->e = 0.0f;
-	motor->e_prev = 0.0f;
-	motor->e_total = 0.0f;
-	motor->out = 0.0f;
-	motor->enc = 0;
-	motor->encPrev = 0;
-	motor->encDiff = 0;
-	motor->pulse_per_sec = 0;
-	motor->prev_pulse = 0;
-	motor->totalDist = 0.0f;
-	motor->dist = 0.0f;
+	pMOTOR->set_rpm = 0.0f;
+	pMOTOR->act_rpm = 0.0f;
+	pMOTOR->e = 0.0f;
+	pMOTOR->e_prev = 0.0f;
+	pMOTOR->e_total = 0.0f;
+	pMOTOR->out = 0.0f;
+	pMOTOR->enc = 0;
+	pMOTOR->encPrev = 0;
+	pMOTOR->encDiff = 0;
+	pMOTOR->pulse_per_sec = 0;
+	pMOTOR->prev_pulse = 0;
+	pMOTOR->totalDist = 0.0f;
+	pMOTOR->dist = 0.0f;
+}
+void MOTOR_PID_CONTROLLER(sMOT *pMOTOR)
+{
+	pMOTOR->e_prev = pMOTOR->e;
+  pMOTOR->e = pMOTOR->set_rpm - pMOTOR->act_rpm;
+	pMOTOR->e_total += pMOTOR->e;
+	
+	if(pMOTOR->e_total > 10000.0f)		
+		pMOTOR->e_total = 10000.0f;
+	else if(pMOTOR->e_total < -10000.0f)	
+		pMOTOR->e_total = -10000.0f;
+	
+	pMOTOR->out = pMOTOR->kp * pMOTOR->e + pMOTOR->ki * pMOTOR->e_total * TIME_STAMP + pMOTOR->kd * (pMOTOR->e - pMOTOR->e_prev) / TIME_STAMP;
+
+	if(pMOTOR->out > 100.0f) 	
+		pMOTOR->out = 100.0f;
+	else if(pMOTOR->out < -100.0f)	
+		pMOTOR->out = -100.0f;
+	
+	MOTOR_SET_SPEED(pMOTOR, pMOTOR->out);
 }

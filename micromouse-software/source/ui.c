@@ -16,8 +16,6 @@ extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;
 
-volatile static float speedL, speedR;
-
 void STATE_Selection(void)
 {
 	volatile static uint8_t mode = 1;
@@ -142,16 +140,16 @@ void STATE_Handle(void)
 						MOT_STOP
 					break;
 					case 1:
-						MOTR_SET_SPEED(25);
+						MOTOR_SET_SPEED(&MOTOR_LEFT, 25);
 					break;
 					case 2:
-						MOTR_SET_SPEED(-25);
+						MOTOR_SET_SPEED(&MOTOR_LEFT, -25);
 					break;
 					case 3:
-						MOTL_SET_SPEED(25);
+						MOTOR_SET_SPEED(&MOTOR_RIGHT, 25);
 					break;
 					case 4:
-						MOTL_SET_SPEED(-25);
+						MOTOR_SET_SPEED(&MOTOR_RIGHT, -25);
 					break;
 				}
 			
@@ -173,30 +171,31 @@ void STATE_Handle(void)
 				BUZZER_Buzz(64, 1, 250, 500);
 				
 				delay_ms(1000);
+
 				
-				MOTR_SET_SPEED(50);
+				MOTOR_SET_SPEED(&MOTOR_LEFT, 50);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
-				MOTR_SET_SPEED(-50);
+				MOTOR_SET_SPEED(&MOTOR_LEFT, -50);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
-				MOTL_SET_SPEED(50);
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, 50);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
-				MOTL_SET_SPEED(-50);
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, -50);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
-				MOTR_SET_SPEED(100);
-				MOTL_SET_SPEED(100);
+				MOTOR_SET_SPEED(&MOTOR_LEFT, 90);
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, 90);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
-				MOTR_SET_SPEED(-50);
-				MOTL_SET_SPEED(-50);
+				MOTOR_SET_SPEED(&MOTOR_LEFT, -20);
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, -20);
 				delay_ms(1000);
 					MOT_STOP
 					delay_ms(500);
@@ -205,8 +204,8 @@ void STATE_Handle(void)
 				delay_ms(1000);
 				for(uint8_t i = 0; i < 100; i++)
 				{
-					MOTR_SET_SPEED(i);
-					MOTL_SET_SPEED(i);
+					MOTOR_SET_SPEED(&MOTOR_LEFT, i);
+					MOTOR_SET_SPEED(&MOTOR_RIGHT, i);
 					delay_ms(50);
 				}
 				
@@ -215,8 +214,8 @@ void STATE_Handle(void)
 				delay_ms(1000);
 				for(uint8_t i = 0; i < 100; i++)
 				{
-					MOTR_SET_SPEED(-i);
-					MOTL_SET_SPEED(-i);
+					MOTOR_SET_SPEED(&MOTOR_LEFT, i);
+					MOTOR_SET_SPEED(&MOTOR_RIGHT, i);
 					delay_ms(50);
 				}
 				
@@ -230,30 +229,14 @@ void STATE_Handle(void)
 			}
 			case TEST2:
 			{
-				delay_ms(2500);
-				
-				MOTR_SET_SPEED(90);
-				MOTL_SET_SPEED(-90);
-				
-				delay_ms(3000);
-				MOT_STOP
-				delay_ms(1000);
-				
-				mouse_state = IDLE;
+				MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
 			
 			break;
 			}
 			case TEST3:
 			{
-//				static char buf[128];
-//				sprintf(buf, "pos_x = %.1f \t pos_y = %.1f \t ang = %.1f \t rpm_left = %.1f \t rpm_right = %.1f \r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, (double)MOTOR_LEFT.act_rpm, (double)MOTOR_RIGHT.act_rpm);
-//				UART1_Log(buf);
-			
-//				MOTOR_LEFT.set_rpm = 30.0f;
-//				MOTOR_RIGHT.set_rpm = 60.0f;
 				
-					MOTR_SET_SPEED(speedR);
-					MOTL_SET_SPEED(speedL);
 			break;
 			}
 		}

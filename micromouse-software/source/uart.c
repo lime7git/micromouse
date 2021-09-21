@@ -38,47 +38,89 @@ void UART1_COMMAND_PARSERHandler(tCircular_buffer *hBuffer)
 		
 		do
 		{
-			tCircular_buffer_pop(&UART_Buffer, &single_command[tmp_cnt]);
+			tCircular_buffer_pop(&UART_Buffer, &tmp_buf);
 			
-		}	while(single_command[tmp_cnt++] != '#');
+			if(tmp_buf != '#') single_command[tmp_cnt] = tmp_buf;
+			tmp_cnt++;
+		}	while(tmp_buf != '#');
 		
 		COMMAND_Execute((char *)single_command);
 	}
 }
 void COMMAND_Execute(char *command)
 {
-	if(strcmp(command, "LED1ON#") == 0)
+	switch(COMMAND_GET_TYPE(command))
 	{
-		LED_Switch(LED1, ON);
+		case UNKNOWN:
+		{
+			char buf[64];
+			sprintf(buf, "Unknown command! \t $%s# \r\n", command);
+			
+			UART1_Log(buf);
+			
+			break;
+		}
+		case LED:
+		{
+			eLEDnum led_num = (eLEDnum)(atoi(&command[4]));
+			eLEDstate led_state = (eLEDstate)(atoi(&command[6]));
+			
+			LED_Switch(led_num, led_state);
+			
+			break;
+		}
+		case MOTOR:
+		{
+			
+			break;
+		}
+		case BUZZER:
+		{
+			
+			break;
+		}
+		case STATE:
+		{
+			if(command[6] == '?')
+			{
+				char buf[32];
+				sprintf(buf, "Mouse state = %i \r\n", mouse_state);
+				UART1_Log(buf);
+			}
+			else
+			{
+				int state = atoi(&command[6]);
+				
+				if((state >= 0) && (state <= 15))
+				{
+					mouse_state = (eMouseState)state;
+				}
+				else UART1_Log("Unknown state! \r\n");
+			}
+			
+			break;
+		}
 	}
-	else if(strcmp(command, "LED1OFF#") == 0)
+}
+eCOMMANDS COMMAND_GET_TYPE(char *command)
+{
+	unsigned int counter = 0;
+	char command_type[16];
+	eCOMMANDS type = UNKNOWN;
+	
+	while(command[counter] != '=')
 	{
-		LED_Switch(LED1, OFF);
+		command_type[counter] = command[counter];
+		
+		counter++;
 	}
-	else if(strcmp(command, "LED2ON#") == 0)
-	{
-		LED_Switch(LED2, ON);
-	}
-	else if(strcmp(command, "LED2OFF#") == 0)
-	{
-		LED_Switch(LED2, OFF);
-	}
-	else if(strcmp(command, "LED3ON#") == 0)
-	{
-		LED_Switch(LED3, ON);
-	}
-	else if(strcmp(command, "LED3OFF#") == 0)
-	{
-		LED_Switch(LED3, OFF);
-	}	
-	else if(strcmp(command, "LED4ON#") == 0)
-	{
-		LED_Switch(LED4, ON);
-	}
-	else if(strcmp(command, "LED4OFF#") == 0)
-	{
-		LED_Switch(LED4, OFF);
-	}		
+	
+	if(strncmp(command_type, "LED", counter) == 0) type = LED;
+	else if(strncmp(command_type, "MOTOR", counter) == 0) type = MOTOR;
+	else if(strncmp(command_type, "BUZZER", counter) == 0) type = BUZZER;
+	else if(strncmp(command_type, "STATE", counter) == 0) type = STATE;
+	
+	return type;
 }
 void UART1_SendChar(char c)
 {

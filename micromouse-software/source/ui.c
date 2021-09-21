@@ -236,6 +236,9 @@ void STATE_Handle(void)
 			}
 			case TEST3:
 			{
+				static char buf[64];
+				sprintf(buf, "encL = %i \t encR = %i \r\n", ENCODER_GET_VALUE(&MOTOR_LEFT), ENCODER_GET_VALUE(&MOTOR_RIGHT));
+				UART1_Log(buf);
 				
 			break;
 			}

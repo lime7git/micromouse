@@ -28,9 +28,6 @@ int main(void)
 	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 1.0f, 0.01f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.0f, 1.0f, 0.01f);
 	
-	//STATE_Selection();
-	mouse_state = IDLE;
-	
 	while(1)
 	{
 		

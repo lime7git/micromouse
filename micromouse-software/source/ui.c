@@ -64,7 +64,11 @@ void STATE_Handle(void)
 		{
 			case INIT:
 			{
-				
+				LED_Switch(LED2, TOG);
+				LED_Switch(LED3, TOG);
+				delay_ms(500);
+				LED_Switch(LED1, TOG);
+				LED_Switch(LED4, TOG);
 			
 			break;
 			}

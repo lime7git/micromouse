@@ -54,7 +54,7 @@ void COMMAND_Execute(char *command)
 		case UNKNOWN:
 		{
 			char buf[64];
-			sprintf(buf, "Unknown command! \t $%s# \r\n", command);
+			sprintf(buf, "Unknown command!\t $%s# \r\n", command);
 			
 			UART1_Log(buf);
 			
@@ -71,6 +71,18 @@ void COMMAND_Execute(char *command)
 		}
 		case MOTOR:
 		{
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			float left_motor_speed = (float)atof(param_buffer[0]);
+			float right_motor_speed = (float)atof(param_buffer[1]);
+			
+			if((left_motor_speed >= -99.9f) && (left_motor_speed <= 99.9f))
+				MOTOR_SET_SPEED(&MOTOR_LEFT, left_motor_speed);
+			
+			if((right_motor_speed >= -99.9f) && (right_motor_speed <= 99.9f))
+				MOTOR_SET_SPEED(&MOTOR_RIGHT, right_motor_speed);
+
 			
 			break;
 		}
@@ -121,6 +133,33 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "STATE", counter) == 0) type = STATE;
 	
 	return type;
+}
+unsigned int GET_COMMAND_PARAMS(char *command, char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS])
+{
+  unsigned int counter = 0, single_param_counter = 0, params_counter = 0;
+
+	while(command[counter++] != '=') {}
+
+	command = &command[counter];
+
+    counter = 0;
+    while(counter < strlen(command))
+    {
+        if(command[counter] == ',')
+        {
+           params_counter++;
+           single_param_counter = 0;
+        }
+        else
+        {
+            param_buffer[params_counter][single_param_counter] = command[counter];
+            single_param_counter++;
+        }
+
+    counter++;
+    }
+
+    return (params_counter + 1);
 }
 void UART1_SendChar(char c)
 {

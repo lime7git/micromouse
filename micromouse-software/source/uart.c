@@ -62,10 +62,10 @@ void COMMAND_Execute(char *command)
 		}
 		case LED:
 		{
-			eLEDnum led_num = (eLEDnum)(atoi(&command[4]));
-			eLEDstate led_state = (eLEDstate)(atoi(&command[6]));
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
 			
-			LED_Switch(led_num, led_state);
+			LED_Switch((eLEDnum)(atoi(param_buffer[0])), (eLEDstate)(atoi(param_buffer[1])));
 			
 			break;
 		}
@@ -93,21 +93,38 @@ void COMMAND_Execute(char *command)
 		}
 		case STATE:
 		{
-			if(command[6] == '?')
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == '?')
 			{
 				char buf[32];
 				sprintf(buf, "Mouse state = %i \r\n", mouse_state);
 				UART1_Log(buf);
+				UART1_Log(STATE_HELP);
+			}
+			else if((atoi(param_buffer[0]) >= 0) && ((atoi(param_buffer[0]) <= 15)))
+			{
+				mouse_state = (eMouseState)(atoi(param_buffer[0]));
 			}
 			else
 			{
-				int state = atoi(&command[6]);
-				
-				if((state >= 0) && (state <= 15))
-				{
-					mouse_state = (eMouseState)state;
-				}
-				else UART1_Log("Unknown state! \r\n");
+			UART1_Log("Unknown state! \r\n");	
+			UART1_Log(STATE_HELP);
+			}				
+			
+			break;
+		}
+		case BATTERY:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == '?')
+			{
+			char buf[128];
+			sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
+			UART1_Log(buf);
 			}
 			
 			break;
@@ -120,7 +137,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	char command_type[16];
 	eCOMMANDS type = UNKNOWN;
 	
-	while(command[counter] != '=')
+	while( (command[counter] != '=') && (counter < strlen(command)) )
 	{
 		command_type[counter] = command[counter];
 		
@@ -131,6 +148,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "MOTOR", counter) == 0) type = MOTOR;
 	else if(strncmp(command_type, "BUZZER", counter) == 0) type = BUZZER;
 	else if(strncmp(command_type, "STATE", counter) == 0) type = STATE;
+	else if(strncmp(command_type, "BATTERY", counter) == 0) type = BATTERY;
 	
 	return type;
 }

@@ -1,4 +1,4 @@
-package com.example.micromouse;
+package com.example.mouse;
 
 import android.os.Bundle;
 
@@ -13,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.micromouse.ui.main.SectionsPagerAdapter;
-import com.example.micromouse.databinding.ActivityMainBinding;
+import com.example.mouse.ui.main.SectionsPagerAdapter;
+import com.example.mouse.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.micromouse;
+package com.example.mouse;
 
 import org.junit.Test;
 

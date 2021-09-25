@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">micromouse</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="app_name">Mouse</string>
+    <string name="tab_text_1">Bluetooth</string>
+    <string name="tab_text_2">Terminal</string>
+    <string name="tab_text_3">Control</string>
+
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.micromouse.ui.main;
+package com.example.mouse.ui.main;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

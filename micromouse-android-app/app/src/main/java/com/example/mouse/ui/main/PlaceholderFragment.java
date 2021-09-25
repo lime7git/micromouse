@@ -1,4 +1,4 @@
-package com.example.micromouse.ui.main;
+package com.example.mouse.ui.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.micromouse.R;
-import com.example.micromouse.databinding.FragmentMainBinding;
+import com.example.mouse.R;
+import com.example.mouse.databinding.FragmentMainBinding;
 
 /**
  * A placeholder fragment containing a simple view.

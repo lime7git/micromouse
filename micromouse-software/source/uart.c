@@ -129,6 +129,18 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
+		case READY:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == '?')
+			{
+			UART1_Log("READY\r\n");
+			}
+			
+			break;
+		}
 	}
 }
 eCOMMANDS COMMAND_GET_TYPE(char *command)
@@ -149,6 +161,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "BUZZER", counter) == 0) type = BUZZER;
 	else if(strncmp(command_type, "STATE", counter) == 0) type = STATE;
 	else if(strncmp(command_type, "BATTERY", counter) == 0) type = BATTERY;
+	else if(strncmp(command_type, "READY", counter) == 0) type = READY;
 	
 	return type;
 }

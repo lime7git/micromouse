@@ -23,7 +23,8 @@ typedef enum{
 	MOTOR,
 	BUZZER,
 	STATE,
-	BATTERY
+	BATTERY,
+	READY
 } eCOMMANDS;
 
 extern tCircular_buffer UART_Buffer;

@@ -8,59 +8,8 @@
     android:background="@android:color/darker_gray"
     tools:context=".ControlFragment">
 
-    <ImageButton
-        android:id="@+id/imageButton4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="530dp"
-        android:layout_marginEnd="60dp"
-        android:rotation="90"
-        android:scaleX="2.5"
-        android:scaleY="6.5"
-        android:src="@android:drawable/arrow_up_float"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:layout_marginEnd="60dp"
-        android:rotation="-90"
-        android:scaleX="2.5"
-        android:scaleY="6.5"
-        android:src="@android:drawable/arrow_up_float"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton4" />
-
-    <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="75dp"
-        android:rotation="180"
-        android:scaleX="4"
-        android:scaleY="4"
-        android:src="@android:drawable/arrow_up_float"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="530dp"
-        android:scaleX="4"
-        android:scaleY="4"
-        android:src="@android:drawable/arrow_up_float"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonLed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -68,4 +17,101 @@
         android:text="TOG LEDs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/buttonArrowLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="125dp"
+        android:background="?android:selectableItemBackground"
+        android:scaleX=".7"
+        android:scaleY=".7"
+        android:src="@drawable/arrow_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonArrowRight"
+        app:layout_constraintStart_toEndOf="@+id/buttonArrowUp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/buttonArrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="125dp"
+        android:background="?android:selectableItemBackground"
+        android:rotation="180"
+        android:scaleX=".7"
+        android:scaleY=".7"
+        android:src="@drawable/arrow_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/buttonArrowUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:background="?android:selectableItemBackground"
+        android:rotation="90"
+        android:scaleX=".7"
+        android:scaleY=".7"
+        android:src="@drawable/arrow_button"
+        app:layout_constraintBottom_toTopOf="@+id/buttonArrowDown"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/buttonArrowDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:background="?android:selectableItemBackground"
+        android:rotation="270"
+        android:scaleX=".7"
+        android:scaleY=".7"
+        android:src="@drawable/arrow_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonStop"
+        android:layout_width="232dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#FB0303"
+        android:text="STOP"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonArrowDown" />
+
+    <SeekBar
+        android:id="@+id/seekBarSpeed"
+        android:layout_width="278dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="55dp"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintBottom_toTopOf="@+id/buttonArrowLeft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonArrowUp" />
+
+    <SeekBar
+        android:id="@+id/seekBarTurn"
+        android:layout_width="278dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="16dp"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintBottom_toTopOf="@+id/buttonArrowLeft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toEndOf="@+id/buttonArrowUp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

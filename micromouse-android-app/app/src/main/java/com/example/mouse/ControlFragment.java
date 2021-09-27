@@ -7,6 +7,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.ToggleButton;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +32,18 @@ public class ControlFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Button buttonLed;
+    Button buttonStop;
+    ImageButton buttonUp;
+    ImageButton buttonDown;
+    ImageButton buttonLeft;
+    ImageButton buttonRight;
+    SeekBar seekBarSpeed;
+    SeekBar seekBarTurn;
+
+    int speed = 50;
+    float turn = 0.5F;
 
     public ControlFragment() {
         // Required empty public constructor
@@ -58,7 +79,104 @@ public class ControlFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_control, container, false);
+        View view = inflater.inflate(R.layout.fragment_control, container, false);
+
+        buttonStop = (Button) view.findViewById(R.id.buttonStop);
+        buttonLed = (Button) view.findViewById(R.id.buttonLed);
+        buttonUp = (ImageButton) view.findViewById(R.id.buttonArrowUp);
+        buttonDown = (ImageButton) view.findViewById(R.id.buttonArrowDown);
+        buttonLeft = (ImageButton) view.findViewById(R.id.buttonArrowLeft);
+        buttonRight = (ImageButton) view.findViewById(R.id.buttonArrowRight);
+        seekBarSpeed = (SeekBar) view.findViewById(R.id.seekBarSpeed);
+        seekBarTurn = (SeekBar) view.findViewById(R.id.seekBarTurn);
+
+        if(!(MainActivity.getInstance().isBluetoothConnected()))
+        {
+            buttonLed.setEnabled(false);
+            buttonStop.setEnabled(false);
+            buttonUp.setEnabled(false);
+            buttonDown.setEnabled(false);
+            buttonLeft.setEnabled(false);
+            buttonRight.setEnabled(false);
+            seekBarSpeed.setEnabled(false);
+            seekBarTurn.setEnabled(false);
+        }
+
+        buttonLed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend("$LED=4,2#");
+            }
+        });
+
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend("$MOTOR=0,0#");
+            }
+        });
+
+        buttonUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", speed, speed));
+            }
+        });
+
+        buttonDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", -speed, -speed));
+            }
+        });
+
+        buttonLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", (int)(speed * turn), speed));
+            }
+        });
+
+        buttonRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", speed,(int)(speed * turn)));
+            }
+        });
+
+        seekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                speed = progress;
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        seekBarTurn.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                turn = (float)progress / 100.0F;
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        return view;
     }
+
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.mouse.BluetoothFragment;
 import com.example.mouse.ControlFragment;
+import com.example.mouse.MainActivity;
 import com.example.mouse.R;
 import com.example.mouse.TerminalFragment;
 

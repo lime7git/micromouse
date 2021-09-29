@@ -4,11 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/drawable/buttonArrow_background.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout-land/fragment_control.xml" value="0.4" />
         <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/activity_main.xml" value="0.17300724637681159" />
         <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_bluetooth.xml" value="0.6" />
-        <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_control.xml" value="0.264" />
+        <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_control.xml" value="0.6" />
         <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_main.xml" value="0.1" />
-        <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_terminal.xml" value="0.12083333333333333" />
+        <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/layout/fragment_terminal.xml" value="0.1546875" />
         <entry key="..\:/Users/Emil/Desktop/micromouse/micromouse/micromouse-android-app/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2755208333333333" />
       </map>
     </option>

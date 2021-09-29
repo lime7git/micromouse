@@ -1,5 +1,7 @@
 package com.example.mouse;
 
+import android.content.pm.ActivityInfo;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -41,6 +43,8 @@ public class ControlFragment extends Fragment {
     ImageButton buttonRight;
     SeekBar seekBarSpeed;
     SeekBar seekBarTurn;
+    ImageButton buttonRotateRight;
+    ImageButton buttonRotateLeft;
 
     int speed = 50;
     float turn = 0.5F;
@@ -89,6 +93,8 @@ public class ControlFragment extends Fragment {
         buttonRight = (ImageButton) view.findViewById(R.id.buttonArrowRight);
         seekBarSpeed = (SeekBar) view.findViewById(R.id.seekBarSpeed);
         seekBarTurn = (SeekBar) view.findViewById(R.id.seekBarTurn);
+        buttonRotateRight = (ImageButton) view.findViewById(R.id.imageButtonRotateRight);
+        buttonRotateLeft = (ImageButton) view.findViewById(R.id.imageButtonRotateLeft);
 
         if(!(MainActivity.getInstance().isBluetoothConnected()))
         {
@@ -100,6 +106,8 @@ public class ControlFragment extends Fragment {
             buttonRight.setEnabled(false);
             seekBarSpeed.setEnabled(false);
             seekBarTurn.setEnabled(false);
+            buttonRotateRight.setEnabled(false);
+            buttonRotateLeft.setEnabled(false);
         }
 
         buttonLed.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +181,20 @@ public class ControlFragment extends Fragment {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        buttonRotateLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", -speed, speed));
+            }
+        });
+
+        buttonRotateRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.getInstance().BluetoothSend(String.format("$MOTOR=%d,%d#", speed, -speed));
             }
         });
 

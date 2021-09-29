@@ -1,12 +1,22 @@
 package com.example.mouse;
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import java.io.IOException;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +33,11 @@ public class TerminalFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    TextView terminal;
+    EditText terminal_command;
+    ImageButton buttonSend;
+    Button buttonClear;
 
     public TerminalFragment() {
         // Required empty public constructor
@@ -59,6 +74,51 @@ public class TerminalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_terminal, container, false);
+        View view = inflater.inflate(R.layout.fragment_terminal, container, false);
+
+        terminal = (TextView) view.findViewById(R.id.textViewTerminal);
+        terminal_command = (EditText) view.findViewById(R.id.editTextTerminalCommand);
+        buttonSend = (ImageButton) view.findViewById(R.id.imageButtonSend);
+        buttonClear = (Button) view.findViewById(R.id.buttonClear);
+
+        terminal.setMovementMethod(new ScrollingMovementMethod());
+
+        buttonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.getInstance().isBluetoothConnected()) {
+                    MainActivity.getInstance().BluetoothSend(terminal_command.getText().toString());
+                }
+            }
+        });
+
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                terminal.setText("");
+            }
+        });
+
+        new Thread(new Runnable() {
+            public void run() {
+                // Keep looping to listen for received messages
+                while (true) {
+
+                    if(MainActivity.recivedData.size() != 0)
+                    {
+                        terminal.append(MainActivity.recivedData.get(0));
+                        MainActivity.recivedData.remove(0);
+                    }
+
+                }
+            }
+        }).start();
+
+        return view;
+    }
+
+    public void changeText(String mText)
+    {
+        terminal.setText(mText);
     }
 }

@@ -5,24 +5,19 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.mouse.databinding.ActivityMainBinding;
+import com.example.mouse.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-
-import com.example.mouse.ui.main.SectionsPagerAdapter;
-import com.example.mouse.databinding.ActivityMainBinding;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
     public static BluetoothDevice hc06 = btAdapter.getRemoteDevice("98:D3:31:FC:B1:18");
     public static BluetoothSocket btSocket = null;
     private boolean isBluetoothConnected = false;
+
+    public static List<String> recivedData = new ArrayList<String>();
+
+    OutputStream btFrame;
+    InputStream InputStream;
 
 
     @Override
@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 btSocket = hc06.createRfcommSocketToServiceRecord(mUUID);
                 btSocket.connect();
 
+                InputStream = btSocket.getInputStream();
+                btFrame = btSocket.getOutputStream();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -73,7 +76,50 @@ public class MainActivity extends AppCompatActivity {
             timeout--;
         } while ((!btSocket.isConnected()) && (timeout == 0));
 
-        if(btSocket.isConnected()) isBluetoothConnected = true;
+        if(btSocket.isConnected())
+        {
+            isBluetoothConnected = true;
+            new Thread(new Runnable() {
+                public void run() {
+                    byte[] buffer = new byte[1024];
+                    int readBufferPosition = 0;
+
+                    // Keep looping to listen for received messages
+                    while (true) {
+                        try
+                        {
+                            int bytesAvailable = InputStream.available();
+                            if(bytesAvailable > 0)
+                            {
+                                byte[] packetBytes = new byte[bytesAvailable];
+                                InputStream.read(packetBytes);
+                                for(int i=0;i<bytesAvailable;i++)
+                                {
+                                    byte b = packetBytes[i];
+                                    if(b == 10)
+                                    {
+                                        buffer[readBufferPosition++] = b;
+                                        byte[] encodedBytes = new byte[readBufferPosition];
+                                        System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
+                                        final String data = new String(encodedBytes, "US-ASCII");
+                                        readBufferPosition = 0;
+                                        recivedData.add(data);
+                                    }
+                                    else
+                                    {
+                                        buffer[readBufferPosition++] = b;
+                                    }
+                                }
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }).start();
+        }
             else isBluetoothConnected = false;
 
     }
@@ -91,13 +137,15 @@ public class MainActivity extends AppCompatActivity {
         return isBluetoothConnected;
     }
 
+
     protected void BluetoothSend(String message)
     {
         try {
-            OutputStream btFrame = btSocket.getOutputStream();
             btFrame.write(message.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+
 }

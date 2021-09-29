@@ -4,5 +4,15 @@
     <string name="tab_text_2">Terminal</string>
     <string name="tab_text_3">Control</string>
 
+    <string-array name="Modes">
+        <item>Init</item>
+        <item>Critical</item>
+        <item>Stop</item>
+        <item>Idle</item>
+        <item>Run</item>
+        <item>Test 1</item>
+        <item>Test 2</item>
+        <item>Test 3</item>
+    </string-array>
 
 </resources>

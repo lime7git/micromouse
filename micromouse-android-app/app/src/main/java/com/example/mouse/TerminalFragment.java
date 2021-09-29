@@ -1,5 +1,10 @@
 package com.example.mouse;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -9,9 +14,13 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -38,6 +47,7 @@ public class TerminalFragment extends Fragment {
     EditText terminal_command;
     ImageButton buttonSend;
     Button buttonClear;
+    Spinner spinnerModes;
 
     public TerminalFragment() {
         // Required empty public constructor
@@ -77,17 +87,80 @@ public class TerminalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_terminal, container, false);
 
         terminal = (TextView) view.findViewById(R.id.textViewTerminal);
+        terminal.setMovementMethod(new ScrollingMovementMethod());
         terminal_command = (EditText) view.findViewById(R.id.editTextTerminalCommand);
         buttonSend = (ImageButton) view.findViewById(R.id.imageButtonSend);
         buttonClear = (Button) view.findViewById(R.id.buttonClear);
 
-        terminal.setMovementMethod(new ScrollingMovementMethod());
+
+
+        spinnerModes = (Spinner) view.findViewById(R.id.spinnerModeSelect);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.Modes, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinnerModes.setAdapter(adapter);
+
+        spinnerModes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView,
+                                       View selectedItemView, int position, long id) {
+                try {
+
+                    String select_item = (String) parentView.getItemAtPosition(position);
+                    Integer mode = 0;
+
+                    switch (select_item)
+                    {
+                        case "Init" :
+                            mode = 0;
+                            break;
+                        case "Critical" :
+                            mode = 1;
+                            break;
+                        case "Stop" :
+                            mode = 2;
+                            break;
+                        case "Idle" :
+                            mode = 3;
+                            break;
+                        case "Run" :
+                            mode = 4;
+                            break;
+                        case "Test 1" :
+                            mode = 5;
+                            break;
+                        case "Test 2" :
+                            mode = 6;
+                            break;
+                        case "Test 3" :
+                            mode = 7;
+                            break;
+                    }
+
+
+                    MainActivity.getInstance().BluetoothSend(String.format("$STATE=%d#", mode));
+                    MainActivity.getInstance().BluetoothSend("$STATE=?#");
+                }
+                catch (Exception e) {
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+
+        });
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (MainActivity.getInstance().isBluetoothConnected()) {
                     MainActivity.getInstance().BluetoothSend(terminal_command.getText().toString());
+                    MainActivity.hideKeyboard();
                 }
             }
         });

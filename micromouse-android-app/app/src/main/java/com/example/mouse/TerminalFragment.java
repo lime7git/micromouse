@@ -138,6 +138,9 @@ public class TerminalFragment extends Fragment {
                         case "Test 3" :
                             mode = 7;
                             break;
+                        default:
+                            mode = 2;
+                            break;
                     }
 
 
@@ -145,7 +148,7 @@ public class TerminalFragment extends Fragment {
                     MainActivity.getInstance().BluetoothSend("$STATE=?#");
                 }
                 catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
             @Override
@@ -160,7 +163,7 @@ public class TerminalFragment extends Fragment {
             public void onClick(View view) {
                 if (MainActivity.getInstance().isBluetoothConnected()) {
                     MainActivity.getInstance().BluetoothSend(terminal_command.getText().toString());
-                    MainActivity.hideKeyboard();
+                    MainActivity.getInstance().hideKeyboard();
                 }
             }
         });

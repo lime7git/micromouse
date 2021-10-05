@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public static void hideKeyboard() {
+    protected void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) instance.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         View view = instance.getCurrentFocus();

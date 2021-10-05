@@ -27,18 +27,26 @@ void UART1_COMMAND_PARSERHandler(tCircular_buffer *hBuffer)
 		uint8_t tmp_buf;
 		uint8_t single_command[32] = {NULL};
 		uint8_t tmp_cnt = 0;
+		eCircular_buffer_status result;
 		
 		do
 		{
-			tCircular_buffer_pop(&UART_Buffer, &tmp_buf);
+			result = tCircular_buffer_pop(&UART_Buffer, &tmp_buf);
 			
+			if(result == BUFFER_EMPTY) 
+			{
+				UART1_Log("Unknown command!\r\n");
+				break;
+			}
 		}	while(tmp_buf != '$');
 		
 		tmp_cnt = 0;
 		
 		do
 		{
-			tCircular_buffer_pop(&UART_Buffer, &tmp_buf);
+			result = tCircular_buffer_pop(&UART_Buffer, &tmp_buf);
+			
+			if(result == BUFFER_EMPTY) break;
 			
 			if(tmp_buf != '#') single_command[tmp_cnt] = tmp_buf;
 			tmp_cnt++;

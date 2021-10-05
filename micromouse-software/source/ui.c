@@ -218,8 +218,8 @@ void STATE_Handle(void)
 				delay_ms(1000);
 				for(uint8_t i = 0; i < 100; i++)
 				{
-					MOTOR_SET_SPEED(&MOTOR_LEFT, i);
-					MOTOR_SET_SPEED(&MOTOR_RIGHT, i);
+					MOTOR_SET_SPEED(&MOTOR_LEFT, -i);
+					MOTOR_SET_SPEED(&MOTOR_RIGHT, -i);
 					delay_ms(50);
 				}
 				

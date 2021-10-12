@@ -15,7 +15,7 @@
 #define PARAM_BUFFER_ROWS 4
 #define PARAM_BUFFER_COLS 32
 
-#define STATE_HELP  "\r\nINIT = 0\r\nCRITICAL = 1\r\nSTOP = 2\r\nIDLE = 3\r\nRUN = 4\r\nTEST1 = 5\r\nTEST2 = 6\r\nTEST3 = 7\r\n"
+#define STATE_HELP  "\r\nINIT = 0\r\nCRITICAL = 1\r\nSTOP = 2\r\nIDLE = 3\r\nRUN = 4\r\nTEST = 5\r\nPID = 6\r\nMANUAL = 7\r\n\r\n"
 
 typedef enum{
 	UNKNOWN,

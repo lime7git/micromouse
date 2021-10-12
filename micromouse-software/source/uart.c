@@ -85,12 +85,8 @@ void COMMAND_Execute(char *command)
 			float left_motor_speed = (float)atof(param_buffer[0]);
 			float right_motor_speed = (float)atof(param_buffer[1]);
 			
-			if((left_motor_speed >= -99.9f) && (left_motor_speed <= 99.9f))
-				MOTOR_SET_SPEED(&MOTOR_LEFT, left_motor_speed);
-			
-			if((right_motor_speed >= -99.9f) && (right_motor_speed <= 99.9f))
-				MOTOR_SET_SPEED(&MOTOR_RIGHT, right_motor_speed);
-
+			MOTOR_LEFT.set_rpm = left_motor_speed;
+			MOTOR_RIGHT.set_rpm = right_motor_speed;
 			
 			break;
 		}
@@ -107,7 +103,7 @@ void COMMAND_Execute(char *command)
 			if(param_buffer[0][0] == '?')
 			{
 				char buf[32];
-				sprintf(buf, "Mouse state = %i \r\n", mouse_state);
+				sprintf(buf, "Actual mouse state = %i \r\n", mouse_state);
 				UART1_Log(buf);
 				UART1_Log(STATE_HELP);
 			}

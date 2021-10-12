@@ -11,9 +11,9 @@ typedef enum {
 							STOP = 2, 
 							IDLE = 3, 
 							RUN = 4,
-							TEST1 = 5, 
-							TEST2 = 6, 
-							TEST3 = 7
+							TEST = 5, 
+							PID = 6, 
+							MANUAL = 7
 }eMouseState;
 
 extern volatile eMouseState mouse_state;

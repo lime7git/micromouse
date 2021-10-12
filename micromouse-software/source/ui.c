@@ -81,6 +81,9 @@ void STATE_Handle(void)
 			}
 			case STOP:
 			{
+				MOTOR_PID_DISABLE(&MOTOR_LEFT);
+				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
+				
 				MOT_STOP
 				MOT_STOP
 				MOT_STOP
@@ -159,7 +162,7 @@ void STATE_Handle(void)
 			
 			break;
 			}
-			case TEST1:
+			case TEST:
 			{
 				for(uint8_t i = 0; i < 8; i++)
 				{
@@ -231,18 +234,17 @@ void STATE_Handle(void)
 			
 			break;
 			}
-			case TEST2:
+			case PID:
+			{
+				MOTOR_PID_ENABLE(&MOTOR_LEFT);
+				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
+				
+			break;
+			}
+			case MANUAL:
 			{
 				MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
 				MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
-			
-			break;
-			}
-			case TEST3:
-			{
-				static char buf[64];
-				sprintf(buf, "encL = %i \t encR = %i \r\n", ENCODER_GET_VALUE(&MOTOR_LEFT), ENCODER_GET_VALUE(&MOTOR_RIGHT));
-				UART1_Log(buf);
 				
 			break;
 			}

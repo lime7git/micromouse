@@ -7,6 +7,7 @@ sMOT MOTOR_RIGHT;
 void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd)
 {
 	pMOTOR->motorSide = motor_side;
+	pMOTOR->pidEnable = false;
 	pMOTOR->kp = kp;
 	pMOTOR->ki = ki;
 	pMOTOR->kd = kd;
@@ -44,4 +45,16 @@ void MOTOR_PID_CONTROLLER(sMOT *pMOTOR)
 		pMOTOR->out = -100.0f;
 	
 	MOTOR_SET_SPEED(pMOTOR, pMOTOR->out);
+}
+void MOTOR_PID_ENABLE(sMOT *pMOTOR)
+{
+	pMOTOR->pidEnable = true;
+}
+void MOTOR_PID_DISABLE(sMOT *pMOTOR)
+{
+	pMOTOR->pidEnable = false;
+}
+bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR)
+{
+	return pMOTOR->pidEnable;
 }

@@ -38,6 +38,8 @@ typedef struct{
 	int32_t pulse_per_sec;
 	int32_t prev_pulse;
 	
+	bool pidEnable;
+	
 }sMOT; 
 #pragma pack(pop)
 
@@ -46,6 +48,10 @@ extern sMOT MOTOR_RIGHT;
 
 void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd);
 void MOTOR_PID_CONTROLLER(sMOT *pMOTOR);
+void MOTOR_PID_ENABLE(sMOT *pMOTOR);
+void MOTOR_PID_DISABLE(sMOT *pMOTOR);
+bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR);
+
 
 
 

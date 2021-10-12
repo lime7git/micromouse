@@ -129,13 +129,13 @@ public class TerminalFragment extends Fragment {
                         case "Run" :
                             mode = 4;
                             break;
-                        case "Test 1" :
+                        case "Test" :
                             mode = 5;
                             break;
-                        case "Test 2" :
+                        case "PID" :
                             mode = 6;
                             break;
-                        case "Test 3" :
+                        case "Manual" :
                             mode = 7;
                             break;
                         default:

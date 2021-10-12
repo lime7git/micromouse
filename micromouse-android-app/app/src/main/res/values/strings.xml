@@ -10,9 +10,9 @@
         <item>Stop</item>
         <item>Idle</item>
         <item>Run</item>
-        <item>Test 1</item>
-        <item>Test 2</item>
-        <item>Test 3</item>
+        <item>Test</item>
+        <item>PID</item>
+        <item>Manual</item>
     </string-array>
 
 </resources>

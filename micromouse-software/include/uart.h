@@ -11,6 +11,7 @@
 #include "motors.h"
 #include "stdlib.h"
 #include "adc.h"
+#include "controller.h"
 
 #define PARAM_BUFFER_ROWS 4
 #define PARAM_BUFFER_COLS 32
@@ -24,7 +25,9 @@ typedef enum{
 	BUZZER,
 	STATE,
 	BATTERY,
-	READY
+	READY,
+	MOVE,
+	ROTATE
 } eCOMMANDS;
 
 extern tCircular_buffer UART_Buffer;

@@ -14,7 +14,7 @@ void BUZZER_Init(void)
 	GPIOB->AFR[0] |= 0x00000020;
 	
 	// ~4khz frequency
-	TIM3->PSC = 16-1;
+	TIM3->PSC = (SystemCoreClock / 1000000) - 1;	// 1 MHz
 	TIM3->ARR = 256-1;
 	
 	//set tim as pwm, enable channel and timer

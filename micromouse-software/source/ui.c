@@ -1,16 +1,15 @@
+#include "ui.h"
+
 #include "uart.h"
 #include "gpio.h"
 #include "clock.h"
 #include "adc.h"
 #include "buzzer.h"
-#include "ui.h"
 #include "motors.h"
 #include "circular_buffer.h"
 #include "pid.h"
 #include "controller.h"
 #include "encoders.h"
-
-volatile eMouseState mouse_state;
 
 extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
@@ -20,7 +19,7 @@ void STATE_Selection(void)
 {
 	volatile static uint8_t mode = 1;
 	
-	mode = mouse_state;
+	mode = MOUSE.state;
 	
 	LED_Switch(ALL,OFF);
 	
@@ -55,12 +54,12 @@ void STATE_Selection(void)
 	}
 	
 	LED_Switch(ALL,OFF);
-	mouse_state = mode;
+	MOUSE.state = mode;
 }
 
 void STATE_Handle(void)
 {	
-		switch (mouse_state)
+		switch (MOUSE.state)
 		{
 			case INIT:
 			{
@@ -83,6 +82,7 @@ void STATE_Handle(void)
 			{
 				MOTOR_PID_DISABLE(&MOTOR_LEFT);
 				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
+				MOVE_CONTROLLER_DISABLE(&MOUSE);
 				
 				MOT_STOP
 				MOT_STOP
@@ -230,7 +230,7 @@ void STATE_Handle(void)
 				MOT_STOP
 				delay_ms(1000);
 				
-				mouse_state = IDLE;
+				MOUSE.state = IDLE;
 			
 			break;
 			}
@@ -238,6 +238,7 @@ void STATE_Handle(void)
 			{
 				MOTOR_PID_ENABLE(&MOTOR_LEFT);
 				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
+				MOVE_CONTROLLER_ENABLE(&MOUSE);
 				
 			break;
 			}
@@ -245,6 +246,10 @@ void STATE_Handle(void)
 			{
 				MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
 				MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
+				
+				MOTOR_PID_DISABLE(&MOTOR_LEFT);
+				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
+				MOVE_CONTROLLER_DISABLE(&MOUSE);
 				
 			break;
 			}

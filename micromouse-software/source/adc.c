@@ -4,6 +4,7 @@
 #include "buzzer.h"
 #include "ui.h"
 #include "motors.h"
+#include "controller.h"
 
 void ADC1_DMA_Init(void)
 {
@@ -43,9 +44,9 @@ void ADC_IRQHandler(void)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
 	
-			mouse_state = CRITICAL;
-			mouse_state = CRITICAL;
-			mouse_state = CRITICAL;
+			MOUSE.state = CRITICAL;
+			MOUSE.state = CRITICAL;
+			MOUSE.state = CRITICAL;
 		}
 }
 
@@ -69,9 +70,9 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			if((ADC_GET_BATTERY_VOLTAGE() > CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE)) &&
 				(ADC_GET_BATTERY_VOLTAGE() < CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_HIGHER_THRESHOLD_VOLTAGE)))
 			{
-				mouse_state = STOP;
-				mouse_state = STOP;
-				mouse_state = STOP;
+				MOUSE.state = STOP;
+				MOUSE.state = STOP;
+				MOUSE.state = STOP;
 			}
 }
 

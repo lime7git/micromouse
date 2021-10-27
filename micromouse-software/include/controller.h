@@ -4,8 +4,18 @@
 #include "stm32f405xx.h"
 #include "stm32f4xx.h"
 #include "stdio.h"
+#include "math.h"
+#include "ui.h"
 
+#define RAD_TO_DEG 57.295779513f
+#define TIME_STAMP 0.01f
+
+#pragma pack(push)
+#pragma pack(1) 
 typedef struct{
+	
+	eMouseState state;
+	bool controllerEnable;
 	
 	float Front;
 	float Dir;
@@ -21,9 +31,17 @@ typedef struct{
 	
 	float distance_to_travel;
 	float ang_to_achieve;
-
+	
 } sMOUSE;
+#pragma pack(pop)
 
 extern sMOUSE MOUSE;
+
+void MOVE_CONTROLLER(sMOUSE *mouse);
+void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse);
+void MOVE_CONTROLLER_DISABLE(sMOUSE *mouse);
+bool MOVE_CONTROLLER_IS_ENABLE(sMOUSE *mouse);
+void MOVE_SET_POSITION(sMOUSE *mouse, float new_posX, float new_posY);
+void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_ang);
 
 #endif

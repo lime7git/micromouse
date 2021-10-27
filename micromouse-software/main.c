@@ -25,14 +25,15 @@ int main(void)
 	UART1_IT_Init();
 	TIM7_10MS_INTERRUPT_Init();
 	
-	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 1.0f, 0.01f);
-	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.0f, 1.0f, 0.01f);
+	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.2f, 0.5f, 0.001f);
+	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.2f, 0.5f, 0.001f);
 	
 	while(1)
 	{
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
+		
 		
 		if(BUTTON_SEL.wasPressed && LONG_PRESS(BUTTON_SEL.time))
 			{

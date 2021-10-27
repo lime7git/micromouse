@@ -1,5 +1,6 @@
 #include "encoders.h"
 
+
 void ENCODERS_Init(void)
 {
 	// enable clock for port A, B and enable TIM2 and TIM5

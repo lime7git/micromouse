@@ -15,7 +15,7 @@ void UART1_IT_Init(void)
 	GPIOA->AFR[1] |= 0x00000770;
 	
 	// USART1 setup
-	USART1->BRR = (16000000 / 115200);	// baud rate 115200
+	USART1->BRR = (SystemCoreClock / 115200);	// baud rate 115200
 	USART1->CR1 |=  USART_CR1_TE | USART_CR1_RE | USART_CR1_UE | USART_CR1_RXNEIE | USART_CR1_PCE | USART_CR1_M; // USART enable transmitter | reciever | USART enable | recieve interrupt | parity check enable | 9 bits frame
 	NVIC_EnableIRQ(USART1_IRQn);
 }
@@ -103,13 +103,13 @@ void COMMAND_Execute(char *command)
 			if(param_buffer[0][0] == '?')
 			{
 				char buf[32];
-				sprintf(buf, "Actual mouse state = %i \r\n", mouse_state);
+				sprintf(buf, "Actual mouse state = %i \r\n", MOUSE.state);
 				UART1_Log(buf);
 				UART1_Log(STATE_HELP);
 			}
 			else if((atoi(param_buffer[0]) >= 0) && ((atoi(param_buffer[0]) <= 15)))
 			{
-				mouse_state = (eMouseState)(atoi(param_buffer[0]));
+				MOUSE.state = (eMouseState)(atoi(param_buffer[0]));
 			}
 			else
 			{
@@ -145,6 +145,29 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
+		case MOVE:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			float posX = (float)atof(param_buffer[0]);
+			float posY = (float)atof(param_buffer[1]);
+			
+			MOVE_SET_POSITION(&MOUSE, posX, posY);
+			
+			break;
+		}
+		case ROTATE:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			float ang = (float)atof(param_buffer[0]);
+			
+			MOVE_SET_ORIENTATION(&MOUSE, ang);
+			
+			break;
+		}
 	}
 }
 eCOMMANDS COMMAND_GET_TYPE(char *command)
@@ -166,6 +189,8 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "STATE", counter) == 0) type = STATE;
 	else if(strncmp(command_type, "BATTERY", counter) == 0) type = BATTERY;
 	else if(strncmp(command_type, "READY", counter) == 0) type = READY;
+	else if(strncmp(command_type, "MOVE", counter) == 0) type = MOVE;
+	else if(strncmp(command_type, "ROTATE", counter) == 0) type = ROTATE;
 	
 	return type;
 }

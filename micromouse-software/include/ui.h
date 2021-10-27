@@ -16,8 +16,6 @@ typedef enum {
 							MANUAL = 7
 }eMouseState;
 
-extern volatile eMouseState mouse_state;
-
 void STATE_Selection(void);
 void STATE_Handle(void);
 void LED_Write(uint8_t number);

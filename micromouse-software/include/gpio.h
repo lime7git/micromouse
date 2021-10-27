@@ -36,7 +36,7 @@ typedef struct {
 extern volatile BUTTONS BUTTON_OK;
 extern volatile BUTTONS BUTTON_SEL;
 
-#define CNT_2_MILISECONDS(value) (uint16_t)(value * 4.09)
+#define CNT_2_MILISECONDS(value) (uint16_t)(value * 0.39f)
 
 #define SHORT_PRESS(value) (value > 25 && value < 250)
 #define NORMAL_PRESS(value) (value > 250 && value < 1500)

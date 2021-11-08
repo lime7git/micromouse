@@ -10,6 +10,7 @@
 #include "pid.h"
 #include "controller.h"
 #include "timer.h"
+#include "profiler.h"
 
 int main(void)
 {
@@ -23,10 +24,13 @@ int main(void)
 	ENCODERS_Init();
 	BUTTON_EXTI_Init();
 	UART1_IT_Init();
-	TIM7_10MS_INTERRUPT_Init();
+	TIM7_1KHz_INTERRUPT_Init();
 	
-	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.2f, 0.5f, 0.001f);
-	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.2f, 0.5f, 0.001f);
+	MOVE_CONTROLLER_DISABLE(&MOUSE);
+	PROFILER_DISABLE(&MOUSE);
+	
+	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 12.0f, 5.0f, 0.01f);
+	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 12.0f, 5.0f, 0.01f);
 	
 	while(1)
 	{

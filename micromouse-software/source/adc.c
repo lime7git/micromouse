@@ -44,9 +44,9 @@ void ADC_IRQHandler(void)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
 	
-			MOUSE.state = CRITICAL;
-			MOUSE.state = CRITICAL;
-			MOUSE.state = CRITICAL;
+//			MOUSE.state = CRITICAL;
+//			MOUSE.state = CRITICAL;
+//			MOUSE.state = CRITICAL;
 		}
 }
 
@@ -67,13 +67,9 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			LED_Switch(LED4, OFF);
 			BUZZER_Volume(0);
 	
-			if((ADC_GET_BATTERY_VOLTAGE() > CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE)) &&
-				(ADC_GET_BATTERY_VOLTAGE() < CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_HIGHER_THRESHOLD_VOLTAGE)))
-			{
-				MOUSE.state = STOP;
-				MOUSE.state = STOP;
-				MOUSE.state = STOP;
-			}
+			MOUSE.state = STOP;
+			MOUSE.state = STOP;
+			MOUSE.state = STOP;
 }
 
 double ADC_GET_BATTERY_VOLTAGE(void) 			{	return CONV_2_BATTERY_VOLTAGE(ADC1_readings[0]);	}

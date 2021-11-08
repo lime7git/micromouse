@@ -48,7 +48,7 @@ void BUTTON_EXTI_Init(void)
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn);
 	
-	TIM6->PSC = 65535;
+	TIM6->PSC = 56000;
 	TIM6->ARR = 65535;
 	TIM6->CR1 = TIM_CR1_CEN;
 }

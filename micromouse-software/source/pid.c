@@ -32,10 +32,10 @@ void MOTOR_PID_CONTROLLER(sMOT *pMOTOR)
   pMOTOR->e = pMOTOR->set_rpm - pMOTOR->act_rpm;
 	pMOTOR->e_total += pMOTOR->e;
 	
-	if(pMOTOR->e_total > 2000.0f)		
-		pMOTOR->e_total = 2000.0f;
-	else if(pMOTOR->e_total < -2000.0f)	
-		pMOTOR->e_total = -2000.0f;
+	if(pMOTOR->e_total > 50000.0f)		
+		pMOTOR->e_total = 50000.0f;
+	else if(pMOTOR->e_total < -50000.0f)	
+		pMOTOR->e_total = -50000.0f;
 	
 	pMOTOR->out = pMOTOR->kp * pMOTOR->e + pMOTOR->ki * pMOTOR->e_total * TIME_STAMP + pMOTOR->kd * (pMOTOR->e - pMOTOR->e_prev) / TIME_STAMP;
 

@@ -168,6 +168,20 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
+			case POSITION:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == '?')
+			{
+			char buf[128];
+			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, MOTOR_LEFT.enc, MOTOR_RIGHT.enc);	
+			UART1_Log(buf);
+			}
+			
+			break;
+		}
 	}
 }
 eCOMMANDS COMMAND_GET_TYPE(char *command)
@@ -191,6 +205,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "READY", counter) == 0) type = READY;
 	else if(strncmp(command_type, "MOVE", counter) == 0) type = MOVE;
 	else if(strncmp(command_type, "ROTATE", counter) == 0) type = ROTATE;
+	else if(strncmp(command_type, "POSITION", counter) == 0) type = POSITION;
 	
 	return type;
 }

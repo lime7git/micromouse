@@ -10,6 +10,7 @@
 #include "pid.h"
 #include "controller.h"
 #include "encoders.h"
+#include "profiler.h"
 
 extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
@@ -74,8 +75,6 @@ void STATE_Handle(void)
 			case CRITICAL:
 			{
 				BATTERY_CRITICAL_PROCEDURE();
-				delay_ms(5000);
-			
 			break;
 			}
 			case STOP:
@@ -238,7 +237,8 @@ void STATE_Handle(void)
 			{
 				MOTOR_PID_ENABLE(&MOTOR_LEFT);
 				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
-				MOVE_CONTROLLER_ENABLE(&MOUSE);
+			  MOVE_CONTROLLER_ENABLE(&MOUSE);
+			 // PROFILER_ENABLE(&MOUSE);
 				
 			break;
 			}

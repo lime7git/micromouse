@@ -96,5 +96,5 @@ void MOTOR_CALCULATE_SPEED(sMOT *pMOTOR)
 	pMOTOR->pulse_per_sec = ENCODER_GET_VALUE(pMOTOR) - pMOTOR->prev_pulse;
 	pMOTOR->prev_pulse = ENCODER_GET_VALUE(pMOTOR);
 	
-	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec * 100.0f * 60.0f / ENC_IMP_PER_ROTATE;
+	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec * 1000.0f * 60.0f / ENC_IMP_PER_ROTATE;
 }

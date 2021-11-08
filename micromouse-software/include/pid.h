@@ -6,7 +6,7 @@
 #include "stdio.h"
 #include "stdbool.h"
 
-#define TIME_STAMP 0.01f
+#define TIME_STAMP 0.001f
 
 typedef enum{
 	LEFT_MOTOR = 0,

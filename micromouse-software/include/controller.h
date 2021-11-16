@@ -8,7 +8,7 @@
 #include "ui.h"
 
 #define RAD_TO_DEG 57.295779513f
-#define TIME_STAMP 0.001f
+#define TIME_STAMP 0.01f
 
 #pragma pack(push)
 #pragma pack(1) 
@@ -17,14 +17,18 @@ typedef struct{
 	eMouseState state;
 	bool controllerEnable;
 	bool profillerEnable;
+	double batteryVoltage;
 	
 	float Front;
 	float Dir;
+	float velocity;
+	
 	
 	float pos_x;
 	float pos_y;
 	float ang;
 	float distance;
+	float prev_distance;
 
 	float new_pos_x;
 	float new_pos_y;

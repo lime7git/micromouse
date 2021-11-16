@@ -2,12 +2,23 @@
 #include "gpio.h"
 #include "encoders.h"
 #include "profiler.h"
+#include "controller.h"
 
 void TIM7_1KHz_INTERRUPT_Init(void)
 {
+	/*
+		TIM7 - APB1 RUNNING ON 84 MHz
+	
+		tim uptade frequency = TIM_CLK / (TIM_PSC + 1) / (TIM_ARR + 1)
+		
+		100Hz	= 84 000 000 / 20 / 42 000
+	
+		100Hz = 10 ms
+	
+	*/
 		RCC->APB1ENR |= RCC_APB1ENR_TIM7EN;
-		TIM7->PSC = 168 - 1;
-		TIM7->ARR = 500 - 1;
+		TIM7->PSC = 20 - 1;
+		TIM7->ARR = 42000 - 1;
 		TIM7->DIER |= TIM_DIER_UIE;
 		TIM7->CR1 |= TIM_CR1_CEN;
 	

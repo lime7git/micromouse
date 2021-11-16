@@ -12,8 +12,10 @@ typedef enum {
 							IDLE = 3, 
 							RUN = 4,
 							TEST = 5, 
-							PID = 6, 
-							MANUAL = 7
+							PID_STATE = 6, 
+							MANUAL_STATE = 7,
+							PROFILER_STATE = 8,
+							MOVE_CONTROLLER_STATE = 9
 }eMouseState;
 
 void STATE_Selection(void);

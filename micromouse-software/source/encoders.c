@@ -87,6 +87,7 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	}
 
 	pMOUSE->distance = (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
+	pMOUSE->velocity = pMOUSE->distance / 10.0f;
 	
 	pMOUSE->pos_x += pMOUSE->distance * sinf(pMOUSE->ang * DEG_TO_RAD);
 	pMOUSE->pos_y += pMOUSE->distance * cosf(pMOUSE->ang * DEG_TO_RAD);
@@ -96,5 +97,5 @@ void MOTOR_CALCULATE_SPEED(sMOT *pMOTOR)
 	pMOTOR->pulse_per_sec = ENCODER_GET_VALUE(pMOTOR) - pMOTOR->prev_pulse;
 	pMOTOR->prev_pulse = ENCODER_GET_VALUE(pMOTOR);
 	
-	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec * 1000.0f * 60.0f / ENC_IMP_PER_ROTATE;
+	pMOTOR->act_rpm = (float)pMOTOR->pulse_per_sec / TIME_STAMP * 60.0f / ENC_IMP_PER_ROTATE;
 }

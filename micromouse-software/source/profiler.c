@@ -20,7 +20,7 @@ int PROFILER(void)
         } 
     } 
     
-    if(is_achieve_target()) 
+    if(is_achieve_target() && state != FINISH) 
     { 
         state = FINISH; 
         max_velocity = next_velocity; 
@@ -41,7 +41,7 @@ int PROFILER(void)
             act_velocity = max_velocity; 
     } 
     
-    return zad_S += (int)act_velocity; 
+    return zad_S = (int)act_velocity; 
 	
 }
 void PROFILER_ENABLE(sMOUSE *mouse)

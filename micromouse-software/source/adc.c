@@ -44,9 +44,9 @@ void ADC_IRQHandler(void)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
 	
-//			MOUSE.state = CRITICAL;
-//			MOUSE.state = CRITICAL;
-//			MOUSE.state = CRITICAL;
+			MOUSE.state = CRITICAL;
+			MOUSE.state = CRITICAL;
+			MOUSE.state = CRITICAL;
 		}
 }
 

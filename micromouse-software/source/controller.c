@@ -2,13 +2,10 @@
 
 sMOUSE MOUSE;
 
-	static float prev_distance_to_travel, out;
-	static float prev_ang_to_achieve, out_ang;
-
 void MOVE_CONTROLLER(sMOUSE *mouse)
 {
-	//static float prev_distance_to_travel, out;
-	//static float prev_ang_to_achieve, out_ang;
+	static float prev_distance_to_travel, out;
+	static float prev_ang_to_achieve, out_ang;
 	 
 	prev_distance_to_travel = mouse->distance_to_travel;
 	prev_ang_to_achieve = mouse->ang_to_achieve;

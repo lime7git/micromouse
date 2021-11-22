@@ -1,5 +1,5 @@
 #STM Studio project file - do not edit
-#Tue Nov 16 19:03:08 CET 2021
+#Mon Nov 22 13:05:25 CET 2021
 Main.Version=1
 Root.Child0.IsActive=true
 Root.Child0.Name=debug-stmstudio

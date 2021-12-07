@@ -58,3 +58,4 @@ bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR)
 {
 	return pMOTOR->pidEnable;
 }
+

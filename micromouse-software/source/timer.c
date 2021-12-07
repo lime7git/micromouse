@@ -42,13 +42,14 @@ void TIM7_IRQHandler(void)
 			MOTOR_RIGHT.set_rpm = MOUSE.Front - MOUSE.Dir;
 		}
 		
-		if(PROFILER_IS_ENABLE(&MOUSE))
+		if(PROFILER_TRANS_IS_ENABLE(&MOUSE))
 		{
-			int speed = PROFILER();
+			float speed = PROFILER_TRANS();
 			
-			MOTOR_LEFT.set_rpm 	= (float)speed;
-			MOTOR_RIGHT.set_rpm = (float)speed;
+			MOTOR_LEFT.set_rpm 	= speed;
+			MOTOR_RIGHT.set_rpm = speed;
 			
+			PROFILER_REGULATOR();
 		}
 		
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_LEFT)) MOTOR_PID_CONTROLLER(&MOTOR_LEFT);

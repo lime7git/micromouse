@@ -43,10 +43,10 @@ void ADC_IRQHandler(void)
 		if((ADC1->SR & ADC_SR_AWD) != RESET)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
-	
-			MOUSE.state = CRITICAL;
-			MOUSE.state = CRITICAL;
-			MOUSE.state = CRITICAL;
+			
+//			MOUSE.state = CRITICAL;
+//			MOUSE.state = CRITICAL;
+//			MOUSE.state = CRITICAL;
 		}
 }
 

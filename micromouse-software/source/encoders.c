@@ -87,6 +87,7 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	}
 
 	pMOUSE->distance = (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
+	pMOUSE->trans += (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
 	pMOUSE->velocity = pMOUSE->distance / 10.0f;
 	
 	pMOUSE->pos_x += pMOUSE->distance * sinf(pMOUSE->ang * DEG_TO_RAD);

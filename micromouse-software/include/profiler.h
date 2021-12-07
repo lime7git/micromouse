@@ -7,24 +7,78 @@
 #include "controller.h"
 
 typedef enum {
-	FINISH = 0,
-	DECELERATION = 1,
-	RUNNING = 2
-}eProfilerState;
+	
+	PROFILER_FINISH = 0,
+	PROFILER_DECELERATION = 1,
+	PROFILER_RUN = 2
+	
+}	eProfilerState;
 
-int PROFILER(void);
-void PROFILER_ENABLE(sMOUSE *mouse);
-void PROFILER_DISABLE(sMOUSE *mouse);
-bool PROFILER_IS_ENABLE(sMOUSE *mouse);
-bool is_required_decelaration(void);
-bool is_achieve_target(void);
+typedef struct{
+	
+	float distance_to_travel;	/* target point for profiler to achieve */
+	float remaining_distance;	/* calculated distance left to travel */
+	float	max_velocity;				/* maximum velocity that can be reached in this run */
+	float next_velocity;			/* maximum velocity in next run after finish actual run */
+	float current_velocity;		/* current velocity */
+	float acceleration;				/* acceleration - adding or subtracting from current velocity every time step */
 
-extern int target_S;
-extern int zad_S;
-extern eProfilerState state; 
-extern float max_velocity;        // docelowa_V - docelowa predkosc, do której stopniowo dazy profiler 
-extern float next_velocity;                // predkosc w nastepnym ruchu (po przejechaniu zadanej odleglosci) 
-extern float act_velocity;            // aktualnie zadana predkosc 
-extern float acceleration;
+	eProfilerState state;			/* current profiler state, possible states :
+																PROFILER_FINISH = 0,
+																PROFILER_DECELERATION = 1,
+																PROFILER_RUN = 2	*/
+	
+}	sProfiler;
+
+typedef struct{
+	
+	sProfiler *translation;
+	sProfiler *rotation;
+	
+	float current_translation_e;
+	float previous_translation_e;	
+	float current_rotation_e;
+	float previous_rotation_e;
+	
+	float out_left;		/* output from PD controller to left motor */
+	float out_right;	/* output from PD controller to right motor */
+	
+}	sPDController; 
+
+/**
+* @name : PROFILER_TRANSLATION_CONTROLLER 
+* ----------------------------- *
+* @description : none
+* @params : pointer to a translation profiler structure
+* @return : none
+*/
+void PROFILER_TRANSLATION_CONTROLLER(sProfiler *profiler);
+
+/**
+* @name : PROFILER_ROTATION_CONTROLLER 
+* ----------------------------- *
+* @description : none
+* @params : pointer to a rotation profiler structure
+* @return : none
+*/
+void PROFILER_ROTATION_CONTROLLER(sProfiler *profiler);
+
+/**
+* @name : PROFILER_PD_CONTROLLER 
+* ----------------------------- *
+* @description : none
+* @params : pointer to ### and mouse structure
+* @return : none
+*/
+void PROFILER_PD_CONTROLLER(sPDController *controller, sMOUSE *mouse);
+
+
+void PROFILER_TRANSLATION_SET_ENABLE(sMOUSE *mouse);
+void PROFILER_TRANSLATION_SET_DISABLE(sMOUSE *mouse);
+bool PROFILER_TRANSLATION_IS_ENABLE(sMOUSE *mouse);
+
+void PROFILER_ROTATION_SET_ENABLE(sMOUSE *mouse);
+void PROFILER_ROTATION_SET_DISABLE(sMOUSE *mouse);
+bool PROFILER_ROTATION_IS_ENABLE(sMOUSE *mouse);
 
 #endif

@@ -27,7 +27,7 @@ int main(void)
 	TIM7_1KHz_INTERRUPT_Init();
 	
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
-	PROFILER_DISABLE(&MOUSE);
+	PROFILER_TRANS_DISABLE(&MOUSE);
 	
 	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 0.7f, 0.001f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.1f, 0.65f, 0.001f);
@@ -50,5 +50,19 @@ int main(void)
 				
 				BUTTON_SEL.wasPressed = false;
 			}
+			
+		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
+			{
+				stateT = RUNNING;
+				accelerationT = 0.01f;
+				max_velocityT = 7.5f;
+				target_ST = 1000.0f;
+				
+				delay_ms(5000);
+				
+				MOUSE.state = PROFILER_STATE;
+				
+				BUTTON_OK.wasPressed = false;
+			}	
 	}
 }

@@ -6,17 +6,19 @@
 #include "stdbool.h"
 
 typedef enum {
-							INIT = 0, 
-							CRITICAL = 1, 
-							STOP = 2, 
-							IDLE = 3, 
-							RUN = 4,
-							TEST = 5, 
-							PID_STATE = 6, 
-							MANUAL_STATE = 7,
-							PROFILER_STATE = 8,
-							MOVE_CONTROLLER_STATE = 9
-}eMouseState;
+	
+	MOUSE_INIT = 0, 
+	MOUSE_CRITICAL = 1, 
+	MOUSE_STOP = 2, 
+	MOUSE_IDLE = 3, 
+	MOUSE_RUN = 4,
+	MOUSE_TEST = 5, 
+	MOUSE_PID = 6, 
+	MOUSE_MANUAL = 7,
+	MOUSE_PROFILER = 8,
+	MOUSE_MOVE_CONTROLLER = 9
+	
+}	eMouseState;
 
 void STATE_Selection(void);
 void STATE_Handle(void);

@@ -62,7 +62,7 @@ void STATE_Handle(void)
 {	
 		switch (MOUSE.state)
 		{
-			case INIT:
+			case MOUSE_INIT:
 			{
 				LED_Switch(LED2, TOG);
 				LED_Switch(LED3, TOG);
@@ -72,17 +72,17 @@ void STATE_Handle(void)
 			
 			break;
 			}
-			case CRITICAL:
+			case MOUSE_CRITICAL:
 			{
 				BATTERY_CRITICAL_PROCEDURE();
 			break;
 			}
-			case STOP:
+			case MOUSE_STOP:
 			{
 				MOTOR_PID_DISABLE(&MOTOR_LEFT);
 				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 				MOVE_CONTROLLER_DISABLE(&MOUSE);
-				PROFILER_DISABLE(&MOUSE);
+				PROFILER_TRANS_DISABLE(&MOUSE);
 				
 				MOT_STOP
 				MOT_STOP
@@ -95,13 +95,13 @@ void STATE_Handle(void)
 			
 			break;
 			}
-			case IDLE:
+			case MOUSE_IDLE:
 			{
 				
 			
 			break;
 			}
-			case RUN:
+			case MOUSE_RUN:
 			{
 				volatile static int state = 0;
 			
@@ -162,7 +162,7 @@ void STATE_Handle(void)
 			
 			break;
 			}
-			case TEST:
+			case MOUSE_TEST:
 			{
 				for(uint8_t i = 0; i < 8; i++)
 				{
@@ -230,42 +230,44 @@ void STATE_Handle(void)
 				MOT_STOP
 				delay_ms(1000);
 				
-				MOUSE.state = IDLE;
+				MOUSE.state = MOUSE_IDLE;
 			
 			break;
 			}
-			case PID_STATE:
+			case MOUSE_PID:
 			{
 				MOVE_CONTROLLER_DISABLE(&MOUSE);
-				PROFILER_DISABLE(&MOUSE);
+				PROFILER_TRANS_DISABLE(&MOUSE);
 				
 				MOTOR_PID_ENABLE(&MOTOR_LEFT);
 				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
 			break;
 			}
-			case MANUAL_STATE:
+			case MOUSE_MANUAL:
 			{
 				MOTOR_PID_DISABLE(&MOTOR_LEFT);
 				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 				MOVE_CONTROLLER_DISABLE(&MOUSE);
-				PROFILER_DISABLE(&MOUSE);
+				PROFILER_TRANS_DISABLE(&MOUSE);
 				
 				MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
 				MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
 			break;
 			}
-			case PROFILER_STATE:
+			case MOUSE_PROFILER:
 			{
 				MOVE_CONTROLLER_DISABLE(&MOUSE);
+				MOTOR_PID_DISABLE(&MOTOR_LEFT);
+				MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 				
-				MOTOR_PID_ENABLE(&MOTOR_LEFT);
-				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
-				PROFILER_ENABLE(&MOUSE);
+//				MOTOR_PID_ENABLE(&MOTOR_LEFT);
+//				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
+				PROFILER_TRANS_ENABLE(&MOUSE);
 			break;
 			}
-			case MOVE_CONTROLLER_STATE:
+			case MOUSE_MOVE_CONTROLLER:
 			{
-				PROFILER_DISABLE(&MOUSE);
+				PROFILER_TRANS_DISABLE(&MOUSE);
 				
 				MOTOR_PID_ENABLE(&MOTOR_LEFT);
 				MOTOR_PID_ENABLE(&MOTOR_RIGHT);

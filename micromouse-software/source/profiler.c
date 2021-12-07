@@ -1,76 +1,80 @@
 #include "profiler.h"
+#include "motors.h"
 
-eProfilerState state = FINISH;            // stan profilera; mozliwe wartosci: JAZDA, HAMOWANIE, KONIEC 
-float max_velocity = 600.0f;        // docelowa_V - docelowa predkosc, do której stopniowo dazy profiler 
-float next_velocity = 0;                // predkosc w nastepnym ruchu (po przejechaniu zadanej odleglosci) 
-float act_velocity = 0;            // aktualnie zadana predkosc 
-float acceleration = 0.1f;                // zadane przyspieszenie 
-int zad_S = 0;                    // wyliczona droga do przejechania - wykorzystywana jako setpoint regulatora PD 
-int target_S = 0;                // zadana calkowita droga do przejechania 
-
-int PROFILER(void)
+void PROFILER_TRANSLATION_CONTROLLER(sProfiler *profiler)
 {
 	
-	 if(state == RUNNING) 
+		if(profiler->state == PROFILER_RUN) 
     { 
-        if(is_required_decelaration()) 
+				/* check whether braking should already begin */
+        if( (((profiler->current_velocity - profiler->next_velocity) * (profiler->current_velocity + profiler->next_velocity)) / (2.0f * profiler->acceleration)) >= (profiler->distance_to_travel - profiler->remaining_distance) )
         { 
-            state = DECELERATION; 
-            max_velocity = next_velocity; 
+            profiler->state = PROFILER_DECELERATION; 						
+            profiler->max_velocity = profiler->next_velocity; 
         } 
     } 
     
-    if(is_achieve_target() && state != FINISH) 
+		/* check whether mouse have travelled all distance or it is very close to the target */
+    if(profiler->remaining_distance >= profiler->distance_to_travel || (profiler->state == PROFILER_DECELERATION && profiler->current_velocity == 0.0f)) 
     { 
-        state = FINISH; 
-        max_velocity = next_velocity; 
+        profiler->state = PROFILER_FINISH; 
+        profiler->max_velocity = profiler->next_velocity; 
     } 
 		
     
-    if(act_velocity < max_velocity) 
+    if(profiler->current_velocity < profiler->max_velocity) 
     { 
-        act_velocity += acceleration; 
-        if(act_velocity > max_velocity) 
-            act_velocity = max_velocity; 
+        profiler->current_velocity += profiler->acceleration; 
+        if(profiler->current_velocity > profiler->max_velocity) 
+            profiler->current_velocity = profiler->max_velocity; 
     } 
     
-    if(act_velocity > max_velocity) 
+    if(profiler->current_velocity > profiler->max_velocity) 
     { 
-        act_velocity -= acceleration; 
-        if(act_velocity < max_velocity) 
-            act_velocity = max_velocity; 
+        profiler->current_velocity -= profiler->acceleration; 
+        if(profiler->current_velocity < profiler->max_velocity) 
+            profiler->current_velocity = profiler->max_velocity; 
     } 
     
-    return zad_S = (int)act_velocity; 
+		profiler->remaining_distance += profiler->current_velocity;
 	
 }
-void PROFILER_ENABLE(sMOUSE *mouse)
+
+
+void PROFILER_PD_CONTROLLER(sPDController *controller, sMOUSE *mouse)
 {
-	mouse->profillerEnable = true;
-}
-void PROFILER_DISABLE(sMOUSE *mouse)
-{
-	mouse->profillerEnable = false;
-}
-bool PROFILER_IS_ENABLE(sMOUSE *mouse)
-{
-	return mouse->profillerEnable;
-}
-bool is_required_decelaration(void)
-{
-	if(((act_velocity - next_velocity)*(act_velocity + next_velocity)/(2 * acceleration) >= (float)(target_S - zad_S)))
-	{
-		return true;
-	}
-	else return false;
+	
+    controller->current_translation_e = controller->translation->remaining_distance - mouse->trans;               
+		
+		controller->out_left = 1.0f * controller->current_translation_e + 0.05f * (controller->current_translation_e - controller->previous_translation_e);
+		controller->out_right = 1.0f * controller->current_translation_e + 0.05f * (controller->current_translation_e - controller->previous_translation_e);
+	
+		controller->previous_translation_e = controller->current_translation_e;
+ 
+		if(controller->out_left > 100.0f) 	
+			controller->out_left = 100.0f;
+		else if(controller->out_left < -100.0f)	
+			controller->out_left = -100.0f;
+	
+		if(controller->out_right > 100.0f) 	
+			controller->out_right = 100.0f;
+		else if(controller->out_right < -100.0f)	
+			controller->out_right = -100.0f;
+	
+    MOTOR_SET_SPEED(&MOTOR_LEFT, controller->out_left);
+		MOTOR_SET_SPEED(&MOTOR_RIGHT, controller->out_right);
+		
 }
 
-bool is_achieve_target(void)
+void PROFILER_TRANSLATION_SET_ENABLE(sMOUSE *mouse)
 {
-	if(zad_S >= target_S || (state == DECELERATION && act_velocity == 0.0f)) 
-	{
-		return true;
-	}
-	else return false;
+	mouse->profillerTransEnable = true;
 }
-
+void PROFILER_TRANSLATION_SET_DISABLE(sMOUSE *mouse)
+{
+	mouse->profillerTransEnable = false;
+}
+bool PROFILER_TRANSLATION_IS_ENABLE(sMOUSE *mouse)
+{
+	return mouse->profillerTransEnable;
+}

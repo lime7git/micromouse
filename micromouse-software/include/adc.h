@@ -30,5 +30,4 @@ double ADC_GET_VREF_INTERNAL(void);
 
 volatile static uint16_t ADC1_readings[3];
 
-
 #endif

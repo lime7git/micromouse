@@ -16,8 +16,8 @@ typedef struct{
 	
 	eMouseState state;
 	bool controllerEnable;
-	bool profillerTransEnable;
-	bool profillerRotEnable;
+	bool is_profiler_translation_enable;
+	bool is_profiler_rotation_enable;
 	double batteryVoltage;
 	
 	float Front;

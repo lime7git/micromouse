@@ -5,6 +5,7 @@
 #include "stm32f4xx.h"
 #include "stdbool.h"
 #include "controller.h"
+#include "math.h"
 
 typedef enum {
 	
@@ -72,6 +73,14 @@ void PROFILER_ROTATION_CONTROLLER(sProfiler *profiler);
 */
 void PROFILER_PD_CONTROLLER(sPDController *controller, sMOUSE *mouse);
 
+/*
+* ###TO DO### FUNCTION TO INITIATE NEW MOVEMENT
+*/
+
+void PROFILER_PD_CONTROLLER_INIT(sPDController *controller, sProfiler *translation, sProfiler *rotation);
+
+void PROFILER_MOVE(sPDController *profiler, float translation_distance_to_travel, float translation_next_velocity, float translation_max_velocity, float translation_acceleration,
+	float rotation_distance_to_travel, float rotation_next_velocity, float rotation_max_velocity, float rotation_acceleration);
 
 void PROFILER_TRANSLATION_SET_ENABLE(sMOUSE *mouse);
 void PROFILER_TRANSLATION_SET_DISABLE(sMOUSE *mouse);

@@ -67,9 +67,9 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			LED_Switch(LED4, OFF);
 			BUZZER_Volume(0);
 	
-			MOUSE.state = STOP;
-			MOUSE.state = STOP;
-			MOUSE.state = STOP;
+			MOUSE.state = MOUSE_STOP;
+			MOUSE.state = MOUSE_STOP;
+			MOUSE.state = MOUSE_STOP;
 }
 
 double ADC_GET_BATTERY_VOLTAGE(void) 			{	return CONV_2_BATTERY_VOLTAGE(ADC1_readings[0]);	}

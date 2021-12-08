@@ -74,17 +74,19 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	pMOTOR_RIGHT->dist = (float)pMOTOR_RIGHT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
 	pMOTOR_RIGHT->totalDist += pMOTOR_RIGHT->dist;
 	
-	float tempAng = ((pMOTOR_LEFT->totalDist - pMOTOR_RIGHT->totalDist) * ROTATE_CALIB) / DISTANCE_BETWEEN_WHEELS * RAD_TO_DEG;
-	pMOUSE->ang = fmodf(tempAng, 360.0f);
+//	float tempAng = ((pMOTOR_LEFT->totalDist - pMOTOR_RIGHT->totalDist) * ROTATE_CALIB) / DISTANCE_BETWEEN_WHEELS * RAD_TO_DEG;
+//	pMOUSE->ang = fmodf(tempAng, 360.0f);
 	
-	if(pMOUSE->ang < -180.0f)
-	{
-		pMOUSE->ang += 360.0f;
-	}
-	else if(pMOUSE->ang > 180.0f)
-	{
-		pMOUSE->ang -= 360.0f;
-	}
+	pMOUSE->ang += (pMOTOR_LEFT->dist - pMOTOR_RIGHT->dist);
+	
+//	if(pMOUSE->ang < -180.0f)
+//	{
+//		pMOUSE->ang += 360.0f;
+//	}
+//	else if(pMOUSE->ang > 180.0f)
+//	{
+//		pMOUSE->ang -= 360.0f;
+//	}
 
 	pMOUSE->distance = (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
 	pMOUSE->trans += (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;

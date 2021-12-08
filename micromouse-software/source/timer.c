@@ -4,6 +4,10 @@
 #include "profiler.h"
 #include "controller.h"
 
+extern 	sProfiler Translation;
+extern	sProfiler Rotation;
+extern	sPDController Controller;
+
 void TIM7_1KHz_INTERRUPT_Init(void)
 {
 	/*
@@ -42,14 +46,9 @@ void TIM7_IRQHandler(void)
 			MOTOR_RIGHT.set_rpm = MOUSE.Front - MOUSE.Dir;
 		}
 		
-		if(PROFILER_TRANS_IS_ENABLE(&MOUSE))
+		if(PROFILER_TRANSLATION_IS_ENABLE(&MOUSE) && PROFILER_ROTATION_IS_ENABLE(&MOUSE))
 		{
-			float speed = PROFILER_TRANS();
-			
-			MOTOR_LEFT.set_rpm 	= speed;
-			MOTOR_RIGHT.set_rpm = speed;
-			
-			PROFILER_REGULATOR();
+			PROFILER_PD_CONTROLLER(&Controller, &MOUSE);
 		}
 		
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_LEFT)) MOTOR_PID_CONTROLLER(&MOTOR_LEFT);

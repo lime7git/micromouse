@@ -12,6 +12,10 @@
 #include "timer.h"
 #include "profiler.h"
 
+	sProfiler Translation;
+	sProfiler Rotation;
+	sPDController Controller;
+
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -26,8 +30,11 @@ int main(void)
 	UART1_IT_Init();
 	TIM7_1KHz_INTERRUPT_Init();
 	
+	PROFILER_PD_CONTROLLER_INIT(&Controller, &Translation, &Rotation);
+	
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
-	PROFILER_TRANS_DISABLE(&MOUSE);
+	PROFILER_TRANSLATION_SET_DISABLE(&MOUSE);
+	PROFILER_ROTATION_SET_DISABLE(&MOUSE);
 	
 	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 0.7f, 0.001f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.1f, 0.65f, 0.001f);
@@ -53,15 +60,13 @@ int main(void)
 			
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 			{
-				stateT = RUNNING;
-				accelerationT = 0.01f;
-				max_velocityT = 7.5f;
-				target_ST = 1000.0f;
 				
-				delay_ms(5000);
+				MOUSE.state = MOUSE_PROFILER;
 				
-				MOUSE.state = PROFILER_STATE;
+				delay_ms(2500);
 				
+				PROFILER_MOVE(&Controller, 1000.0f, 0.0f, 5.0f, 0.1f, 0.0f, 0.0f, 2.5f, 0.1f);
+	
 				BUTTON_OK.wasPressed = false;
 			}	
 	}

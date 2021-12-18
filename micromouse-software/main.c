@@ -42,6 +42,9 @@ int main(void)
 	MOTOR_PID_DISABLE(&MOTOR_LEFT);
 	MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 	
+	MOUSE.state = MOUSE_INIT;
+	MOUSE.is_data_logger_enable = false;
+	
 	while(1)
 	{
 		
@@ -65,7 +68,7 @@ int main(void)
 				
 				delay_ms(2500);
 				
-				PROFILER_MOVE(&Controller, 1000.0f, 0.0f, 5.0f, 0.1f, 0.0f, 0.0f, 2.5f, 0.1f);
+				PROFILER_MOVE(&Controller, 1500.0f, 0.0f, 10.0f, 0.02f, 0.0f, 0.0f, 2.0f, 0.1f);
 	
 				BUTTON_OK.wasPressed = false;
 			}	

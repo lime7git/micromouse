@@ -20,8 +20,18 @@ typedef enum {
 	
 }	eMouseState;
 
-void STATE_Selection(void);
 void STATE_Handle(void);
-void LED_Write(uint8_t number);
+
+/**
+* @name : LED_DISPLAY_DIGIT_IN_BINARY 
+* ----------------------------- *
+* @description : This functions display a digit value on a 4 LED diodes
+* @params : A unsigned int value in range (0-16)
+* @return : none
+*/
+void LED_DISPLAY_DIGIT_IN_BINARY(uint8_t number);
+
+
+void STATE_Selection(void);
 
 #endif

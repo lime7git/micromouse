@@ -45,7 +45,7 @@ void PROFILER_ROTATION_CONTROLLER(sProfiler *profiler)
 		if(profiler->state == PROFILER_RUN) 
 		{ 
 				/* check whether braking should already begin */
-				if( ((profiler->current_velocity * profiler->current_velocity) / (2.0f * profiler->acceleration)) >= (fabsf(profiler->distance_to_travel) - fabsf(profiler->distance_to_travel)) )
+				if( (((profiler->current_velocity - profiler->next_velocity) * (profiler->current_velocity + profiler->next_velocity)) / (2.0f * profiler->acceleration)) >= (fabsf(profiler->distance_to_travel) - fabsf(profiler->distance_to_travel)) )
 				{ 
 						profiler->state = PROFILER_DECELERATION; 						
 						profiler->max_velocity = profiler->next_velocity; 

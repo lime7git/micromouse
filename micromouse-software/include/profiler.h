@@ -15,6 +15,8 @@ typedef enum {
 	
 }	eProfilerState;
 
+#pragma pack(push)
+#pragma pack(1) 
 typedef struct{
 	
 	float distance_to_travel;	/* target point for profiler to achieve */
@@ -30,7 +32,10 @@ typedef struct{
 																PROFILER_RUN = 2	*/
 	
 }	sProfiler;
+#pragma pack(pop)
 
+#pragma pack(push)
+#pragma pack(1) 
 typedef struct{
 	
 	sProfiler *translation;
@@ -45,6 +50,11 @@ typedef struct{
 	float out_right;	/* output from PD controller to right motor */
 	
 }	sPDController; 
+#pragma pack(pop)
+
+extern sProfiler Translation;
+extern sProfiler Rotation;
+extern sPDController Controller;
 
 /**
 * @name : PROFILER_TRANSLATION_CONTROLLER 
@@ -80,7 +90,7 @@ void PROFILER_PD_CONTROLLER(sPDController *controller, sMOUSE *mouse);
 void PROFILER_PD_CONTROLLER_INIT(sPDController *controller, sProfiler *translation, sProfiler *rotation);
 
 void PROFILER_MOVE(sPDController *profiler, float translation_distance_to_travel, float translation_next_velocity, float translation_max_velocity, float translation_acceleration,
-	float rotation_distance_to_travel, float rotation_next_velocity, float rotation_max_velocity, float rotation_acceleration);
+		float rotation_distance_to_travel, float rotation_next_velocity, float rotation_max_velocity, float rotation_acceleration);
 
 void PROFILER_TRANSLATION_SET_ENABLE(sMOUSE *mouse);
 void PROFILER_TRANSLATION_SET_DISABLE(sMOUSE *mouse);

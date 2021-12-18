@@ -52,7 +52,4 @@ void MOTOR_PID_ENABLE(sMOT *pMOTOR);
 void MOTOR_PID_DISABLE(sMOT *pMOTOR);
 bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR);
 
-
-
-
 #endif

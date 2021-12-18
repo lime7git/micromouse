@@ -16,48 +16,6 @@ extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;
 
-void STATE_Selection(void)
-{
-	volatile static uint8_t mode = 1;
-	
-	mode = MOUSE.state;
-	
-	LED_Switch(ALL,OFF);
-	
-	for(uint8_t i = 0; i < 4; i++) 
-	{
-		LED_Switch(i, ON); 
-		delay_ms(100);
-	}
-	for(uint8_t i = 0; i < 4; i++) 
-	{
-		LED_Switch(i, OFF); 
-		delay_ms(100);
-	}
-	
-	while(1)
-	{
-		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
-		{
-			BUTTON_OK.wasPressed = false;
-			break;
-		}
-		
-		if(BUTTON_SEL.wasPressed && SHORT_PRESS(BUTTON_SEL.time))
-		{
-			if(mode < 15) mode++;
-			else mode = 0;
-			
-			BUTTON_SEL.wasPressed = false;
-		}
-		
-		LED_Write(mode);
-	}
-	
-	LED_Switch(ALL,OFF);
-	MOUSE.state = mode;
-}
-
 void STATE_Handle(void)
 {	
 		switch (MOUSE.state)
@@ -93,6 +51,8 @@ void STATE_Handle(void)
 				LED_Switch(LED3, OFF);
 				LED_Switch(LED4, OFF);
 				BUZZER_Volume(0);
+				
+				MOUSE.is_data_logger_enable = false;
 			
 			break;
 			}
@@ -255,6 +215,8 @@ void STATE_Handle(void)
 				
 				MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
 				MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
+				
+			//	MOUSE.is_data_logger_enable = true;
 			break;
 			}
 			case MOUSE_PROFILER:
@@ -275,13 +237,14 @@ void STATE_Handle(void)
 				MOTOR_PID_ENABLE(&MOTOR_LEFT);
 				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
 				MOVE_CONTROLLER_ENABLE(&MOUSE);
+				MOUSE.is_data_logger_enable = true;
 				
 			break;
 			}
 		}
 }
 
-void LED_Write(uint8_t number)
+void LED_DISPLAY_DIGIT_IN_BINARY(uint8_t number)
 {
 		if(number <= 15)
 		{
@@ -295,4 +258,46 @@ void LED_Write(uint8_t number)
 				n = n/2;
 			}
 		}
+}
+
+void STATE_Selection(void)
+{
+	volatile static uint8_t mode = 1;
+	
+	mode = MOUSE.state;
+	
+	LED_Switch(ALL,OFF);
+	
+	for(uint8_t i = 0; i < 4; i++) 
+	{
+		LED_Switch(i, ON); 
+		delay_ms(100);
+	}
+	for(uint8_t i = 0; i < 4; i++) 
+	{
+		LED_Switch(i, OFF); 
+		delay_ms(100);
+	}
+	
+	while(1)
+	{
+		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
+		{
+			BUTTON_OK.wasPressed = false;
+			break;
+		}
+		
+		if(BUTTON_SEL.wasPressed && SHORT_PRESS(BUTTON_SEL.time))
+		{
+			if(mode < 15) mode++;
+			else mode = 0;
+			
+			BUTTON_SEL.wasPressed = false;
+		}
+		
+		LED_DISPLAY_DIGIT_IN_BINARY(mode);
+	}
+	
+	LED_Switch(ALL,OFF);
+	MOUSE.state = mode;
 }

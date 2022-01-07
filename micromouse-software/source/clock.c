@@ -24,6 +24,7 @@ void CLOCK_Init(void)
 	RCC->CFGR |= RCC_CFGR_SW_PLL;
 		while(!(RCC->CFGR & RCC_CFGR_SWS_PLL)){}
 		
+	SystemCoreClockUpdate();		
 	SysTick_Config(SystemCoreClock / 1000);	
 }
 

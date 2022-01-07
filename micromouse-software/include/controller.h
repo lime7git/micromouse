@@ -18,14 +18,12 @@ typedef struct{
 	bool controllerEnable;
 	bool is_profiler_translation_enable;
 	bool is_profiler_rotation_enable;
-	bool is_data_logger_enable;
 	double batteryVoltage;
 	
 	float Front;
 	float Dir;
 	float velocity;
 	float trans;
-	
 	
 	float pos_x;
 	float pos_y;

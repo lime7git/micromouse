@@ -15,8 +15,7 @@ typedef enum {
 	MOUSE_TEST = 5, 
 	MOUSE_PID = 6, 
 	MOUSE_MANUAL = 7,
-	MOUSE_PROFILER = 8,
-	MOUSE_MOVE_CONTROLLER = 9
+	MOUSE_MOVE_CONTROLLER = 8
 	
 }	eMouseState;
 

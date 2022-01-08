@@ -10,7 +10,6 @@
 #include "pid.h"
 #include "controller.h"
 #include "encoders.h"
-#include "profiler.h"
 
 extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
@@ -243,7 +242,7 @@ void STATE_Selection(void)
 	
 	mode = MOUSE.state;
 	
-	LED_Switch(ALL,OFF);
+	LED_Switch(LED_ALL,OFF);
 	
 	for(uint8_t i = 0; i < 4; i++) 
 	{
@@ -275,6 +274,6 @@ void STATE_Selection(void)
 		LED_DISPLAY_DIGIT_IN_BINARY(mode);
 	}
 	
-	LED_Switch(ALL,OFF);
+	LED_Switch(LED_ALL,OFF);
 	MOUSE.state = mode;
 }

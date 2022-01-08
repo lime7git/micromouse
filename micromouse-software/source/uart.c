@@ -176,7 +176,7 @@ void COMMAND_Execute(char *command)
 			if(param_buffer[0][0] == '?')
 			{
 			char buf[128];
-			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\n", (double)MOUSE.pos_x, (double)MOUSE.pos_y, (double)MOUSE.ang, MOTOR_LEFT.enc, MOTOR_RIGHT.enc);	
+			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\n", (double)MOUSE.actual_position_x, (double)MOUSE.actual_position_y, (double)MOUSE.actual_angle, MOTOR_LEFT.enc, MOTOR_RIGHT.enc);	
 			UART1_Log(buf);
 			}
 			

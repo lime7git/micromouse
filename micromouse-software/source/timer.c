@@ -1,13 +1,9 @@
 #include "timer.h"
 #include "gpio.h"
 #include "encoders.h"
-#include "profiler.h"
 #include "controller.h"
 #include "uart.h"
 
-extern 	sProfiler Translation;
-extern	sProfiler Rotation;
-extern	sPDController Controller;
 
 void TIM7_1KHz_INTERRUPT_Init(void)
 {
@@ -43,13 +39,13 @@ void TIM7_IRQHandler(void)
 		{
 			MOVE_CONTROLLER(&MOUSE);
 			
-			MOTOR_LEFT.set_rpm 	= MOUSE.Front + MOUSE.Dir;
-			MOTOR_RIGHT.set_rpm = MOUSE.Front - MOUSE.Dir;
+			MOTOR_LEFT.set_rpm 	= MOUSE.front + MOUSE.direction;
+			MOTOR_RIGHT.set_rpm = MOUSE.front - MOUSE.direction;
 		}
 		
 		
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_LEFT)) MOTOR_PID_CONTROLLER(&MOTOR_LEFT);
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_RIGHT)) MOTOR_PID_CONTROLLER(&MOTOR_RIGHT);
-		
+			
 	}
 }

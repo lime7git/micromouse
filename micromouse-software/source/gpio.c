@@ -122,7 +122,7 @@ void LED_Switch(eLEDnum num, eLEDstate state)
 			else if(state == ON)		LED4_ON;
 			else if(state == TOG)		LED4_TOG;
 		break;
-		case ALL:
+		case LED_ALL:
 			if(state == OFF)				
 			{
 				LED1_OFF;

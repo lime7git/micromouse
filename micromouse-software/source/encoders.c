@@ -41,7 +41,7 @@ void ENCODERS_Init(void)
 }
 int32_t ENCODER_GET_VALUE(sMOT *pMOTOR)
 {
-	static int32_t value;
+	int32_t value;
 	
 	switch (pMOTOR->motorSide)
 	{
@@ -62,6 +62,9 @@ int32_t ENCODER_GET_VALUE(sMOT *pMOTOR)
 }
 void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_RIGHT)
 {
+	float distance;
+	float actual_angle_temporary;
+	
 	pMOTOR_LEFT->encPrev = pMOTOR_LEFT->enc;
 	pMOTOR_LEFT->enc = ENCODER_GET_VALUE(pMOTOR_LEFT);
 	pMOTOR_LEFT->encDiff = pMOTOR_LEFT->enc - pMOTOR_LEFT->encPrev;
@@ -74,24 +77,22 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	pMOTOR_RIGHT->dist = (float)pMOTOR_RIGHT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
 	pMOTOR_RIGHT->totalDist += pMOTOR_RIGHT->dist;
 	
-	float tempAng = ((pMOTOR_LEFT->totalDist - pMOTOR_RIGHT->totalDist) * ROTATE_CALIB) / DISTANCE_BETWEEN_WHEELS * RAD_TO_DEG;
-	pMOUSE->ang = fmodf(tempAng, 360.0f);
+	actual_angle_temporary = ((pMOTOR_LEFT->totalDist - pMOTOR_RIGHT->totalDist) * ROTATE_CALIB) / DISTANCE_BETWEEN_WHEELS * RAD_TO_DEG;
+	pMOUSE->actual_angle = fmodf(actual_angle_temporary, 360.0f);
 	
-	if(pMOUSE->ang < -180.0f)
+	if(pMOUSE->actual_angle < -180.0f)
 	{
-		pMOUSE->ang += 360.0f;
+		pMOUSE->actual_angle += 360.0f;
 	}
-	else if(pMOUSE->ang > 180.0f)
+	else if(pMOUSE->actual_angle > 180.0f)
 	{
-		pMOUSE->ang -= 360.0f;
+		pMOUSE->actual_angle -= 360.0f;
 	}
 
-	pMOUSE->distance = (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
-	pMOUSE->trans += (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
-	pMOUSE->velocity = pMOUSE->distance / 10.0f;
+	distance = (pMOTOR_LEFT->dist + pMOTOR_RIGHT->dist) / 2.0f;
 	
-	pMOUSE->pos_x += pMOUSE->distance * sinf(pMOUSE->ang * DEG_TO_RAD);
-	pMOUSE->pos_y += pMOUSE->distance * cosf(pMOUSE->ang * DEG_TO_RAD);
+	pMOUSE->actual_position_x += distance * sinf(pMOUSE->actual_angle * DEG_TO_RAD);
+	pMOUSE->actual_position_y += distance * cosf(pMOUSE->actual_angle * DEG_TO_RAD);
 }
 void MOTOR_CALCULATE_SPEED(sMOT *pMOTOR)
 {

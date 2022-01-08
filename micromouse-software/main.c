@@ -35,10 +35,12 @@ int main(void)
 	
 	MOUSE.state = MOUSE_INIT;
 	
+	
+	
 	while(1)
 	{
 		
-		MOUSE.batteryVoltage = ADC_GET_BATTERY_VOLTAGE();
+		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE();
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
@@ -53,9 +55,23 @@ int main(void)
 			
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 			{
+				LED_Switch(LED_ALL, OFF);
+					for(uint8_t i = 0; i < 4; i++)
+					{
+						LED_Switch(i, ON);
+						delay_ms(400);
+					}
+				LED_Switch(LED_ALL, OFF);
 				
-				//
-	
+				MOUSE.actual_position_x = 0.0;
+				MOUSE.actual_position_y = 0.0;
+				MOUSE.actual_angle = 0.0;
+				
+				MOUSE.new_position_x = 500.0;
+				MOUSE.new_position_y = 500.0;
+				
+				MOUSE.state = MOUSE_MOVE_CONTROLLER;
+
 				BUTTON_OK.wasPressed = false;
 			}	
 	}

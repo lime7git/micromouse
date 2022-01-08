@@ -15,28 +15,23 @@
 typedef struct{
 	
 	eMouseState state;
-	bool controllerEnable;
-	bool is_profiler_translation_enable;
-	bool is_profiler_rotation_enable;
-	double batteryVoltage;
+	bool is_controller_enable;
+	bool is_profiler_enable;
+	double battery_voltage;
 	
-	float Front;
-	float Dir;
-	float velocity;
-	float trans;
+	float front;
+	float direction;
 	
-	float pos_x;
-	float pos_y;
-	float ang;
-	float distance;
-	float prev_distance;
+	float actual_position_x;
+	float actual_position_y;
+	float actual_angle;
 
-	float new_pos_x;
-	float new_pos_y;
-	float new_ang;
+	float new_position_x;
+	float new_position_y;
+	float new_angle;
 	
 	float distance_to_travel;
-	float ang_to_achieve;
+	float angle_to_achieve;
 	
 } sMOUSE;
 #pragma pack(pop)
@@ -49,5 +44,6 @@ void MOVE_CONTROLLER_DISABLE(sMOUSE *mouse);
 bool MOVE_CONTROLLER_IS_ENABLE(sMOUSE *mouse);
 void MOVE_SET_POSITION(sMOUSE *mouse, float new_posX, float new_posY);
 void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_ang);
+
 
 #endif

@@ -22,7 +22,7 @@
 #define LED4_OFF 		GPIOB->ODR |= GPIO_ODR_OD12
 
 
-typedef enum{LED1 = 0, LED2 = 1, LED3 = 2, LED4 = 3, ALL = 4}eLEDnum;
+typedef enum{LED1 = 0, LED2 = 1, LED3 = 2, LED4 = 3, LED_ALL = 4}eLEDnum;
 typedef enum{OFF = 0, ON = 1, TOG = 2}eLEDstate;
 
 void GPIO_Init(void);

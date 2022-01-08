@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include "math.h"
 #include "ui.h"
+#include "pid.h"
 
 #define RAD_TO_DEG 57.295779513f
 #define TIME_STAMP 0.01f
@@ -16,10 +17,9 @@ typedef struct{
 	
 	eMouseState state;
 	bool is_controller_enable;
-	bool is_profiler_enable;
 	double battery_voltage;
 	
-	float front;
+	float forward;
 	float direction;
 	
 	float actual_position_x;
@@ -38,12 +38,16 @@ typedef struct{
 
 extern sMOUSE MOUSE;
 
-void MOVE_CONTROLLER(sMOUSE *mouse);
+void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse);
+void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse);
+
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse);
 void MOVE_CONTROLLER_DISABLE(sMOUSE *mouse);
 bool MOVE_CONTROLLER_IS_ENABLE(sMOUSE *mouse);
 void MOVE_SET_POSITION(sMOUSE *mouse, float new_posX, float new_posY);
 void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_ang);
 
+void MOTOR_SPEED_PROFILER_INIT(sMOT *motor, float max_velocity, float acceleration);
+void MOTOR_SPEED_PROFILER(sMOUSE *mouse, sMOT *motor);
 
 #endif

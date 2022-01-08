@@ -38,7 +38,12 @@ typedef struct{
 	int32_t pulse_per_sec;
 	int32_t prev_pulse;
 	
+	float profiler_velocity;
+	float max_velocity;
+	float acceleration;
+	
 	bool pidEnable;
+	bool is_profiller_enable;
 	
 }sMOT; 
 #pragma pack(pop)
@@ -51,5 +56,8 @@ void MOTOR_PID_CONTROLLER(sMOT *pMOTOR);
 void MOTOR_PID_ENABLE(sMOT *pMOTOR);
 void MOTOR_PID_DISABLE(sMOT *pMOTOR);
 bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR);
+void MOTOR_SPEED_PROFILER_ENABLE(sMOT *pMOTOR);
+void MOTOR_SPEED_PROFILER_DISABLE(sMOT *pMOTOR);
+bool MOTOR_SPEED_PROFILER_IS_ENABLE(sMOT *pMOTOR);
 
 #endif

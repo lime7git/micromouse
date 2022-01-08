@@ -58,4 +58,16 @@ bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR)
 {
 	return pMOTOR->pidEnable;
 }
+void MOTOR_SPEED_PROFILER_ENABLE(sMOT *pMOTOR)
+{
+	pMOTOR->is_profiller_enable = true;
+}
+void MOTOR_SPEED_PROFILER_DISABLE(sMOT *pMOTOR)
+{
+	pMOTOR->is_profiller_enable = false;
+}
+bool MOTOR_SPEED_PROFILER_IS_ENABLE(sMOT *pMOTOR)
+{
+	return pMOTOR->is_profiller_enable;
+}
 

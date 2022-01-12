@@ -40,9 +40,7 @@ int main(void)
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
 	
 	MOUSE.state = MOUSE_INIT;
-	
-	
-	
+		
 	while(1)
 	{
 		
@@ -80,5 +78,14 @@ int main(void)
 
 				BUTTON_OK.wasPressed = false;
 			}	
+			
+		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
+			{
+				IR_R_ON;
+				delay_ms(10000);
+				IR_R_OFF;
+				
+				BUTTON_OK.wasPressed = false;
+			}		
 	}
 }

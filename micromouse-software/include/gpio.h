@@ -21,6 +21,11 @@
 #define LED4_ON 		GPIOB->ODR &= ~GPIO_ODR_OD12
 #define LED4_OFF 		GPIOB->ODR |= GPIO_ODR_OD12
 
+#define IR_L_ON 		GPIOA->ODR |= GPIO_ODR_OD8
+#define IR_L_OFF 		GPIOA->ODR &= ~GPIO_ODR_OD8
+
+#define IR_R_ON 		GPIOB->ODR |= GPIO_ODR_OD13
+#define IR_R_OFF 		GPIOB->ODR &= ~GPIO_ODR_OD13
 
 typedef enum{LED1 = 0, LED2 = 1, LED3 = 2, LED4 = 3, LED_ALL = 4}eLEDnum;
 typedef enum{OFF = 0, ON = 1, TOG = 2}eLEDstate;

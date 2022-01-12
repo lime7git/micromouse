@@ -6,6 +6,9 @@
 #include "motors.h"
 #include "controller.h"
 
+volatile uint16_t ADC1_readings[3];
+volatile uint16_t ADC2_readings[2];
+
 void ADC1_DMA_Init(void)
 {
 	// enable clock for port A and clock for ADC1
@@ -36,6 +39,33 @@ void ADC1_DMA_Init(void)
 	DMA2_Stream4->M0AR 	= (uint32_t)ADC1_readings;
 	DMA2_Stream4->NDTR 	= (uint16_t)3;	
 	DMA2_Stream4->CR 	 |= (0 << DMA_SxCR_CHSEL_Pos) | (0 << DMA_SxCR_DIR_Pos) | DMA_SxCR_MINC | DMA_SxCR_CIRC | (1 << DMA_SxCR_PSIZE_Pos) | (1 << DMA_SxCR_MSIZE_Pos) | DMA_SxCR_EN; // channel 0 | pheripheral to memory | memory increment | circural | 16 bit data sieze | 16 bit data size | dma en
+}
+
+void ADC2_DMA_init(void)
+{
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+	RCC->APB2ENR |= RCC_APB2ENR_ADC2EN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
+	
+	// set PA7/PC2 pin as an analog input
+	GPIOA->MODER |= GPIO_MODER_MODE7;
+	GPIOC->MODER |= GPIO_MODER_MODE2;
+	
+	ADC2->CR2 |= ADC_CR2_CONT | ADC_CR2_DMA | ADC_CR2_ADON | (0 << ADC_CR2_EOCS_Pos) | ADC_CR2_DDS;		//  continous conversion mode | enable DMA | enable ADC1 | interrupt after evry channel conversion | DMA always request for ADC (no overrun)
+	ADC2->CR1 |= ADC_CR1_SCAN | (0 << ADC_CR1_RES_Pos) | ADC_CR1_EOCIE; // scan mode | 12-bit resolution | end of conversion interrupt enable
+	ADC2->SQR1 |= (1 << ADC_SQR1_L_Pos); // number of conversions ( 0010 : 3 conversions)
+	ADC2->SQR3 |= (12 << ADC_SQR3_SQ1_Pos) | (7 << ADC_SQR3_SQ2_Pos); // select channel for conversions
+	ADC2->SMPR1 |= ADC_SMPR1_SMP12;
+	ADC2->SMPR2 |= ADC_SMPR2_SMP7; // channel sampling time (480 cycles)
+	ADC2->CR2 |= ADC_CR2_SWSTART;
+	NVIC_EnableIRQ(ADC_IRQn);
+	NVIC_SetPriority(ADC_IRQn, 1); // higher settable priority 
+	
+	DMA2_Stream3->PAR 	= (uint32_t)&ADC2->DR;
+	DMA2_Stream3->M0AR 	= (uint32_t)ADC2_readings;
+	DMA2_Stream3->NDTR 	= (uint16_t)2;	
+	DMA2_Stream3->CR 	 |= (1 << DMA_SxCR_CHSEL_Pos) | (0 << DMA_SxCR_DIR_Pos) | DMA_SxCR_MINC | DMA_SxCR_CIRC | (1 << DMA_SxCR_PSIZE_Pos) | (1 << DMA_SxCR_MSIZE_Pos) | DMA_SxCR_EN; // channel 0 | pheripheral to memory | memory increment | circural | 16 bit data sieze | 16 bit data size | dma en
 }
 
 void ADC_IRQHandler(void)

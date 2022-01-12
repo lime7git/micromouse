@@ -21,6 +21,7 @@
 #endif
 
 void ADC1_DMA_Init(void);
+void ADC2_DMA_init(void);
 void ADC_IRQHandler(void);
 void BATTERY_CRITICAL_PROCEDURE(void);
 
@@ -28,6 +29,7 @@ double ADC_GET_BATTERY_VOLTAGE(void);
 double ADC_GET_TEMPERATURE_INTERAL(void);
 double ADC_GET_VREF_INTERNAL(void);
 
-volatile static uint16_t ADC1_readings[3];
+extern volatile uint16_t ADC1_readings[3];
+extern volatile uint16_t ADC2_readings[2];
 
 #endif

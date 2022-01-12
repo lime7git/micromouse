@@ -18,6 +18,7 @@ int main(void)
 	CLOCK_Init();
 	GPIO_Init();
 	ADC1_DMA_Init();
+	ADC2_DMA_init();
 	BUZZER_Init();
 	MOTORS_Init();
 	ENCODERS_Init();

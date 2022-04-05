@@ -28,7 +28,8 @@ typedef enum{
 	READY,
 	MOVE,
 	ROTATE,
-	POSITION
+	POSITION,
+	SENSORS
 } eCOMMANDS;
 
 extern tCircular_buffer UART_Buffer;

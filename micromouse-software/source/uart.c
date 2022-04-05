@@ -1,4 +1,6 @@
 #include "uart.h"
+#include "clock.h"
+#include "adc.h"
 
 tCircular_buffer UART_Buffer;
 
@@ -168,7 +170,7 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
-			case POSITION:
+		case POSITION:
 		{	
 			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
 			GET_COMMAND_PARAMS(command, param_buffer);
@@ -178,6 +180,69 @@ void COMMAND_Execute(char *command)
 			char buf[128];
 			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\n", (double)MOUSE.actual_position_x, (double)MOUSE.actual_position_y, (double)MOUSE.actual_angle, MOTOR_LEFT.enc, MOTOR_RIGHT.enc);	
 			UART1_Log(buf);
+			}
+			
+			break;
+		}
+		case SENSORS:
+		{	
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == 'T' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'S' && param_buffer[0][3] == 'T')
+			{
+				double senLF,senRF,senLS,senRS;
+				
+					IR_LEFT_FRONT_OFF;
+					IR_RIGHT_FRONT_OFF;
+					IR_LEFT_SIDE_OFF;
+					IR_RIGHT_SIDE_OFF;
+				delay_ms(10);
+				IR_LEFT_FRONT_ON;
+				delay_ms(250);
+				senLF = ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE();
+				delay_ms(10);
+						IR_LEFT_FRONT_OFF;
+						IR_RIGHT_FRONT_OFF;
+						IR_LEFT_SIDE_OFF;
+						IR_RIGHT_SIDE_OFF;
+				delay_ms(250);
+				
+				IR_RIGHT_FRONT_ON;
+				delay_ms(250);
+				senRF = ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE();
+				delay_ms(10);
+						IR_LEFT_FRONT_OFF;
+						IR_RIGHT_FRONT_OFF;
+						IR_LEFT_SIDE_OFF;
+						IR_RIGHT_SIDE_OFF;
+				delay_ms(250);
+				
+				IR_LEFT_SIDE_ON;
+				delay_ms(250);
+				senLS = ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE();
+				delay_ms(10);
+						IR_LEFT_FRONT_OFF;
+						IR_RIGHT_FRONT_OFF;
+						IR_LEFT_SIDE_OFF;
+						IR_RIGHT_SIDE_OFF;
+				delay_ms(250);
+				
+				IR_RIGHT_SIDE_ON;
+				delay_ms(250);
+				senRS = ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE();
+				delay_ms(10);
+						IR_LEFT_FRONT_OFF;
+						IR_RIGHT_FRONT_OFF;
+						IR_LEFT_SIDE_OFF;
+						IR_RIGHT_SIDE_OFF;
+				delay_ms(250);
+				
+			char buf[512];
+			//	sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n| %2.f |    | %2.f |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n| %2.f ++    ++ %2.f |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(), ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(), ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(), ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE());
+								sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|  %.2f   |    |  %.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|  %.2f  ++    ++ %.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", senLF,senRF,senLS,senRS);
+
+				UART1_Log(buf);
 			}
 			
 			break;
@@ -206,6 +271,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "MOVE", counter) == 0) type = MOVE;
 	else if(strncmp(command_type, "ROTATE", counter) == 0) type = ROTATE;
 	else if(strncmp(command_type, "POSITION", counter) == 0) type = POSITION;
+	else if(strncmp(command_type, "SENSORS", counter) == 0) type = SENSORS;
 	
 	return type;
 }

@@ -7,6 +7,8 @@
 #include "controller.h"
 #include "timer.h"
 
+volatile float speed_left, speed_right;
+
 int main(void)
 {
 	
@@ -30,14 +32,23 @@ int main(void)
 	MOTOR_SPEED_PROFILER_DISABLE(&MOTOR_RIGHT);
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
 	
-	MOUSE.state = MOUSE_INIT;
-		
+	//MOUSE.state = MOUSE_INIT;
+	MOUSE.state = MOUSE_IDLE;	
+
+	speed_left = 0.0f;
+	speed_right = 0.0f;
+
 	while(1)
 	{
 		
 		STATE_Handle(); 
 		
-		
+		MOTOR_LEFT.set_rpm = speed_left;
+		MOTOR_RIGHT.set_rpm = speed_right;
+
+		MOTOR_SET_SPEED(&MOTOR_LEFT, MOTOR_LEFT.set_rpm);
+		MOTOR_SET_SPEED(&MOTOR_RIGHT, MOTOR_RIGHT.set_rpm);
+
 		if(BUTTON_SEL.wasPressed && LONG_PRESS(BUTTON_SEL.time))
 			{
 				STATE_Selection();
@@ -47,31 +58,15 @@ int main(void)
 			
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 			{
-				LED_Switch(LED_ALL, OFF);
-					for(uint8_t i = 0; i < 4; i++)
-					{
-						LED_Switch(i, ON);
-						delay_ms(400);
-					}
-				LED_Switch(LED_ALL, OFF);
+
 				
-				MOUSE.actual_position_x = 0.0;
-				MOUSE.actual_position_y = 0.0;
-				MOUSE.actual_angle = 0.0;
-				
-				MOUSE.new_position_x = 0.0;
-				MOUSE.new_position_y = 1000.0;
-				
-				MOUSE.state = MOUSE_MOVE_CONTROLLER;
 
 				BUTTON_OK.wasPressed = false;
 			}	
 			
 		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 			{
-				IR_R_ON;
-				delay_ms(10000);
-				IR_R_OFF;
+				
 				
 				BUTTON_OK.wasPressed = false;
 			}		

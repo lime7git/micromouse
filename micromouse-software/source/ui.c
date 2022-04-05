@@ -49,12 +49,21 @@ void STATE_Handle(void)
 				LED_Switch(LED2, OFF);
 				LED_Switch(LED3, OFF);
 				LED_Switch(LED4, OFF);
+				
+				IR_LEFT_FRONT_OFF;
+				IR_RIGHT_FRONT_OFF;
+				IR_LEFT_SIDE_OFF;
+				IR_RIGHT_SIDE_OFF;
+				
 				BUZZER_Volume(0);
 			
 			break;
 			}
 			case MOUSE_IDLE:
 			{
+				
+			
+	
 				
 			
 			break;

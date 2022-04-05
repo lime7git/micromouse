@@ -29,7 +29,12 @@ double ADC_GET_BATTERY_VOLTAGE(void);
 double ADC_GET_TEMPERATURE_INTERAL(void);
 double ADC_GET_VREF_INTERNAL(void);
 
+double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void);
+double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void);
+double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void);
+double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void);
+
 extern volatile uint16_t ADC1_readings[3];
-extern volatile uint16_t ADC2_readings[2];
+extern volatile uint16_t ADC2_readings[4];
 
 #endif

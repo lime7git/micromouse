@@ -11,6 +11,8 @@
 #include "controller.h"
 #include "timer.h"
 
+volatile uint8_t log_flag = 0;
+
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -52,6 +54,15 @@ int main(void)
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
+		
+		if(log_flag)
+		{
+			char buf[128];
+			
+			sprintf(buf, "\r\nLEFT FRONT = %d\r\nRIGHT FRONT = %d\r\nLEFT SIDE = %d\r\nRIGHT SIDE = %d",ADC2_readings[0],ADC2_readings[2],ADC2_readings[1],ADC2_readings[3]);
+			
+			UART1_Log(buf);
+		}
 		
 		/*
 		

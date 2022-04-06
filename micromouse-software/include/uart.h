@@ -12,6 +12,7 @@
 #include "stdlib.h"
 #include "adc.h"
 #include "controller.h"
+#include "clock.h"
 
 #define PARAM_BUFFER_ROWS 4
 #define PARAM_BUFFER_COLS 32

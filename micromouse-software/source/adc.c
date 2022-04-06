@@ -110,7 +110,7 @@ double ADC_GET_BATTERY_VOLTAGE(void) 			{	return CONV_2_BATTERY_VOLTAGE(ADC1_rea
 double ADC_GET_TEMPERATURE_INTERAL(void)	{	return CONV_2_CELCIUS_DEG(ADC1_readings[1]);			}
 double ADC_GET_VREF_INTERNAL(void)				{	return CONV_2_ADC_VOLTAGE(ADC1_readings[2]);			}
 
-double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void) 	{	return CONV_2_BATTERY_VOLTAGE(ADC2_readings[0]);	}
-double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void)	{	return CONV_2_BATTERY_VOLTAGE(ADC2_readings[1]);	}
-double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void)		{	return CONV_2_BATTERY_VOLTAGE(ADC2_readings[2]);	}
-double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void)	{	return CONV_2_BATTERY_VOLTAGE(ADC2_readings[3]);	}
+double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void) 	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[0]);	}
+double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[2]);	}
+double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void)		{	return CONV_2_ADC_VOLTAGE(ADC2_readings[1]);	}
+double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[3]);	}

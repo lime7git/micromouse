@@ -1,8 +1,8 @@
 #include "uart.h"
-#include "clock.h"
-#include "adc.h"
 
 tCircular_buffer UART_Buffer;
+
+extern volatile uint8_t log_flag;
 
 void UART1_IT_Init(void)
 {
@@ -243,7 +243,21 @@ void COMMAND_Execute(char *command)
 								sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|  %.2f   |    |  %.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|  %.2f  ++    ++ %.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", senLF,senRF,senLS,senRS);
 
 				UART1_Log(buf);
+				
 			}
+			
+			if(param_buffer[0][0] == 'O' && param_buffer[0][1] == 'N'){log_flag = 1;}
+			if(param_buffer[0][0] == 'O' && param_buffer[0][1] == 'F' && param_buffer[0][2] == 'F'){log_flag = 0;
+				IR_LEFT_FRONT_OFF;
+	IR_RIGHT_FRONT_OFF;
+	IR_LEFT_SIDE_OFF;
+	IR_RIGHT_SIDE_OFF;}
+			
+			
+			if(param_buffer[0][0] == 'L' && param_buffer[0][1] == 'F'){IR_LEFT_FRONT_ON;}
+			if(param_buffer[0][0] == 'L' && param_buffer[0][1] == 'S'){IR_LEFT_SIDE_ON;}
+			if(param_buffer[0][0] == 'R' && param_buffer[0][1] == 'F'){IR_RIGHT_FRONT_ON;}
+			if(param_buffer[0][0] == 'R' && param_buffer[0][1] == 'S'){IR_RIGHT_SIDE_ON;}
 			
 			break;
 		}

@@ -191,7 +191,7 @@ void COMMAND_Execute(char *command)
 			{	
 			char buf[512];
 				
-			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|  %.2f   |    |  %.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|  %.2f  ++    ++ %.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
+			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|%.2f   |    |%.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|%.2f  ++    ++%.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
 			SENSOR_GET_LEFT_FRONT_DISTANCE_MM(),SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(), \
 			SENSOR_GET_LEFT_SIDE_DISTANCE_MM(),SENSOR_GET_RIGHT_SIDE_DISTANCE_MM());
 

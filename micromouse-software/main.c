@@ -11,8 +11,6 @@
 #include "controller.h"
 #include "timer.h"
 
-volatile uint8_t flag = 0;
-
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -43,6 +41,7 @@ int main(void)
 	*/
 	
 	MOUSE.state = MOUSE_IDLE;
+	TEST_PIN_OFF;
 		
 	while(1)
 	{
@@ -51,17 +50,6 @@ int main(void)
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
-		
-		if(flag)
-		{
-			IR_LEFT_FRONT_ON;
-			IR_RIGHT_FRONT_ON;
-		}
-		else
-		{
-			IR_LEFT_FRONT_OFF;
-			IR_RIGHT_FRONT_OFF;
-		}
 		
 		if(BUTTON_SEL.wasPressed && LONG_PRESS(BUTTON_SEL.time))
 			{

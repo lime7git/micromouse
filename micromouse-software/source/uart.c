@@ -2,8 +2,6 @@
 
 tCircular_buffer UART_Buffer;
 
-extern volatile uint8_t log_flag;
-
 void UART1_IT_Init(void)
 {
 	// clock enable for A port, USART1
@@ -189,75 +187,16 @@ void COMMAND_Execute(char *command)
 			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
 			GET_COMMAND_PARAMS(command, param_buffer);
 			
-			if(param_buffer[0][0] == 'T' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'S' && param_buffer[0][3] == 'T')
-			{
-				double senLF,senRF,senLS,senRS;
-				
-					IR_LEFT_FRONT_OFF;
-					IR_RIGHT_FRONT_OFF;
-					IR_LEFT_SIDE_OFF;
-					IR_RIGHT_SIDE_OFF;
-				delay_ms(10);
-				IR_LEFT_FRONT_ON;
-				delay_ms(250);
-				senLF = ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE();
-				delay_ms(10);
-						IR_LEFT_FRONT_OFF;
-						IR_RIGHT_FRONT_OFF;
-						IR_LEFT_SIDE_OFF;
-						IR_RIGHT_SIDE_OFF;
-				delay_ms(250);
-				
-				IR_RIGHT_FRONT_ON;
-				delay_ms(250);
-				senRF = ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE();
-				delay_ms(10);
-						IR_LEFT_FRONT_OFF;
-						IR_RIGHT_FRONT_OFF;
-						IR_LEFT_SIDE_OFF;
-						IR_RIGHT_SIDE_OFF;
-				delay_ms(250);
-				
-				IR_LEFT_SIDE_ON;
-				delay_ms(250);
-				senLS = ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE();
-				delay_ms(10);
-						IR_LEFT_FRONT_OFF;
-						IR_RIGHT_FRONT_OFF;
-						IR_LEFT_SIDE_OFF;
-						IR_RIGHT_SIDE_OFF;
-				delay_ms(250);
-				
-				IR_RIGHT_SIDE_ON;
-				delay_ms(250);
-				senRS = ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE();
-				delay_ms(10);
-						IR_LEFT_FRONT_OFF;
-						IR_RIGHT_FRONT_OFF;
-						IR_LEFT_SIDE_OFF;
-						IR_RIGHT_SIDE_OFF;
-				delay_ms(250);
-				
+			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
+			{	
 			char buf[512];
-			//	sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n| %2.f |    | %2.f |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n| %2.f ++    ++ %2.f |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(), ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(), ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(), ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE());
-								sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|  %.2f   |    |  %.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|  %.2f  ++    ++ %.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", senLF,senRF,senLS,senRS);
-
-				UART1_Log(buf);
 				
+			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|  %.2f   |    |  %.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|  %.2f  ++    ++ %.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
+			SENSOR_GET_LEFT_FRONT_DISTANCE_MM(),SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(), \
+			SENSOR_GET_LEFT_SIDE_DISTANCE_MM(),SENSOR_GET_RIGHT_SIDE_DISTANCE_MM());
+
+			UART1_Log(buf);
 			}
-			
-			if(param_buffer[0][0] == 'O' && param_buffer[0][1] == 'N'){log_flag = 1;}
-			if(param_buffer[0][0] == 'O' && param_buffer[0][1] == 'F' && param_buffer[0][2] == 'F'){log_flag = 0;
-				IR_LEFT_FRONT_OFF;
-	IR_RIGHT_FRONT_OFF;
-	IR_LEFT_SIDE_OFF;
-	IR_RIGHT_SIDE_OFF;}
-			
-			
-			if(param_buffer[0][0] == 'L' && param_buffer[0][1] == 'F'){IR_LEFT_FRONT_ON;}
-			if(param_buffer[0][0] == 'L' && param_buffer[0][1] == 'S'){IR_LEFT_SIDE_ON;}
-			if(param_buffer[0][0] == 'R' && param_buffer[0][1] == 'F'){IR_RIGHT_FRONT_ON;}
-			if(param_buffer[0][0] == 'R' && param_buffer[0][1] == 'S'){IR_RIGHT_SIDE_ON;}
 			
 			break;
 		}

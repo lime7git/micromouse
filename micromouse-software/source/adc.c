@@ -9,6 +9,11 @@
 volatile uint16_t ADC1_readings[3];
 volatile uint16_t ADC2_readings[4];
 
+volatile double sensor_enviroment_value;
+volatile double sensor_raw_value;
+volatile double sensor_mean_enviroment = 0.0;
+volatile double sensor_mean_raw = 0.0;
+
 void ADC1_DMA_Init(void)
 {
 	// enable clock for port A and clock for ADC1
@@ -114,3 +119,88 @@ double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void) 	{	return CONV_2_ADC_VOLTAGE(ADC2
 double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[2]);	}
 double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void)		{	return CONV_2_ADC_VOLTAGE(ADC2_readings[1]);	}
 double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[3]);	}
+
+double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void)
+{
+	IR_ALL_OFF
+	
+	sensor_mean_enviroment = 0.0;
+	sensor_mean_raw = 0.0;
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_enviroment += ADC2_readings[0];
+		}
+	IR_LEFT_FRONT_ON;
+	delay_ms(1);
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_raw += ADC2_readings[0];
+		}
+	IR_LEFT_FRONT_OFF;
+	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+
+	return sensor_raw_value;
+}
+double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void)
+{
+	IR_ALL_OFF
+	
+	sensor_mean_enviroment = 0.0;
+	sensor_mean_raw = 0.0;
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_enviroment += ADC2_readings[2];
+		}
+	IR_RIGHT_FRONT_ON;
+	delay_ms(1);
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_raw += ADC2_readings[2];
+		}
+	IR_RIGHT_FRONT_OFF;
+	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+
+	return sensor_raw_value;	
+}
+double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void)
+{
+	IR_ALL_OFF
+	
+	sensor_mean_enviroment = 0.0;
+	sensor_mean_raw = 0.0;
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_enviroment += ADC2_readings[1];
+		}
+	IR_LEFT_SIDE_ON;
+	delay_ms(1);
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_raw += ADC2_readings[1];
+		}
+	IR_LEFT_SIDE_OFF;
+	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+
+	return sensor_raw_value;		
+}
+double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void)
+{
+	IR_ALL_OFF
+	
+	sensor_mean_enviroment = 0.0;
+	sensor_mean_raw = 0.0;
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_enviroment += ADC2_readings[3];
+		}
+	IR_RIGHT_SIDE_ON;
+	delay_ms(1);
+		for(int i = 0; i < 50; i++)
+		{
+		sensor_mean_raw += ADC2_readings[3];
+		}
+	IR_RIGHT_SIDE_OFF;
+	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+
+	return sensor_raw_value;
+}

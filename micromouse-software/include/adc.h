@@ -34,13 +34,18 @@ double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void);
 double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void);
 double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void);
 
-double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void);
-double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void);
-double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void);
-double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void);
+double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void);
+double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void);
+double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void);
+double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void);
 
 
 extern volatile uint16_t ADC1_readings[3];
 extern volatile uint16_t ADC2_readings[4];
+
+extern volatile double sensor_enviroment_value;
+extern volatile double sensor_raw_value;
+extern volatile double sensor_mean_enviroment;
+extern volatile double sensor_mean_raw;
 
 #endif

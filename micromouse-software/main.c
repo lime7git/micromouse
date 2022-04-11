@@ -11,16 +11,13 @@
 #include "controller.h"
 #include "timer.h"
 
-volatile uint8_t log_flag = 0;
+volatile uint8_t flag = 0;
 
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
 	
 	CLOCK_Init();
-	
-	//SysTick_Config(SystemCoreClock / 1000);	
-	
 	GPIO_Init();
 	ADC1_DMA_Init();
 	ADC2_DMA_init();
@@ -55,16 +52,16 @@ int main(void)
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
 		
-		if(log_flag)
+		if(flag)
 		{
-			char buf[128];
-			
-			sprintf(buf, "\r\nLEFT FRONT = %d\r\nRIGHT FRONT = %d\r\nLEFT SIDE = %d\r\nRIGHT SIDE = %d",ADC2_readings[0],ADC2_readings[2],ADC2_readings[1],ADC2_readings[3]);
-			
-			UART1_Log(buf);
+			IR_LEFT_FRONT_ON;
+			IR_RIGHT_FRONT_ON;
 		}
-		
-		/*
+		else
+		{
+			IR_LEFT_FRONT_OFF;
+			IR_RIGHT_FRONT_OFF;
+		}
 		
 		if(BUTTON_SEL.wasPressed && LONG_PRESS(BUTTON_SEL.time))
 			{
@@ -82,11 +79,14 @@ int main(void)
 			
 		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 			{
-				UART1_Log("READY\r\n");
+				
+				char buf[32];
+				sprintf(buf,"\r\n%.2f", SENSOR_GET_LEFT_FRONT_DISTANCE_MM());
+				UART1_Log(buf);
 				
 				BUTTON_OK.wasPressed = false;
 			}		
 			
-			*/
+			
 	}
 }

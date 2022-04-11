@@ -33,6 +33,12 @@
 #define IR_RIGHT_SIDE_ON 			GPIOB->ODR |= GPIO_ODR_OD15
 #define IR_RIGHT_SIDE_OFF 		GPIOB->ODR &= ~GPIO_ODR_OD15
 
+#define IR_ALL_OFF		\
+	IR_LEFT_FRONT_OFF;	\
+	IR_RIGHT_FRONT_OFF; \
+	IR_LEFT_SIDE_OFF; 	\
+	IR_RIGHT_SIDE_OFF; 
+
 typedef enum{LED1 = 0, LED2 = 1, LED3 = 2, LED4 = 3, LED_ALL = 4}eLEDnum;
 typedef enum{OFF = 0, ON = 1, TOG = 2}eLEDstate;
 

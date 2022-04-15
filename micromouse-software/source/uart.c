@@ -124,7 +124,7 @@ void COMMAND_Execute(char *command)
 			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
 			GET_COMMAND_PARAMS(command, param_buffer);
 			
-			if(param_buffer[0][0] == '?')
+			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
 			{
 			char buf[128];
 			sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
@@ -190,12 +190,85 @@ void COMMAND_Execute(char *command)
 			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
 			{	
 			char buf[512];
+			double LF,RF,LS,RS;
+			
+				TEST_PIN_ON;
+			LF = SENSOR_GET_LEFT_FRONT_DISTANCE_MM();
+			RS = SENSOR_GET_RIGHT_SIDE_DISTANCE_MM();
+			LS = SENSOR_GET_LEFT_SIDE_DISTANCE_MM();
+			RF = SENSOR_GET_RIGHT_FRONT_DISTANCE_MM();
+				TEST_PIN_OFF;
 				
 			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|%.2f   |    |%.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|%.2f  ++    ++%.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
-			SENSOR_GET_LEFT_FRONT_DISTANCE_MM(),SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(), \
-			SENSOR_GET_LEFT_SIDE_DISTANCE_MM(),SENSOR_GET_RIGHT_SIDE_DISTANCE_MM());
+			LF,RF, \
+			LS,RS);
 
 			UART1_Log(buf);
+			}
+			
+			if((param_buffer[0][0] == 'L' && param_buffer[0][1] == 'F'))
+			{
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'N')
+				{
+					IR_LEFT_FRONT_ON;
+				}
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'F' && param_buffer[1][2] == 'F')
+				{
+					IR_LEFT_FRONT_OFF;
+				}
+			}
+			
+			if((param_buffer[0][0] == 'R' && param_buffer[0][1] == 'F'))
+			{
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'N')
+				{
+					IR_RIGHT_FRONT_ON;
+				}
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'F' && param_buffer[1][2] == 'F')
+				{
+					IR_RIGHT_FRONT_OFF;
+				}
+			}
+			
+			if((param_buffer[0][0] == 'L' && param_buffer[0][1] == 'S'))
+			{
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'N')
+				{
+					IR_LEFT_SIDE_ON;
+				}
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'F' && param_buffer[1][2] == 'F')
+				{
+					IR_LEFT_SIDE_OFF;
+				}
+			}
+			
+			if((param_buffer[0][0] == 'R' && param_buffer[0][1] == 'S'))
+			{
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'N')
+				{
+					IR_RIGHT_SIDE_ON;
+				}
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'F' && param_buffer[1][2] == 'F')
+				{
+					IR_RIGHT_SIDE_OFF;
+				}
+			}
+			if((param_buffer[0][0] == 'A' && param_buffer[0][1] == 'L' && param_buffer[0][2] == 'L'))
+			{
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'N')
+				{
+					IR_LEFT_FRONT_ON;
+					IR_RIGHT_FRONT_ON;
+					IR_LEFT_SIDE_ON;
+					IR_RIGHT_SIDE_ON;
+				}
+				if(param_buffer[1][0] == 'O' && param_buffer[1][1] == 'F' && param_buffer[1][2] == 'F')
+				{
+					IR_LEFT_FRONT_OFF;
+					IR_RIGHT_FRONT_OFF;
+					IR_LEFT_SIDE_OFF;
+					IR_RIGHT_SIDE_OFF;
+				}
 			}
 			
 			break;

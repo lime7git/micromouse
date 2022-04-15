@@ -5,6 +5,7 @@
 #include "ui.h"
 #include "motors.h"
 #include "controller.h"
+#include <math.h>
 
 volatile uint16_t ADC1_readings[3];
 volatile uint16_t ADC2_readings[4];
@@ -122,26 +123,24 @@ double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_
 
 double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void)
 {
-	TEST_PIN_ON;
 	IR_ALL_OFF
 	
 	sensor_mean_enviroment = 0.0;
 	sensor_mean_raw = 0.0;
-		for(int i = 0; i < 250; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_enviroment += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_ON;
 	delay_ms(1);
-		for(int i = 0; i < 250; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_raw += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_OFF;
-	sensor_raw_value = (sensor_mean_raw / 250.0) - (sensor_mean_enviroment / 250.0);
-	
-	TEST_PIN_OFF;
-	return sensor_raw_value;
+	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		
+	return pow(sensor_raw_value, -0.52) * 4277.7;
 }
 double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void)
 {
@@ -149,20 +148,20 @@ double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void)
 	
 	sensor_mean_enviroment = 0.0;
 	sensor_mean_raw = 0.0;
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_enviroment += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_ON;
 	delay_ms(1);
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_raw += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_OFF;
-	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 
-	return sensor_raw_value;	
+	return pow(sensor_raw_value, -0.91) * 99963;
 }
 double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void)
 {
@@ -170,18 +169,18 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void)
 	
 	sensor_mean_enviroment = 0.0;
 	sensor_mean_raw = 0.0;
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_enviroment += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_ON;
 	delay_ms(1);
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_raw += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_OFF;
-	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 
 	return sensor_raw_value;		
 }
@@ -191,18 +190,18 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void)
 	
 	sensor_mean_enviroment = 0.0;
 	sensor_mean_raw = 0.0;
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_enviroment += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_ON;
 	delay_ms(1);
-		for(int i = 0; i < 50; i++)
+		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 		sensor_mean_raw += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_OFF;
-	sensor_raw_value = (sensor_mean_raw / 50.0) - (sensor_mean_enviroment / 50.0);
+	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 
 	return sensor_raw_value;
 }

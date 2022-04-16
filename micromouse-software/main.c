@@ -68,10 +68,6 @@ int main(void)
 		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 			{
 				
-				char buf[32];
-				sprintf(buf,"\r\n%.2f", SENSOR_GET_LEFT_FRONT_DISTANCE_MM());
-				UART1_Log(buf);
-				
 				BUTTON_OK.wasPressed = false;
 			}		
 			

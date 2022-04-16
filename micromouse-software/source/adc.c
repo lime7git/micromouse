@@ -121,7 +121,7 @@ double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2
 double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void)		{	return CONV_2_ADC_VOLTAGE(ADC2_readings[1]);	}
 double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[3]);	}
 
-double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void)
+double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit)
 {
 	IR_ALL_OFF
 	
@@ -138,11 +138,25 @@ double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void)
 		sensor_mean_raw += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_OFF;
-	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		
-	return pow(sensor_raw_value, -0.52) * 4277.7;
+	
+	if(unit == RAW)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+	}
+	else if(unit == MM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = pow(sensor_raw_value, -0.52) * 4277.7;
+	}
+	else if(unit == CM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+	}
+	
+	return sensor_raw_value;
 }
-double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void)
+double SENSOR_GET_RIGHT_FRONT_DISTANCE(eSENSORSunit unit)
 {
 	IR_ALL_OFF
 	
@@ -159,11 +173,25 @@ double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void)
 		sensor_mean_raw += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_OFF;
-	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-
-	return pow(sensor_raw_value, -0.91) * 99963;
+	
+	if(unit == RAW)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+	}
+	else if(unit == MM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = pow(sensor_raw_value, -0.52) * 4277.7;
+	}
+	else if(unit == CM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 10.0;
+	}
+	
+	return sensor_raw_value;
 }
-double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void)
+double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 {
 	IR_ALL_OFF
 	
@@ -180,11 +208,25 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void)
 		sensor_mean_raw += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_OFF;
-	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-
+		
+	if(unit == RAW)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+	}
+	else if(unit == MM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = pow(sensor_raw_value, -0.52) * 4277.7;
+	}
+	else if(unit == CM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+	}
+	
 	return sensor_raw_value;		
 }
-double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void)
+double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 {
 	IR_ALL_OFF
 	
@@ -201,7 +243,21 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void)
 		sensor_mean_raw += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_OFF;
-	sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-
+		
+	if(unit == RAW)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+	}
+	else if(unit == MM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = pow(sensor_raw_value, -0.52) * 4277.7;
+	}
+	else if(unit == CM)
+	{
+		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+	}
+	
 	return sensor_raw_value;
 }

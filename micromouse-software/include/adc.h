@@ -20,7 +20,7 @@
 	#define ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE 	1480 	// about 1.19V adc = 6.6V battery voltage
 #endif
 
-#define NUMBER_OF_MEASURMENTS 250.0
+#define NUMBER_OF_MEASURMENTS 25000.0
 
 void ADC1_DMA_Init(void);
 void ADC2_DMA_init(void);
@@ -36,10 +36,12 @@ double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void);
 double ADC_GET_LEFT_SIDE_SENSOR_VOLTAGE(void);
 double ADC_GET_RIGHT_SIDE_SENSOR_VOLTAGE(void);
 
-double SENSOR_GET_LEFT_FRONT_DISTANCE_MM(void);
-double SENSOR_GET_RIGHT_FRONT_DISTANCE_MM(void);
-double SENSOR_GET_LEFT_SIDE_DISTANCE_MM(void);
-double SENSOR_GET_RIGHT_SIDE_DISTANCE_MM(void);
+typedef enum{RAW = 0, MM = 1, CM = 2}eSENSORSunit;
+
+double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit);
+double SENSOR_GET_RIGHT_FRONT_DISTANCE(eSENSORSunit unit);
+double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit);
+double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit);
 
 
 extern volatile uint16_t ADC1_readings[3];

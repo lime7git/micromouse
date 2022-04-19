@@ -146,12 +146,12 @@ double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit)
 	else if(unit == MM)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = pow(sensor_raw_value, -0.52) * 4277.7;
+		sensor_raw_value = (2362.3 / (log(sensor_raw_value - 128.4))) - 209.3;
 	}
 	else if(unit == CM)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 10.0;
 	}
 	
 	return sensor_raw_value;
@@ -221,7 +221,7 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 	else if(unit == CM)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 10.0;
 	}
 	
 	return sensor_raw_value;		
@@ -256,7 +256,8 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 	else if(unit == CM)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 100.0;
+		sensor_raw_value = (pow(sensor_raw_value, -0.52) * 4277.7) / 10.0;
+	
 	}
 	
 	return sensor_raw_value;

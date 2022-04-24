@@ -30,6 +30,7 @@ void TIM7_IRQHandler(void)
 	{
 		TIM7->SR &= ~TIM_SR_UIF;	// clear interrupt flag
 		
+		
 		CALCULATE_ACTUAL_POSITION(&MOUSE, &MOTOR_LEFT, &MOTOR_RIGHT);
 		MOTOR_CALCULATE_SPEED(&MOTOR_LEFT);
 		MOTOR_CALCULATE_SPEED(&MOTOR_RIGHT);
@@ -45,7 +46,7 @@ void TIM7_IRQHandler(void)
 			MOTOR_SPEED_PROFILER(&MOUSE, &MOTOR_LEFT);
 			MOTOR_SPEED_PROFILER(&MOUSE, &MOTOR_RIGHT);
 		}
-		else
+		else if(MOUSE.state != MOUSE_MANUAL)
 		{
 			MOTOR_LEFT.set_rpm 	=	MOUSE.forward + MOUSE.direction;
 			MOTOR_RIGHT.set_rpm = MOUSE.forward - MOUSE.direction;

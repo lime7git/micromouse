@@ -191,8 +191,7 @@ void COMMAND_Execute(char *command)
 			{	
 			char buf[512];
 			double LF,RF,LS,RS;
-			
-				TEST_PIN_ON;
+				
 			if(param_buffer[1][0] == 'R' && param_buffer[1][1] == 'A' && param_buffer[1][2] == 'W')
 			{
 				delay_ms(1);
@@ -207,10 +206,12 @@ void COMMAND_Execute(char *command)
 			}
 			else if(param_buffer[1][0] == 'M' && param_buffer[1][1] == 'M')
 			{
+				TEST_PIN_ON;
 				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
 				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
 				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
 				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
+				TEST_PIN_OFF;
 			}
 			else if(param_buffer[1][0] == 'C' && param_buffer[1][1] == 'M')
 			{
@@ -231,7 +232,7 @@ void COMMAND_Execute(char *command)
 				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
 				delay_ms(1);
 			}
-				TEST_PIN_OFF;
+				
 				
 			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|%.2f   |    |%.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|%.2f  ++    ++%.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
 			LF,RF, \

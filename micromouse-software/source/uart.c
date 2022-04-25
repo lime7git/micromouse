@@ -194,24 +194,17 @@ void COMMAND_Execute(char *command)
 				
 			if(param_buffer[1][0] == 'R' && param_buffer[1][1] == 'A' && param_buffer[1][2] == 'W')
 			{
-				delay_ms(1);
 				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
-				delay_ms(1);
 				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
-				delay_ms(1);
 				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
-				delay_ms(1);
 				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
-				delay_ms(1);
 			}
 			else if(param_buffer[1][0] == 'M' && param_buffer[1][1] == 'M')
 			{
-				TEST_PIN2_ON;
 				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
 				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
 				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
 				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
-				TEST_PIN2_OFF;
 			}
 			else if(param_buffer[1][0] == 'C' && param_buffer[1][1] == 'M')
 			{
@@ -222,15 +215,10 @@ void COMMAND_Execute(char *command)
 			}
 			else
 			{
-				delay_ms(1);
 				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
-				delay_ms(1);
 				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
-				delay_ms(1);
 				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
-				delay_ms(1);
 				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
-				delay_ms(1);
 			}
 				
 				

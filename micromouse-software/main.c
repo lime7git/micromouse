@@ -44,8 +44,7 @@ int main(void)
 		
 	while(1)
 	{
-		
-		//MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE();
+		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);

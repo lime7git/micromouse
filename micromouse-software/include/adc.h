@@ -28,6 +28,7 @@ void ADC_IRQHandler(void);
 void BATTERY_CRITICAL_PROCEDURE(void);
 
 double ADC_GET_BATTERY_VOLTAGE(void);
+double ADC_GET_BATTERY_VOLTAGE_MEAN(void);
 double ADC_GET_TEMPERATURE_INTERAL(void);
 double ADC_GET_VREF_INTERNAL(void);
 
@@ -44,7 +45,7 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit);
 double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit);
 
 
-extern volatile uint16_t ADC1_readings[3];
+extern volatile uint16_t ADC1_readings[300];
 extern volatile uint16_t ADC2_readings[4];
 
 extern volatile double sensor_enviroment_value;

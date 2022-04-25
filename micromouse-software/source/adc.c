@@ -6,7 +6,7 @@
 #include "controller.h"
 #include <math.h>
 
-volatile uint16_t ADC1_readings[3];
+volatile uint16_t ADC1_readings[300];
 volatile uint16_t ADC2_readings[4];
 
 volatile double sensor_enviroment_value;
@@ -42,7 +42,7 @@ void ADC1_DMA_Init(void)
 	// DMA configuration
 	DMA2_Stream4->PAR 	= (uint32_t)&ADC1->DR;
 	DMA2_Stream4->M0AR 	= (uint32_t)ADC1_readings;
-	DMA2_Stream4->NDTR 	= (uint16_t)3;	
+	DMA2_Stream4->NDTR 	= (uint16_t)300;	
 	DMA2_Stream4->CR 	 |= (0 << DMA_SxCR_CHSEL_Pos) | (0 << DMA_SxCR_DIR_Pos) | DMA_SxCR_MINC | DMA_SxCR_CIRC | (1 << DMA_SxCR_PSIZE_Pos) | (1 << DMA_SxCR_MSIZE_Pos) | DMA_SxCR_EN; // channel 0 | pheripheral to memory | memory increment | circural | 16 bit data sieze | 16 bit data size | dma en
 }
 
@@ -83,10 +83,10 @@ void ADC_IRQHandler(void)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
 			
-			
-//			MOUSE.state = CRITICAL;
-//			MOUSE.state = CRITICAL;
-//			MOUSE.state = CRITICAL;
+			if(MOUSE.battery_voltage < CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE))
+			{
+				MOUSE.state = MOUSE_CRITICAL;
+			}	
 		}
 }
 
@@ -95,7 +95,6 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			static char buf[64];
 			sprintf(buf,"\r\n### BATTERY WATCHDOG ###\r\nBattery voltage = %.2f\r\n",ADC_GET_BATTERY_VOLTAGE());
 			UART1_Log(buf);
-	
 				
 			MOT_STOP
 			MOTR_SET_PWM(0);
@@ -106,11 +105,21 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			LED_Switch(LED4, OFF);
 	
 			MOUSE.state = MOUSE_STOP;
-			MOUSE.state = MOUSE_STOP;
-			MOUSE.state = MOUSE_STOP;
 }
 
 double ADC_GET_BATTERY_VOLTAGE(void) 			{	return CONV_2_BATTERY_VOLTAGE(ADC1_readings[0]);	}
+double ADC_GET_BATTERY_VOLTAGE_MEAN(void)
+{
+	uint32_t adc_mean = 0;
+	
+	for(uint16_t i = 0; i < 100; i++)
+	{
+		adc_mean += ADC1_readings[i * 3]; 
+	}
+	adc_mean = adc_mean / 100;
+	
+	return CONV_2_BATTERY_VOLTAGE(adc_mean);
+}
 double ADC_GET_TEMPERATURE_INTERAL(void)	{	return CONV_2_CELCIUS_DEG(ADC1_readings[1]);			}
 double ADC_GET_VREF_INTERNAL(void)				{	return CONV_2_ADC_VOLTAGE(ADC1_readings[2]);			}
 

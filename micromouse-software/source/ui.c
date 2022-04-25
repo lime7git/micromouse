@@ -4,7 +4,6 @@
 #include "gpio.h"
 #include "clock.h"
 #include "adc.h"
-#include "buzzer.h"
 #include "motors.h"
 #include "circular_buffer.h"
 #include "pid.h"
@@ -54,8 +53,6 @@ void STATE_Handle(void)
 				IR_RIGHT_FRONT_OFF;
 				IR_LEFT_SIDE_OFF;
 				IR_RIGHT_SIDE_OFF;
-				
-				BUZZER_Volume(0);
 			
 			break;
 			}
@@ -63,141 +60,17 @@ void STATE_Handle(void)
 			{
 				
 			
-	
-				
-			
 			break;
 			}
 			case MOUSE_RUN:
 			{
-				volatile static int state = 0;
 			
-				LED_Switch(LED1, TOG);
-				delay_ms(250);
-			
-				
-				if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
-				{
-					static char buf[128];
-					sprintf(buf,"\r\nBattery voltage = %.2fV\r\nVREFINT voltage = %.2fV\r\nProcessor temperature = %.1fC\r\n",ADC_GET_BATTERY_VOLTAGE(),ADC_GET_VREF_INTERNAL(),ADC_GET_TEMPERATURE_INTERAL());
-					UART1_Log(buf);
-					
-					BUTTON_OK.wasPressed = false;
-				}
-					else if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
-					{
-						if(state < 4) state++;
-							else state = 0;
-						
-						MOT_STOP
-						LED_Switch(LED2, TOG);
-						
-						BUTTON_OK.wasPressed = false;
-					}
-						else if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
-						{
-				
-						
-							BUTTON_OK.wasPressed = false;
-						}
-				
-				if(BUTTON_SEL.wasPressed && NORMAL_PRESS(BUTTON_SEL.time))
-				{
-					BUZZER_Buzz(32, 3, 100, 250);
-					
-					BUTTON_SEL.wasPressed = false;
-				}
-				
-				switch(state)
-				{
-					case 0:
-						MOT_STOP
-					break;
-					case 1:
-						MOTOR_SET_SPEED(&MOTOR_LEFT, 25);
-					break;
-					case 2:
-						MOTOR_SET_SPEED(&MOTOR_LEFT, -25);
-					break;
-					case 3:
-						MOTOR_SET_SPEED(&MOTOR_RIGHT, 25);
-					break;
-					case 4:
-						MOTOR_SET_SPEED(&MOTOR_RIGHT, -25);
-					break;
-				}
 			
 			break;
 			}
 			case MOUSE_TEST:
 			{
-				for(uint8_t i = 0; i < 8; i++)
-				{
-					if(i < 4) LED_Switch(i, ON);
-						else LED_Switch(i - 4, OFF);
-					
-					delay_ms(250);
-				}
-				delay_ms(1000);
 				
-				BUZZER_Buzz(8, 1, 250, 500);
-				BUZZER_Buzz(32, 1, 250, 500);
-				BUZZER_Buzz(64, 1, 250, 500);
-				
-				delay_ms(1000);
-
-				
-				MOTOR_SET_SPEED(&MOTOR_LEFT, 50);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-				MOTOR_SET_SPEED(&MOTOR_LEFT, -50);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-				MOTOR_SET_SPEED(&MOTOR_RIGHT, 50);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-				MOTOR_SET_SPEED(&MOTOR_RIGHT, -50);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-				MOTOR_SET_SPEED(&MOTOR_LEFT, 90);
-				MOTOR_SET_SPEED(&MOTOR_RIGHT, 90);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-				MOTOR_SET_SPEED(&MOTOR_LEFT, -20);
-				MOTOR_SET_SPEED(&MOTOR_RIGHT, -20);
-				delay_ms(1000);
-					MOT_STOP
-					delay_ms(500);
-					
-				MOT_STOP
-				delay_ms(1000);
-				for(uint8_t i = 0; i < 100; i++)
-				{
-					MOTOR_SET_SPEED(&MOTOR_LEFT, i);
-					MOTOR_SET_SPEED(&MOTOR_RIGHT, i);
-					delay_ms(50);
-				}
-				
-				delay_ms(1000);
-				MOT_STOP
-				delay_ms(1000);
-				for(uint8_t i = 0; i < 100; i++)
-				{
-					MOTOR_SET_SPEED(&MOTOR_LEFT, -i);
-					MOTOR_SET_SPEED(&MOTOR_RIGHT, -i);
-					delay_ms(50);
-				}
-				
-				delay_ms(1000);
-				MOT_STOP
-				delay_ms(1000);
-				
-				MOUSE.state = MOUSE_IDLE;
 			
 			break;
 			}

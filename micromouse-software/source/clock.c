@@ -1,6 +1,7 @@
 #include "clock.h"
 
 volatile static uint32_t tick;
+volatile static uint32_t battery_tick;
 
 void CLOCK_Init(void)
 {
@@ -30,10 +31,16 @@ void CLOCK_Init(void)
 void SysTick_Handler(void)
 {
 	tick++;
+	battery_tick++;
 }
 
 void delay_ms(uint32_t ms)
 {
 	tick = 0;
 	while(tick < ms);
+}
+
+uint32_t GET_BATTERY_TICK(void)
+{
+	return battery_tick;
 }

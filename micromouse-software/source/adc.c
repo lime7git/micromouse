@@ -1,7 +1,6 @@
 #include "adc.h"
 #include "uart.h"
 #include "gpio.h"
-#include "buzzer.h"
 #include "ui.h"
 #include "motors.h"
 #include "controller.h"
@@ -70,7 +69,7 @@ void ADC2_DMA_init(void)
 	ADC2->SMPR2 |= ADC_SMPR2_SMP5; 
 	ADC2->CR2 |= ADC_CR2_SWSTART;
 	NVIC_EnableIRQ(ADC_IRQn);
-	NVIC_SetPriority(ADC_IRQn, 1); // higher settable priority 
+	NVIC_SetPriority(ADC_IRQn, 1); 
 	
 	DMA2_Stream3->PAR 	= (uint32_t)&ADC2->DR;
 	DMA2_Stream3->M0AR 	= (uint32_t)ADC2_readings;
@@ -84,6 +83,7 @@ void ADC_IRQHandler(void)
 		{
 			ADC1->SR &= ~ADC_SR_AWD;
 			
+			
 //			MOUSE.state = CRITICAL;
 //			MOUSE.state = CRITICAL;
 //			MOUSE.state = CRITICAL;
@@ -96,7 +96,6 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			sprintf(buf,"\r\n### BATTERY WATCHDOG ###\r\nBattery voltage = %.2f\r\n",ADC_GET_BATTERY_VOLTAGE());
 			UART1_Log(buf);
 	
-			BUZZER_Buzz(128, 5, 50, 50);
 				
 			MOT_STOP
 			MOTR_SET_PWM(0);
@@ -105,7 +104,6 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			LED_Switch(LED2, OFF);
 			LED_Switch(LED3, OFF);
 			LED_Switch(LED4, OFF);
-			BUZZER_Volume(0);
 	
 			MOUSE.state = MOUSE_STOP;
 			MOUSE.state = MOUSE_STOP;

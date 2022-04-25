@@ -2,7 +2,6 @@
 #include "gpio.h"
 #include "clock.h"
 #include "adc.h"
-#include "buzzer.h"
 #include "ui.h"
 #include "motors.h"
 #include "circular_buffer.h"
@@ -19,7 +18,6 @@ int main(void)
 	GPIO_Init();
 	ADC1_DMA_Init();
 	ADC2_DMA_init();
-	//BUZZER_Init();
 	MOTORS_Init();
 	ENCODERS_Init();
 	BUTTON_EXTI_Init();
@@ -42,6 +40,7 @@ int main(void)
 	
 	MOUSE.state = MOUSE_IDLE;
 	TEST_PIN_OFF;
+	TEST_PIN2_OFF;
 		
 	while(1)
 	{

@@ -31,7 +31,7 @@ void MOTORS_Init(void)
 	
 	GPIOC->AFR[0] |= 0x33000000;
 	
-	// ~8khz frequency
+	// ~4khz frequency
 	TIM8->PSC = (SystemCoreClock / 8000000) - 1; // 8MHz
 	TIM8->ARR = 1000-1;
 	

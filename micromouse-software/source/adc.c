@@ -92,10 +92,6 @@ void ADC_IRQHandler(void)
 
 void BATTERY_CRITICAL_PROCEDURE(void)
 {
-			static char buf[64];
-			sprintf(buf,"\r\n### BATTERY WATCHDOG ###\r\nBattery voltage = %.2f\r\n",ADC_GET_BATTERY_VOLTAGE());
-			UART1_Log(buf);
-				
 			MOT_STOP
 			MOTR_SET_PWM(0);
 			MOTL_SET_PWM(0);
@@ -105,6 +101,10 @@ void BATTERY_CRITICAL_PROCEDURE(void)
 			LED_Switch(LED4, OFF);
 	
 			MOUSE.state = MOUSE_STOP;
+	
+			static char buf[64];
+			sprintf(buf,"\r\n### BATTERY WATCHDOG ###\r\nBattery voltage = %.2f\r\n",ADC_GET_BATTERY_VOLTAGE());
+			UART1_Log(buf);
 }
 
 double ADC_GET_BATTERY_VOLTAGE(void) 			{	return CONV_2_BATTERY_VOLTAGE(ADC1_readings[0]);	}
@@ -136,13 +136,13 @@ double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit)
 	sensor_mean_raw = 0.0;
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_enviroment += ADC2_readings[0];
+			sensor_mean_enviroment += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_ON;
 	delay_ms(1);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_raw += ADC2_readings[0];
+			sensor_mean_raw += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_OFF;
 	
@@ -150,16 +150,13 @@ double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 	}
-	else if(unit == MM)
+	else
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (2393.3 / (log(sensor_raw_value - 114.6))) - 213.0;
 	}
-	else if(unit == CM)
-	{
-		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = ((2393.3 / (log(sensor_raw_value - 114.6))) - 213.0) / 10.0;
-	}
+	
+	if(unit == CM) sensor_raw_value /= 10.0;
 	
 	return sensor_raw_value;
 }
@@ -171,13 +168,13 @@ double SENSOR_GET_RIGHT_FRONT_DISTANCE(eSENSORSunit unit)
 	sensor_mean_raw = 0.0;
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_enviroment += ADC2_readings[2];
+			sensor_mean_enviroment += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_ON;
 	delay_ms(1);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_raw += ADC2_readings[2];
+			sensor_mean_raw += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_OFF;
 	
@@ -185,16 +182,13 @@ double SENSOR_GET_RIGHT_FRONT_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 	}
-	else if(unit == MM)
+	else
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (2871.4 / (log(sensor_raw_value - 415.3))) - 263.4;
 	}
-	else if(unit == CM)
-	{
-		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = ((2871.4 / (log(sensor_raw_value - 415.3))) - 263.4) / 10.0;
-	}
+	
+	if(unit == CM) sensor_raw_value /= 10.0;
 	
 	return sensor_raw_value;
 }
@@ -206,13 +200,13 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 	sensor_mean_raw = 0.0;
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_enviroment += ADC2_readings[1];
+			sensor_mean_enviroment += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_ON;
 	delay_ms(1);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_raw += ADC2_readings[1];
+			sensor_mean_raw += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_OFF;
 		
@@ -220,16 +214,13 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 	}
-	else if(unit == MM)
+	else
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (2318.0 / (log(sensor_raw_value - 155.2))) - 235.1;
 	}
-	else if(unit == CM)
-	{
-		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = ((2318.0 / (log(sensor_raw_value - 155.2))) - 235.1) / 10.0;
-	}
+	
+	if(unit == CM) sensor_raw_value /= 10.0;
 	
 	return sensor_raw_value;		
 }
@@ -241,13 +232,13 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 	sensor_mean_raw = 0.0;
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_enviroment += ADC2_readings[3];
+			sensor_mean_enviroment += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_ON;
 	delay_ms(1);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
-		sensor_mean_raw += ADC2_readings[3];
+			sensor_mean_raw += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_OFF;
 		
@@ -255,16 +246,13 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 	}
-	else if(unit == MM)
+	else
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (3225.2 / (log(sensor_raw_value - 62.1))) - 345.9;
 	}
-	else if(unit == CM)
-	{
-		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
-		sensor_raw_value = ((3225.2 / (log(sensor_raw_value - 62.1))) - 345.9) / 10.0;
-	}
+
+	if(unit == CM) sensor_raw_value /= 10.0;
 	
 	return sensor_raw_value;
 }

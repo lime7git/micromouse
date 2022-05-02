@@ -20,7 +20,7 @@
 	#define ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE 	1480 	// about 1.19V adc = 6.6V battery voltage
 #endif
 
-#define NUMBER_OF_MEASURMENTS 100.0
+#define NUMBER_OF_MEASURMENTS 100.0	// number of signle sensors mesurments during one sequency X2
 
 void ADC1_DMA_Init(void);
 void ADC2_DMA_init(void);

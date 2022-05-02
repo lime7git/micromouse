@@ -25,7 +25,7 @@ int main(void)
 	TIM7_1KHz_INTERRUPT_Init();
 	
 	
-	MOTOR_PID_INIT(&MOTOR_LEFT, LEFT_MOTOR, 1.0f, 0.7f, 0.001f);
+	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 1.0f, 0.7f, 0.001f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.1f, 0.65f, 0.001f);
 	
 	MOTOR_SPEED_PROFILER_INIT(&MOTOR_LEFT, 500.0f, 1.0f);
@@ -39,8 +39,6 @@ int main(void)
 	
 	
 	MOUSE.state = MOUSE_IDLE;
-	TEST_PIN_OFF;
-	TEST_PIN2_OFF;
 		
 	while(1)
 	{

@@ -42,8 +42,7 @@ void STATE_Handle(void)
 				MOVE_CONTROLLER_DISABLE(&MOUSE);
 				
 				MOT_STOP
-				MOT_STOP
-				MOT_STOP
+				
 				LED_Switch(LED1, OFF);
 				LED_Switch(LED2, OFF);
 				LED_Switch(LED3, OFF);
@@ -112,7 +111,7 @@ void LED_DISPLAY_DIGIT_IN_BINARY(uint8_t number)
 {
 		if(number <= 15)
 		{
-			volatile uint8_t n = number;
+			uint8_t n = number;
 			
 			for(uint8_t i = 0; i < 4; i++)
 			{
@@ -148,6 +147,7 @@ void STATE_Selection(void)
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 		{
 			BUTTON_OK.wasPressed = false;
+			
 			break;
 		}
 		

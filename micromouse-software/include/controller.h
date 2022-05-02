@@ -11,8 +11,6 @@
 #define RAD_TO_DEG 57.295779513f
 #define TIME_STAMP 0.01f
 
-#pragma pack(push)
-#pragma pack(1) 
 typedef struct{
 	
 	eMouseState state;
@@ -34,7 +32,6 @@ typedef struct{
 	float angle_to_achieve;
 	
 } sMOUSE;
-#pragma pack(pop)
 
 extern sMOUSE MOUSE;
 

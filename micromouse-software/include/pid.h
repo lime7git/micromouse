@@ -13,9 +13,6 @@ typedef enum{
 	RIGHT_MOTOR = 1
 }eMOT;
 	
-// pragma to aviod padding aligment warning
-#pragma pack(push)
-#pragma pack(1)  
 typedef struct{
 	
 	eMOT motorSide;
@@ -46,7 +43,6 @@ typedef struct{
 	bool is_profiller_enable;
 	
 }sMOT; 
-#pragma pack(pop)
 
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;

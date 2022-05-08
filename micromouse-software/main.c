@@ -39,10 +39,21 @@ int main(void)
 	
 	
 	MOUSE.state = MOUSE_IDLE;
+	
+	TEST_PIN2_OFF;
+	TEST_PIN_OFF;
 		
 	while(1)
 	{
+		TEST_PIN2_ON;
+		
 		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
+		MOUSE.left_front_sensor_mm = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
+		MOUSE.right_side_sensor_mm = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
+		MOUSE.left_side_sensor_mm = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
+		MOUSE.right_front_sensor_mm = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
+		
+		TEST_PIN2_OFF;
 		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);

@@ -45,16 +45,17 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 		mouse->angle_to_achieve -= 360.0f;
 	}
 
-	out = 1.0f 	* mouse->angle_to_achieve + 0.0f * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP;
+	out = 0.5f 	* mouse->angle_to_achieve + 0.1f * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP;
 	
-	if(out > 650.0f)
-			out = 650.0f;
-	else if(out < -650.0f)
-			out = -650.0f;
+	if(out > 150.0f)
+			out = 150.0f;
+	else if(out < -150.0f)
+			out = -150.0f;
 
-	if(mouse->angle_to_achieve  > -3.0f && mouse->angle_to_achieve  < 3.0f)
+	if(mouse->angle_to_achieve < -3.0f || mouse->angle_to_achieve > 3.0f)
 	{
 		mouse->direction = out;
+		mouse->forward = mouse->forward *= 0.1;
 	}
 	else 
 	{

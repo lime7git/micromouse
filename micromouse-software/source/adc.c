@@ -85,7 +85,7 @@ void ADC_IRQHandler(void)
 			
 			if(MOUSE.battery_voltage < CONV_2_BATTERY_VOLTAGE(ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE))
 			{
-				MOUSE.state = MOUSE_CRITICAL;
+				//MOUSE.state = MOUSE_CRITICAL;
 			}	
 		}
 }

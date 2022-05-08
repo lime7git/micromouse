@@ -3,6 +3,7 @@
 #include "encoders.h"
 #include "controller.h"
 #include "uart.h"
+#include "adc.h"
 
 void TIM7_1KHz_INTERRUPT_Init(void)
 {
@@ -30,6 +31,8 @@ void TIM7_IRQHandler(void)
 	{
 		TIM7->SR &= ~TIM_SR_UIF;	// clear interrupt flag
 		
+		TEST_PIN_ON;
+		
 		CALCULATE_ACTUAL_POSITION(&MOUSE, &MOTOR_LEFT, &MOTOR_RIGHT);
 		MOTOR_CALCULATE_SPEED(&MOTOR_LEFT);
 		MOTOR_CALCULATE_SPEED(&MOTOR_RIGHT);
@@ -53,5 +56,7 @@ void TIM7_IRQHandler(void)
 		
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_LEFT)) MOTOR_PID_CONTROLLER(&MOTOR_LEFT);
 		if(MOTOR_PID_IS_ENABLE(&MOTOR_RIGHT)) MOTOR_PID_CONTROLLER(&MOTOR_RIGHT);
+		
+		TEST_PIN_OFF;
 	}
 }

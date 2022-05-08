@@ -31,6 +31,11 @@ typedef struct{
 	float distance_to_travel;
 	float angle_to_achieve;
 	
+	double left_front_sensor_mm;
+	double right_front_sensor_mm;
+	double left_side_sensor_mm;
+	double right_side_sensor_mm;
+	
 } sMOUSE;
 
 extern sMOUSE MOUSE;

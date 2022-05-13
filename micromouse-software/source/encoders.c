@@ -94,6 +94,6 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	pMOUSE->actual_position_x += distance * sinf(pMOUSE->actual_angle * DEG_TO_RAD);
 	pMOUSE->actual_position_y += distance * cosf(pMOUSE->actual_angle * DEG_TO_RAD);
 	
-	pMOTOR_LEFT->act_rpm = 	((float)pMOTOR_LEFT->encDiff 	/ TIME_STAMP) / ENC_IMP_PER_ROTATE;
-	pMOTOR_RIGHT->act_rpm = ((float)pMOTOR_RIGHT->encDiff / TIME_STAMP) / ENC_IMP_PER_ROTATE;
+	pMOTOR_LEFT->act_rpm = 	((float)pMOTOR_LEFT->encDiff 	/ TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
+	pMOTOR_RIGHT->act_rpm = ((float)pMOTOR_RIGHT->encDiff / TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
 }

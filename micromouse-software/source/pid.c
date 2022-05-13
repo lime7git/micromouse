@@ -21,8 +21,6 @@ void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd)
 	pMOTOR->enc = 0;
 	pMOTOR->encPrev = 0;
 	pMOTOR->encDiff = 0;
-	pMOTOR->pulse_per_sec = 0;
-	pMOTOR->prev_pulse = 0;
 	pMOTOR->totalDist = 0.0f;
 	pMOTOR->dist = 0.0f;
 }

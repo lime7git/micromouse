@@ -55,11 +55,11 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	if(mouse->angle_to_achieve < -2.0f || mouse->angle_to_achieve > 2.0f)
 	{
 		mouse->direction = out;
-		mouse->forward *= 0.1;
+		mouse->forward = 0.0;
 	}
 	else 
 	{
-		mouse->direction = out;;
+		mouse->direction = out;
 	}
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)

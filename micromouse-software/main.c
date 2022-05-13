@@ -37,7 +37,6 @@ int main(void)
 	MOTOR_SPEED_PROFILER_DISABLE(&MOTOR_RIGHT);
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
 	
-	
 	MOUSE.state = MOUSE_IDLE;
 	
 	TEST_PIN2_OFF;
@@ -55,6 +54,7 @@ int main(void)
 		
 		TEST_PIN2_OFF;
 		
+		
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
 		
@@ -64,20 +64,6 @@ int main(void)
 				
 				BUTTON_SEL.wasPressed = false;
 			}
-			
-		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
-			{
-				
 
-				BUTTON_OK.wasPressed = false;
-			}	
-			
-		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
-			{
-				
-				BUTTON_OK.wasPressed = false;
-			}		
-			
-			
 	}
 }

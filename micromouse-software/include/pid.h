@@ -32,8 +32,6 @@ typedef struct{
 	int32_t enc;
 	int32_t encPrev;
 	int32_t encDiff;
-	int32_t pulse_per_sec;
-	int32_t prev_pulse;
 	
 	float profiler_velocity;
 	float max_velocity;

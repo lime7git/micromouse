@@ -15,6 +15,8 @@ typedef struct{
 	
 	eMouseState state;
 	bool is_controller_enable;
+	bool forward_control;
+	bool rotation_control;
 	double battery_voltage;
 	
 	float forward;

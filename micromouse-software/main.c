@@ -24,10 +24,6 @@ int main(void)
 	UART1_IT_Init();
 	TIM7_1KHz_INTERRUPT_Init();
 	
-	
-//	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 1.0f, 0.7f, 0.001f);
-//	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 1.1f, 0.65f, 0.001f);
-	
 	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 0.01f, 0.7f, 0.0001f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 0.01f, 0.65f, 0.0001f);
 	
@@ -69,6 +65,60 @@ int main(void)
 				
 				BUTTON_SEL.wasPressed = false;
 			}
+			
+		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
+			{
+				delay_ms(500);
+				MOTOR_PID_ENABLE(&MOTOR_LEFT);
+				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
+				
+				for(int i = 0; i < 150; i++)
+				{
+					MOUSE.forward = i;
+					delay_ms(50);
+				}
+				
+				
+				for(int i = 150; i > 0; i--)
+				{
+					MOUSE.forward = i;
+					delay_ms(50);
+				}
+				
+				BUTTON_OK.wasPressed = false;
+			}	
+			
+		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
+			{
+				delay_ms(750);
+				MOVE_SET_ORIENTATION(&MOUSE, 90.0f);
+				
+				BUTTON_OK.wasPressed = false;
+			}		
+			
+		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
+		{
+			delay_ms(500);
+			MOUSE.state = MOUSE_MANUAL;
+			TIM5->CNT = 0;
+			TIM2->CNT = 0;
+			MOUSE.actual_angle = 0.0f;
+			MOUSE.actual_position_x = 0.0f;
+			MOUSE.actual_position_y = 0.0f;
+			MOTOR_SET_SPEED(&MOTOR_LEFT, 14.5f);
+			MOTOR_SET_SPEED(&MOTOR_RIGHT, -14.5f);
+			
+			while(MOUSE.actual_angle <= 72.5f)
+			{
+				CALCULATE_ACTUAL_POSITION(&MOUSE, &MOTOR_LEFT, &MOTOR_RIGHT);
+			}
+			MOT_STOP;
+			MOUSE.state = MOUSE_STOP;
+			
+			
+				
+			BUTTON_OK.wasPressed = false;
+		}	
 
 	}
 }

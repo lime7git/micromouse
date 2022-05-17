@@ -31,8 +31,8 @@ void MOTORS_Init(void)
 	
 	GPIOC->AFR[0] |= 0x33000000;
 	
-	// ~14khz frequency
-	TIM8->PSC = (SystemCoreClock / 1400000) - 1; // 14MHz
+	// ~42khz frequency
+	TIM8->PSC = (SystemCoreClock / 4200000) - 1; 
 	TIM8->ARR = 100-1;
 	
 	//set tim as pwm, enable channel and timer

@@ -370,7 +370,7 @@ void USART1_IRQHandler(void)
 	{
 		volatile uint8_t data = (uint8_t)USART1->DR;
 		
-		tCircular_buffer_push(&UART_Buffer, data);
+		tCircular_buffer_push(&UART_Buffer, (uint8_t)USART1->DR);
 	}
 }
 

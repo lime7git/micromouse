@@ -67,32 +67,31 @@ int main(void)
 			}
 			
 		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
-			{
+		{
 				delay_ms(500);
-				MOTOR_PID_ENABLE(&MOTOR_LEFT);
-				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
-				
-				for(int i = 0; i < 150; i++)
-				{
-					MOUSE.forward = i;
-					delay_ms(50);
-				}
-				
-				
-				for(int i = 150; i > 0; i--)
-				{
-					MOUSE.forward = i;
-					delay_ms(50);
-				}
+				MOVE_SET_POSITION(&MOUSE, MOUSE.actual_position_x, MOUSE.actual_position_y + 504.0f);
 				
 				BUTTON_OK.wasPressed = false;
 			}	
 			
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 			{
-				delay_ms(750);
-				MOVE_SET_ORIENTATION(&MOUSE, 90.0f);
+				delay_ms(500);
+				MOTOR_PID_ENABLE(&MOTOR_LEFT);
+				MOTOR_PID_ENABLE(&MOTOR_RIGHT);
 				
+				for(int i = 0; i < 150; i+= 20)
+				{
+					MOUSE.forward = i;
+					delay_ms(2500);
+				}
+				
+				
+				for(int i = 150; i > 0; i-= 20)
+				{
+					MOUSE.forward = i;
+					delay_ms(2500);
+				}
 				BUTTON_OK.wasPressed = false;
 			}		
 			

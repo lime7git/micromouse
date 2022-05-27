@@ -218,6 +218,7 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (2318.0 / (log(sensor_raw_value - 155.2))) - 235.1;
+		if(sensor_raw_value > 250.0f) sensor_raw_value = 250.0f;
 	}
 	
 	if(unit == CM) sensor_raw_value /= 10.0;
@@ -250,6 +251,7 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 	{
 		sensor_raw_value = (sensor_mean_raw / NUMBER_OF_MEASURMENTS) - (sensor_mean_enviroment / NUMBER_OF_MEASURMENTS);
 		sensor_raw_value = (3225.2 / (log(sensor_raw_value - 62.1))) - 345.9;
+		if(sensor_raw_value > 250.0f) sensor_raw_value = 250.0f;
 	}
 
 	if(unit == CM) sensor_raw_value /= 10.0;

@@ -50,8 +50,6 @@ void MOVE_CONTROLLER_DISABLE(sMOUSE *mouse);
 bool MOVE_CONTROLLER_IS_ENABLE(sMOUSE *mouse);
 void MOVE_SET_POSITION(sMOUSE *mouse, float new_posX, float new_posY);
 void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_ang);
-
-void MOTOR_SPEED_PROFILER_INIT(sMOT *motor, float max_velocity, float acceleration);
-void MOTOR_SPEED_PROFILER(sMOUSE *mouse, sMOT *motor);
+void MOVE_ONE_CELL_FORWARD(sMOUSE *mouse);
 
 #endif

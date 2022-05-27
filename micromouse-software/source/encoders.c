@@ -26,7 +26,7 @@ void ENCODERS_Init(void)
 	TIM5->ARR = 0xFFFFFFFF;
 	
 	TIM5->CCMR1 |= (1 << TIM_CCMR1_CC1S_Pos) | (1 << TIM_CCMR1_CC2S_Pos) | (0 << TIM_CCMR1_IC1F_Pos) | (0 << TIM_CCMR1_IC2F_Pos) | (0 << TIM_CCMR1_IC1PSC_Pos) | (0 << TIM_CCMR1_IC2PSC_Pos);
-	TIM5->CCER |= (0 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
+	TIM5->CCER |= (0 << TIM_CCER_CC1P_Pos) | (1 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
 	TIM5->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
 	TIM5->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
 	
@@ -34,7 +34,7 @@ void ENCODERS_Init(void)
 	TIM2->ARR = 0xFFFFFFFF;
 	
 	TIM2->CCMR1 |= (1 << TIM_CCMR1_CC1S_Pos) | (1 << TIM_CCMR1_CC2S_Pos) | (0 << TIM_CCMR1_IC1F_Pos) | (0 << TIM_CCMR1_IC2F_Pos) | (0 << TIM_CCMR1_IC1PSC_Pos) | (0 << TIM_CCMR1_IC2PSC_Pos);
-	TIM2->CCER |= (0 << TIM_CCER_CC1P_Pos) | (1 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
+	TIM2->CCER |= (0 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
 	TIM2->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
 	TIM2->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
 }
@@ -64,17 +64,17 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	float distance;
 	float actual_angle_temporary;
 	
-	pMOTOR_LEFT->encPrev = pMOTOR_LEFT->enc;
-	pMOTOR_LEFT->enc = ENCODER_GET_VALUE(pMOTOR_LEFT);
-	pMOTOR_LEFT->encDiff = pMOTOR_LEFT->enc - pMOTOR_LEFT->encPrev;
-	pMOTOR_LEFT->dist = (float)pMOTOR_LEFT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
-	pMOTOR_LEFT->totalDist += pMOTOR_LEFT->dist;
+	pMOTOR_LEFT->encPrev 			= pMOTOR_LEFT->enc;
+	pMOTOR_LEFT->enc 					= ENCODER_GET_VALUE(pMOTOR_LEFT);
+	pMOTOR_LEFT->encDiff 			= pMOTOR_LEFT->enc - pMOTOR_LEFT->encPrev;
+	pMOTOR_LEFT->dist 				= (float)pMOTOR_LEFT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
+	pMOTOR_LEFT->totalDist 		+= pMOTOR_LEFT->dist;
 	
-	pMOTOR_RIGHT->encPrev = pMOTOR_RIGHT->enc;
-	pMOTOR_RIGHT->enc = ENCODER_GET_VALUE(pMOTOR_RIGHT);
-	pMOTOR_RIGHT->encDiff = pMOTOR_RIGHT->enc - pMOTOR_RIGHT->encPrev;
-	pMOTOR_RIGHT->dist = (float)pMOTOR_RIGHT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
-	pMOTOR_RIGHT->totalDist += pMOTOR_RIGHT->dist;
+	pMOTOR_RIGHT->encPrev 		= pMOTOR_RIGHT->enc;
+	pMOTOR_RIGHT->enc 				= ENCODER_GET_VALUE(pMOTOR_RIGHT);
+	pMOTOR_RIGHT->encDiff 		= pMOTOR_RIGHT->enc - pMOTOR_RIGHT->encPrev;
+	pMOTOR_RIGHT->dist 				= (float)pMOTOR_RIGHT->encDiff / ENC_IMP_PER_ROTATE * CIRCUMFERENCE_OF_WHEEL;
+	pMOTOR_RIGHT->totalDist 	+= pMOTOR_RIGHT->dist;
 	
 	actual_angle_temporary = ((pMOTOR_LEFT->totalDist - pMOTOR_RIGHT->totalDist) * ROTATE_CALIB) / DISTANCE_BETWEEN_WHEELS * RAD_TO_DEG;
 	pMOUSE->actual_angle = fmodf(actual_angle_temporary, 360.0f);
@@ -93,6 +93,9 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	pMOUSE->actual_position_x += distance * sinf(pMOUSE->actual_angle * DEG_TO_RAD);
 	pMOUSE->actual_position_y += distance * cosf(pMOUSE->actual_angle * DEG_TO_RAD);
 	
-	pMOTOR_LEFT->act_rpm = 	((float)pMOTOR_LEFT->encDiff 	/ TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
+	pMOTOR_LEFT->act_rpm 	= ((float)pMOTOR_LEFT->encDiff 	/ TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
 	pMOTOR_RIGHT->act_rpm = ((float)pMOTOR_RIGHT->encDiff / TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
+	
+	pMOTOR_LEFT->act_mmps 	= 16.0f * ( (2.0f * M_PI ) / 60.0 ) * pMOTOR_LEFT->act_rpm;
+	pMOTOR_RIGHT->act_mmps 	= 16.0f * ( (2.0f * M_PI ) / 60.0 ) * pMOTOR_RIGHT->act_rpm;
 }

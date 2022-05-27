@@ -150,11 +150,19 @@ void COMMAND_Execute(char *command)
 			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
 			GET_COMMAND_PARAMS(command, param_buffer);
 			
+			if(param_buffer[0][0] == 'F' && param_buffer[0][1] == 'W' && param_buffer[0][2] == 'D')
+			{
+				MOVE_ONE_CELL_FORWARD(&MOUSE);
+			}
+			else
+			{
 			float posX = (float)atof(param_buffer[0]);
 			float posY = (float)atof(param_buffer[1]);
 			
-			MOVE_SET_POSITION(&MOUSE, posX, posY);
+			delay_ms(1000);
 			
+			MOVE_SET_POSITION(&MOUSE, posX, posY);
+			}
 			break;
 		}
 		case ROTATE:
@@ -296,6 +304,12 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
+		case NRST:
+		{
+			NVIC_SystemReset();
+			
+			break;
+		}
 	}
 }
 eCOMMANDS COMMAND_GET_TYPE(char *command)
@@ -321,6 +335,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "ROTATE", counter) == 0) type = ROTATE;
 	else if(strncmp(command_type, "POSITION", counter) == 0) type = POSITION;
 	else if(strncmp(command_type, "SENSORS", counter) == 0) type = SENSORS;
+	else if(strncmp(command_type, "NRST", counter) == 0) type = NRST;
 	
 	return type;
 }

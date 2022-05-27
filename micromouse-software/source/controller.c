@@ -2,8 +2,8 @@
 
 sMOUSE MOUSE;
 
-float Fkp = 0.5f, Fkd = 0.9f;
-float Rkp = 0.5f, Rkd = 0.9f;
+float Fkp = 2.5f, Fkd = 0.075f;
+float Rkp = 1.5f, Rkd = 0.9f;
 
 void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 {
@@ -11,22 +11,42 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 	
 	previous_distance_to_travel = mouse->distance_to_travel;
 	
-	mouse->distance_to_travel = sqrtf(powf((mouse->new_position_x - mouse->actual_position_x),2) + powf((mouse->new_position_y - mouse->actual_position_y),2));
+//	mouse->distance_to_travel = sqrtf(powf((mouse->new_position_x - mouse->actual_position_x),2) + powf((mouse->new_position_y - mouse->actual_position_y),2));
+	
+	
+	
+		if(mouse->actual_angle > -10.0f && mouse->actual_angle < 10.0f)		// if facing NORTH
+	{
+		mouse->distance_to_travel = mouse->new_position_y - mouse->actual_position_y;
+	}
+	else if(mouse->actual_angle > -170.0f && mouse->actual_angle < 170.0f) // if facing SOUTH
+	{
+		mouse->distance_to_travel = mouse->new_position_y - mouse->actual_position_y;
+	}
+	else if(mouse->actual_angle > -80.0f && mouse->actual_angle < -110.0f) // if facing WEST
+	{
+		mouse->distance_to_travel = mouse->new_position_x - mouse->actual_position_x;
+	}
+	else if(mouse->actual_angle > 80.0f && mouse->actual_angle < 110.0f) // if facing EAST
+	{
+		mouse->distance_to_travel = mouse->new_position_x - mouse->actual_position_x;
+	}
 	
 	out = (Fkp * mouse->distance_to_travel) + (Fkd * (mouse->distance_to_travel - previous_distance_to_travel) / TIME_STAMP);
 	
-	if(out > 600.0f)
-		out = 600.0f;
-	else if(out < -600.0f)
-		out = -600.0f;
+	if(out > 360.0f)
+		out = 360.0f;
+	else if(out < -360.0f)
+		out = -360.0f;
 	
-	if(mouse->distance_to_travel > 10.0f)
+	if(mouse->distance_to_travel > 5.0f)
 	{
 		mouse->forward = out;
 	}
 	else
 	{
 		mouse->forward = 0.0f;
+		mouse->direction = 0.0f;
 		mouse->state = MOUSE_STOP;
 	}
 }
@@ -36,10 +56,30 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	 
 	previous_ang_to_achieve = mouse->angle_to_achieve;
 	
-	if(mouse->forward_control) mouse->angle_to_achieve = fmodf((atan2f((mouse->new_position_x - mouse->actual_position_x),(mouse->new_position_y - mouse->actual_position_y)) * RAD_TO_DEG) - mouse->actual_angle, 360.0f);
-		else mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
+	if(mouse->forward_control)
+	{
+		
+		//		if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)
+		//		{
+		//			mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
+		//		}
+		if(mouse->left_side_sensor_mm < 140.0f)	// if there is left wall - track left
+		{
+			mouse->angle_to_achieve = 83.0f - mouse->left_side_sensor_mm;
+		}
+		else if(mouse->right_side_sensor_mm < 140.0f) // if there is right wall - track right
+		{
+			mouse->angle_to_achieve = mouse->right_side_sensor_mm - 83.0f;
+		}
+		else	// if there is no walls 
+		{
+			mouse->angle_to_achieve = fmodf((atan2f((mouse->new_position_x - mouse->actual_position_x),(mouse->new_position_y - mouse->actual_position_y)) * RAD_TO_DEG) - mouse->actual_angle, 360.0f);
+		}	
+	}		
+	else mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
 	
-	//mouse->angle_to_achieve = 70.0f - mouse->left_side_sensor_mm;
+
+	
 	
 	if(mouse->angle_to_achieve < -180.0f)
 	{
@@ -52,15 +92,16 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 
 	out = (Rkp * mouse->angle_to_achieve) + (Rkd * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP);
 	
-	if(out > 600.0f)
-			out = 600.0f;
-	else if(out < -600.0f)
-			out = -600.0f;
+	if(out > 360.0f)
+			out = 360.0f;
+	else if(out < -360.0f)
+			out = -360.0f;
 
 	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
 	{
-		mouse->forward *= 0.5f;
+		mouse->forward *= 0.05f;
 	}
+	
 	
 	mouse->direction = out;
 	
@@ -92,56 +133,24 @@ void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_angle)
 	mouse->forward_control = false;
 	mouse->rotation_control = true;
 }
-void MOTOR_SPEED_PROFILER_INIT(sMOT *motor, float max_velocity, float acceleration)
+void MOVE_ONE_CELL_FORWARD(sMOUSE *mouse)
 {
-	motor->profiler_velocity = 0.0f;
-	motor->max_velocity = max_velocity;
-	motor->acceleration = acceleration;
-}
-void MOTOR_SPEED_PROFILER(sMOUSE *mouse, sMOT *motor)
-{
-	switch(motor->motorSide)
+	if(mouse->actual_angle > -10.0f && mouse->actual_angle < 10.0f)		// if facing NORTH
 	{
-		case LEFT_MOTOR:
-		{
-			if(motor->profiler_velocity < (mouse->forward + mouse->direction)) 
-			{
-				motor->profiler_velocity += motor->acceleration;
-			}
-			else if(motor->profiler_velocity > (mouse->forward + mouse->direction))
-			{
-				motor->profiler_velocity -= motor->acceleration;
-			}
-			
-			if(motor->profiler_velocity > motor->max_velocity)
-				motor->profiler_velocity = motor->max_velocity;
-			else if(motor->profiler_velocity < -(motor->max_velocity))
-				motor->profiler_velocity = -(motor->max_velocity);
-			
-			motor->set_rpm = motor->profiler_velocity;
-			
-			break;
-		}
-			
-		case RIGHT_MOTOR:
-		{
-			if(motor->profiler_velocity < (mouse->forward - mouse->direction))
-			{
-				motor->profiler_velocity += motor->acceleration;
-			}
-			else if(motor->profiler_velocity > (mouse->forward - mouse->direction))
-			{
-				motor->profiler_velocity -= motor->acceleration;
-			}
-			
-			if(motor->profiler_velocity > motor->max_velocity)
-				motor->profiler_velocity = motor->max_velocity;
-			else if(motor->profiler_velocity < -(motor->max_velocity))
-				motor->profiler_velocity = -(motor->max_velocity);
-			
-			motor->set_rpm = motor->profiler_velocity;
-			
-			break;
-		}
-	}	
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + 168.0f);
+	}
+	else if(mouse->actual_angle > -170.0f && mouse->actual_angle < 170.0f) // if facing SOUTH
+	{
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y - 168.0f);
+	}
+	else if(mouse->actual_angle > -80.0f && mouse->actual_angle < -110.0f) // if facing WEST
+	{
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x - 168.0f, mouse->actual_position_y);
+	}
+	else if(mouse->actual_angle > 80.0f && mouse->actual_angle < 110.0f) // if facing EAST
+	{
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x + 168.0f, mouse->actual_position_y);
+	}
+	
+	
 }

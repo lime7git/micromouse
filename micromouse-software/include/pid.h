@@ -19,6 +19,7 @@ typedef struct{
 	
 	float set_rpm;
 	float act_rpm;
+	float act_mmps;
 	float e;
 	float e_prev;
 	float e_total;
@@ -33,12 +34,7 @@ typedef struct{
 	int32_t encPrev;
 	int32_t encDiff;
 	
-	float profiler_velocity;
-	float max_velocity;
-	float acceleration;
-	
 	bool pidEnable;
-	bool is_profiller_enable;
 	
 }sMOT; 
 
@@ -50,8 +46,5 @@ void MOTOR_PID_CONTROLLER(sMOT *pMOTOR);
 void MOTOR_PID_ENABLE(sMOT *pMOTOR);
 void MOTOR_PID_DISABLE(sMOT *pMOTOR);
 bool MOTOR_PID_IS_ENABLE(sMOT *pMOTOR);
-void MOTOR_SPEED_PROFILER_ENABLE(sMOT *pMOTOR);
-void MOTOR_SPEED_PROFILER_DISABLE(sMOT *pMOTOR);
-bool MOTOR_SPEED_PROFILER_IS_ENABLE(sMOT *pMOTOR);
 
 #endif

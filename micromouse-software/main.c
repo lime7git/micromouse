@@ -24,8 +24,8 @@ int main(void)
 	UART1_IT_Init();
 	TIM7_1KHz_INTERRUPT_Init();
 	
-	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 0.01f, 0.7f, 0.0001f);
-	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 0.01f, 0.65f, 0.0001f);
+	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 0.021f, 0.08f, 0.0003f);
+	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 0.021f, 0.08f, 0.0003f);
 	
 	MOTOR_PID_DISABLE(&MOTOR_LEFT);
 	MOTOR_PID_DISABLE(&MOTOR_RIGHT);
@@ -58,11 +58,11 @@ int main(void)
 		{
 				delay_ms(500);
 			
-				MOVE_SET_POSITION(&MOUSE, MOUSE.actual_position_x, MOUSE.actual_position_y + 414.98f);
-				
+				MOVE_ONE_CELL_FORWARD(&MOUSE);
+
 				BUTTON_OK.wasPressed = false;
-			}	
-			
+		}	
+		
 			
 		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 		{

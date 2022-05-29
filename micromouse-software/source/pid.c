@@ -27,20 +27,20 @@ void MOTOR_PID_INIT(sMOT *pMOTOR, eMOT motor_side, float kp, float ki, float kd)
 void MOTOR_PID_CONTROLLER(sMOT *pMOTOR)
 {
 	pMOTOR->e_prev = pMOTOR->e;
-  pMOTOR->e = pMOTOR->set_rpm - pMOTOR->act_rpm;
+  pMOTOR->e = pMOTOR->set_rpm - pMOTOR->act_rpm_filtered;
 	pMOTOR->e_total += pMOTOR->e;
 	
-	if(pMOTOR->e_total > 20000.0f)		
-		pMOTOR->e_total = 20000.0f;
-	else if(pMOTOR->e_total < -20000.0f)	
-		pMOTOR->e_total = -20000.0f;
+	if(pMOTOR->e_total > 1750.0f)		
+		pMOTOR->e_total = 1750.0f;
+	else if(pMOTOR->e_total < -1750.0f)	
+		pMOTOR->e_total = -1750.0f;
 	
 	pMOTOR->out = pMOTOR->kp * pMOTOR->e + pMOTOR->ki * pMOTOR->e_total * TIME_STAMP + pMOTOR->kd * (pMOTOR->e - pMOTOR->e_prev) / TIME_STAMP;
 
-	if(pMOTOR->out > 100.0f) 	
-		pMOTOR->out = 100.0f;
-	else if(pMOTOR->out < -100.0f)	
-		pMOTOR->out = -100.0f;
+	if(pMOTOR->out > 1.0f) 	
+		pMOTOR->out = 1.0f;
+	else if(pMOTOR->out < -1.0f)	
+		pMOTOR->out = -1.0f;
 	
 	MOTOR_SET_SPEED(pMOTOR, pMOTOR->out);
 }

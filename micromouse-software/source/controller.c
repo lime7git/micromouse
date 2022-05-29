@@ -2,8 +2,8 @@
 
 sMOUSE MOUSE;
 
-float Fkp = 1.1f, Fkd = 0.05f;
-float Rkp = 1.5f, Rkd = 0.9f;
+float Fkp = 0.2f, Fkd = 0.01f;
+float Rkp = 1.5f, Rkd = 0.5f;
 
 float previous_distance_to_travel;
 float previous_ang_to_achieve;
@@ -16,9 +16,7 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 	
 //	mouse->distance_to_travel = sqrtf(powf((mouse->new_position_x - mouse->actual_position_x),2) + powf((mouse->new_position_y - mouse->actual_position_y),2));
 	
-	
-	
-		if(mouse->actual_angle > -30.0f && mouse->actual_angle < 30.0f)		// if facing NORTH
+	if(mouse->actual_angle > -30.0f && mouse->actual_angle < 30.0f)		// if facing NORTH
 	{
 		mouse->distance_to_travel = mouse->new_position_y - mouse->actual_position_y;
 	}
@@ -37,10 +35,10 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 	
 	out = (Fkp * mouse->distance_to_travel) + (Fkd * (mouse->distance_to_travel - previous_distance_to_travel) / TIME_STAMP);
 	
-	if(out > 360.0f)
-		out = 360.0f;
-	else if(out < -360.0f)
-		out = -360.0f;
+	if(out > 180.0f)
+		out = 180.0f;
+	else if(out < -180.0f)
+		out = -180.0f;
 	
 	if(mouse->distance_to_travel > 5.0f)
 	{
@@ -61,7 +59,6 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	
 	if(mouse->forward_control)
 	{
-		
 		//		if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)
 		//		{
 		//			mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
@@ -79,10 +76,10 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 			mouse->angle_to_achieve = fmodf((atan2f((mouse->new_position_x - mouse->actual_position_x),(mouse->new_position_y - mouse->actual_position_y)) * RAD_TO_DEG) - mouse->actual_angle, 360.0f);
 		}	
 	}		
-	else mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
-	
-
-	
+	else 
+	{	
+		mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
+	}
 	
 	if(mouse->angle_to_achieve < -180.0f)
 	{
@@ -95,19 +92,21 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 
 	out = (Rkp * mouse->angle_to_achieve) + (Rkd * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP);
 	
-	if(out > 360.0f)
-			out = 360.0f;
-	else if(out < -360.0f)
-			out = -360.0f;
-
-	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
+	if(out > 180.0f)
 	{
-		mouse->forward *= 0.25f;
+		out = 180.0f;
+	}
+	else if(out < -180.0f)
+	{
+		out = -180.0f;
 	}
 	
-	
+	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
+	{
+		mouse->forward *= 0.4f;
+	}
+
 	mouse->direction = out;
-	
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)
 {

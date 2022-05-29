@@ -31,9 +31,9 @@ void MOTORS_Init(void)
 	
 	GPIOC->AFR[0] |= 0x33000000;
 	
-	// ~42khz frequency
-	TIM8->PSC = (SystemCoreClock / 4200000) - 1; 
-	TIM8->ARR = 100-1;
+	// ~21khz frequency
+	TIM8->PSC = 4-1; 
+	TIM8->ARR = 1000-1;
 	
 	//set tim as pwm, enable channel and timer
 	TIM8->CCER |= TIM_CCER_CC1E | TIM_CCER_CC2E;
@@ -52,15 +52,15 @@ void MOTOR_SET_SPEED(sMOT *pMOTOR, float speed)
 		{
 			if(speed > 0.0f)
 			{
-					MOTR_SET_PWM((uint16_t)fabsf(speed));
+					MOTR_SET_PWM((uint16_t)(fabsf(speed) * 999.0f));
 					MOTR_FORWARD
 			}
-			if(speed < 0.0f)	
+			else if(speed < 0.0f)	
 			{
-					MOTR_SET_PWM((uint16_t)fabsf(speed));
+					MOTR_SET_PWM((uint16_t)(fabsf(speed) * 999.0f));
 					MOTR_BACKWARDS
 			}
-			if (speed > -0.1f && speed < 0.1f)
+			if (speed > -0.01f && speed < 0.01f)
 			{
 				MOTR_SET_PWM(0);
 				MOTR_STOP
@@ -72,15 +72,15 @@ void MOTOR_SET_SPEED(sMOT *pMOTOR, float speed)
 		{
 			if(speed > 0.0f)
 			{
-					MOTL_SET_PWM((uint16_t)fabsf(speed));
+					MOTL_SET_PWM((uint16_t)(fabsf(speed) * 999.0f));
 					MOTL_FORWARD
 			}
-			if(speed < 0.0f)
+			else if(speed < 0.0f)
 			{
-					MOTL_SET_PWM((uint16_t)fabsf(speed));
+					MOTL_SET_PWM((uint16_t)(fabsf(speed) * 999.0f));
 					MOTL_BACKWARDS
 			}
-			if (speed > -0.1f && speed < 0.1f)
+			if (speed > -0.01f && speed < 0.01f)
 			{
 				MOTL_SET_PWM(0);
 				MOTL_STOP

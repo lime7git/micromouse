@@ -19,7 +19,8 @@ typedef struct{
 	
 	float set_rpm;
 	float act_rpm;
-	float act_mmps;
+	float act_rpm_filtered;
+	float prev_rpm;
 	float e;
 	float e_prev;
 	float e_total;

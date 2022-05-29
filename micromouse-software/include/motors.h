@@ -28,8 +28,8 @@
 #define MOTL_STOP 	{MOTL_IN1_OFF MOTL_IN2_OFF}
 #define MOT_STOP		{MOTR_STOP MOTL_STOP}
 
-#define MOTR_SET_PWM(value)		TIM8->CCR1 = value
-#define MOTL_SET_PWM(value)		TIM8->CCR2 = value
+#define MOTR_SET_PWM(value)		TIM8->CCR1 = value;
+#define MOTL_SET_PWM(value)		TIM8->CCR2 = value;
 
 void MOTORS_Init(void);
 void MOTOR_SET_SPEED(sMOT *pMOTOR, float speed);

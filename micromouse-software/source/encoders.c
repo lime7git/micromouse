@@ -1,5 +1,8 @@
 #include "encoders.h"
 
+float velocity_filter;
+float velocity_prev;
+
 void ENCODERS_Init(void)
 {
 	// enable clock for port A, B and enable TIM2 and TIM5
@@ -96,6 +99,10 @@ void CALCULATE_ACTUAL_POSITION(sMOUSE *pMOUSE, sMOT *pMOTOR_LEFT, sMOT *pMOTOR_R
 	pMOTOR_LEFT->act_rpm 	= ((float)pMOTOR_LEFT->encDiff 	/ TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
 	pMOTOR_RIGHT->act_rpm = ((float)pMOTOR_RIGHT->encDiff / TIME_STAMP * 60.0f) / ENC_IMP_PER_ROTATE;
 	
-	pMOTOR_LEFT->act_mmps 	= 16.0f * ( (2.0f * M_PI ) / 60.0 ) * pMOTOR_LEFT->act_rpm;
-	pMOTOR_RIGHT->act_mmps 	= 16.0f * ( (2.0f * M_PI ) / 60.0 ) * pMOTOR_RIGHT->act_rpm;
+	pMOTOR_LEFT->act_rpm_filtered = 0.854f * pMOTOR_LEFT->act_rpm_filtered + 0.0728f * pMOTOR_LEFT->act_rpm + 0.0728f * pMOTOR_LEFT->prev_rpm;
+	pMOTOR_LEFT->prev_rpm = pMOTOR_LEFT->act_rpm;
+	
+	pMOTOR_RIGHT->act_rpm_filtered = 0.854f * pMOTOR_RIGHT->act_rpm_filtered + 0.0728f * pMOTOR_RIGHT->act_rpm + 0.0728f * pMOTOR_RIGHT->prev_rpm;
+	pMOTOR_RIGHT->prev_rpm = pMOTOR_RIGHT->act_rpm;
+	
 }

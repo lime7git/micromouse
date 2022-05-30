@@ -2,8 +2,8 @@
 
 sMOUSE MOUSE;
 
-float Fkp = 0.2f, Fkd = 0.01f;
-float Rkp = 1.5f, Rkd = 0.5f;
+float Fkp = 0.35f, Fkd = 0.03f;
+float Rkp = 0.5f, Rkd = 0.01f;
 
 float previous_distance_to_travel;
 float previous_ang_to_achieve;
@@ -75,6 +75,7 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 		{
 			mouse->angle_to_achieve = fmodf((atan2f((mouse->new_position_x - mouse->actual_position_x),(mouse->new_position_y - mouse->actual_position_y)) * RAD_TO_DEG) - mouse->actual_angle, 360.0f);
 		}	
+
 	}		
 	else 
 	{	
@@ -101,10 +102,10 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 		out = -180.0f;
 	}
 	
-	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
-	{
-		mouse->forward *= 0.4f;
-	}
+//	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
+//	{
+//		mouse->forward *= 0.7f;
+//	}
 
 	mouse->direction = out;
 }

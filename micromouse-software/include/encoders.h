@@ -8,7 +8,7 @@
 #include "pid.h"
 
 #define CIRCUMFERENCE_OF_WHEEL 100.53f		
-#define DISTANCE_BETWEEN_WHEELS 80.38f 	
+#define DISTANCE_BETWEEN_WHEELS 85.0f 	
 #define ENC_IMP_PER_ROTATE 909.72f		
 #define ROTATE_CALIB 1.0f 
 

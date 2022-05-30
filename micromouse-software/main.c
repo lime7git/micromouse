@@ -57,7 +57,6 @@ int main(void)
 		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
 		{
 				delay_ms(500);
-			
 				MOVE_ONE_CELL_FORWARD(&MOUSE);
 
 				BUTTON_OK.wasPressed = false;

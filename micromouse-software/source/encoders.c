@@ -1,8 +1,5 @@
 #include "encoders.h"
 
-float velocity_filter;
-float velocity_prev;
-
 void ENCODERS_Init(void)
 {
 	// enable clock for port A, B and enable TIM2 and TIM5

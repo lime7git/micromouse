@@ -28,18 +28,18 @@ void ENCODERS_Init(void)
 	TIM5->PSC = 1;
 	TIM5->ARR = 0xFFFFFFFF;
 	
-	TIM5->CCMR1 |= (1 << TIM_CCMR1_CC1S_Pos) | (1 << TIM_CCMR1_CC2S_Pos) | (0 << TIM_CCMR1_IC1F_Pos) | (0 << TIM_CCMR1_IC2F_Pos) | (0 << TIM_CCMR1_IC1PSC_Pos) | (0 << TIM_CCMR1_IC2PSC_Pos);
-	TIM5->CCER |= (0 << TIM_CCER_CC1P_Pos) | (1 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
-	TIM5->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
-	TIM5->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
+	TIM5->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // IC1 mapped on TI1, IC2 mapped on TI2
+	TIM5->CCER 	|= (1 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E; // TI1 inverted, TI2 non-inverted , enable channel 1 and 2
+	TIM5->SMCR 	|= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 4 edges
+	TIM5->CR1 	|= TIM_CR1_CEN; // counter enable
 	
 	TIM2->PSC = 1;
 	TIM2->ARR = 0xFFFFFFFF;
 	
-	TIM2->CCMR1 |= (1 << TIM_CCMR1_CC1S_Pos) | (1 << TIM_CCMR1_CC2S_Pos) | (0 << TIM_CCMR1_IC1F_Pos) | (0 << TIM_CCMR1_IC2F_Pos) | (0 << TIM_CCMR1_IC1PSC_Pos) | (0 << TIM_CCMR1_IC2PSC_Pos);
-	TIM2->CCER |= (0 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
-	TIM2->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 2 edges
-	TIM2->CR1 |= (0 << TIM_CR1_ARPE_Pos) | (0 << TIM_CR1_CKD_Pos) | TIM_CR1_CEN;
+	TIM2->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;
+	TIM2->CCER 	|= (0 << TIM_CCER_CC1P_Pos) | (0 << TIM_CCER_CC2P_Pos) | (0 << TIM_CCER_CC1NP_Pos) | (0 << TIM_CCER_CC2NP_Pos) | TIM_CCER_CC1E | TIM_CCER_CC2E;
+	TIM2->SMCR 	|= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 4 edges
+	TIM2->CR1 	|= TIM_CR1_CEN;
 }
 int32_t ENCODER_GET_VALUE(sMOT *pMOTOR)
 {

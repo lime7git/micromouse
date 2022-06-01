@@ -2,8 +2,8 @@
 
 sMOUSE MOUSE;
 
-float Fkp = 0.35f, Fkd = 0.03f;
-float Rkp = 0.5f, Rkd = 0.01f;
+float Fkp = 0.75f, Fkd = 0.07f;
+float Rkp = 1.25f, Rkd = 0.01f;
 
 float previous_distance_to_travel;
 float previous_ang_to_achieve;
@@ -35,10 +35,10 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 	
 	out = (Fkp * mouse->distance_to_travel) + (Fkd * (mouse->distance_to_travel - previous_distance_to_travel) / TIME_STAMP);
 	
-	if(out > 180.0f)
-		out = 180.0f;
-	else if(out < -180.0f)
-		out = -180.0f;
+	if(out > 300.0f)
+		out = 300.0f;
+	else if(out < -300.0f)
+		out = -300.0f;
 	
 	if(mouse->distance_to_travel > 5.0f)
 	{
@@ -59,10 +59,10 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	
 	if(mouse->forward_control)
 	{
-		//		if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)
-		//		{
-		//			mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
-		//		}
+//			if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)
+//				{
+//					mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
+//				}
 		if(mouse->left_side_sensor_mm < 140.0f)	// if there is left wall - track left
 		{
 			mouse->angle_to_achieve = 83.0f - mouse->left_side_sensor_mm;
@@ -93,21 +93,28 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 
 	out = (Rkp * mouse->angle_to_achieve) + (Rkd * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP);
 	
-	if(out > 180.0f)
+	if(out > 300.0f)
 	{
-		out = 180.0f;
+		out = 300.0f;
 	}
-	else if(out < -180.0f)
+	else if(out < -300.0f)
 	{
-		out = -180.0f;
+		out = -300.0f;
 	}
 	
-//	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
-//	{
-//		mouse->forward *= 0.7f;
-//	}
-
-	mouse->direction = out;
+	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
+	{
+		//mouse->forward *= 0.8f;
+		mouse->direction = out;
+	}
+	else
+	{
+		mouse->direction = 0.0f;
+	}
+	
+		
+	
+	
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)
 {

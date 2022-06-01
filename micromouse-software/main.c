@@ -10,6 +10,8 @@
 #include "controller.h"
 #include "timer.h"
 
+int32_t enctest;
+
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -40,6 +42,8 @@ int main(void)
 	while(1)
 	{
 		TEST_PIN2_ON;
+		
+		enctest = (int32_t)TIM5->CNT;
 		
 		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
 		MOUSE.left_front_sensor_mm = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);

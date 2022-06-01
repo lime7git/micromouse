@@ -20,6 +20,7 @@
 	#define ADC_WATCHDOG_LOWER_THRESHOLD_VOLTAGE 	1480 	// about 1.19V adc = 6.6V battery voltage
 #endif
 
+#define BATTERY_MEASURMENT_DELAY 2500 // time in ms 
 #define NUMBER_OF_MEASURMENTS 100.0	// number of signle sensors mesurments during one sequency X2
 
 void ADC1_DMA_Init(void);
@@ -31,6 +32,7 @@ double ADC_GET_BATTERY_VOLTAGE(void);
 double ADC_GET_BATTERY_VOLTAGE_MEAN(void);
 double ADC_GET_TEMPERATURE_INTERAL(void);
 double ADC_GET_VREF_INTERNAL(void);
+void ADC_BATTERY_VOLTAGE_UPDATE(void);
 
 double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void);
 double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void);

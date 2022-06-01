@@ -10,6 +10,9 @@
 #include "controller.h"
 #include "timer.h"
 
+uint32_t current_milis;
+uint32_t previous_milis;
+
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -38,18 +41,16 @@ int main(void)
 	TEST_PIN_OFF;
 		
 	while(1)
-	{
-			TEST_PIN2_ON;
-		MOUSE.battery_voltage 			= ADC_GET_BATTERY_VOLTAGE_MEAN();
+	{	
 		MOUSE.left_front_sensor_mm 	= SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
 		MOUSE.right_side_sensor_mm 	= SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
 		MOUSE.left_side_sensor_mm 	= SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
 		MOUSE.right_front_sensor_mm = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
-			TEST_PIN2_OFF;
-		
+			
 	
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
+		ADC_BATTERY_VOLTAGE_UPDATE();
 
 
 		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))

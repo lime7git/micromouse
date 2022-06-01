@@ -4,6 +4,7 @@
 #include "ui.h"
 #include "motors.h"
 #include "controller.h"
+#include "clock.h"
 #include <math.h>
 
 volatile uint16_t ADC1_readings[300];
@@ -122,6 +123,13 @@ double ADC_GET_BATTERY_VOLTAGE_MEAN(void)
 }
 double ADC_GET_TEMPERATURE_INTERAL(void)	{	return CONV_2_CELCIUS_DEG(ADC1_readings[1]);			}
 double ADC_GET_VREF_INTERNAL(void)				{	return CONV_2_ADC_VOLTAGE(ADC1_readings[2]);			}
+void ADC_BATTERY_VOLTAGE_UPDATE(void)
+{
+	if(GET_BATTERY_TICK() % BATTERY_MEASURMENT_DELAY == 0)
+	{
+		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
+	}
+}
 
 double ADC_GET_LEFT_FRONT_SENSOR_VOLTAGE(void) 	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[0]);	}
 double ADC_GET_RIGHT_FRONT_SENSOR_VOLTAGE(void)	{	return CONV_2_ADC_VOLTAGE(ADC2_readings[2]);	}

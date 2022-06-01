@@ -5,16 +5,12 @@ sMOUSE MOUSE;
 float Fkp = 0.75f, Fkd = 0.07f;
 float Rkp = 1.25f, Rkd = 0.01f;
 
-float previous_distance_to_travel;
-float previous_ang_to_achieve;
-
 void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 {
 	float out;
+	float previous_distance_to_travel = mouse->distance_to_travel; 
 	
-	previous_distance_to_travel = mouse->distance_to_travel;
-	
-//	mouse->distance_to_travel = sqrtf(powf((mouse->new_position_x - mouse->actual_position_x),2) + powf((mouse->new_position_y - mouse->actual_position_y),2));
+//mouse->distance_to_travel = sqrtf(powf((mouse->new_position_x - mouse->actual_position_x),2) + powf((mouse->new_position_y - mouse->actual_position_y),2));
 	
 	if(MOUSE.face_direction == NORTH)// if facing NORTH
 	{
@@ -54,15 +50,14 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 {
 	float out;
-	 
-	previous_ang_to_achieve = mouse->angle_to_achieve;
+	float previous_ang_to_achieve = mouse->angle_to_achieve;
 	
-	if(mouse->forward_control)
+	if(mouse->forward_control) // if running forward
 	{
-//			if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)
-//				{
-//					mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
-//				}
+//		if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)	// if there is both walls
+//		{
+//			mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
+//		}
 		if(mouse->left_side_sensor_mm < 140.0f)	// if there is left wall - track left
 		{
 			mouse->angle_to_achieve = 83.0f - mouse->left_side_sensor_mm;
@@ -77,7 +72,7 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 		}	
 
 	}		
-	else 
+	else // if rotate in place 
 	{	
 		mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
 	}
@@ -104,17 +99,13 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	
 	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
 	{
-		//mouse->forward *= 0.8f;
+		mouse->forward *= 0.8f;
 		mouse->direction = out;
 	}
 	else
 	{
 		mouse->direction = 0.0f;
 	}
-	
-		
-	
-	
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)
 {
@@ -145,33 +136,33 @@ void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_angle)
 	mouse->forward_control = false;
 	mouse->rotation_control = true;
 	
-	if(new_angle == 0.0f) MOUSE.face_direction = NORTH;
-	else if(new_angle == 90.0f) MOUSE.face_direction = EAST;
-	else if(new_angle == -90.0f) MOUSE.face_direction = WEST;
-	else if(new_angle == 180.0f) MOUSE.face_direction = SOUTH;
+	if(new_angle == 0.0f) 				MOUSE.face_direction = NORTH;
+	else if(new_angle == 90.0f) 	MOUSE.face_direction = EAST;
+	else if(new_angle == -90.0f) 	MOUSE.face_direction = WEST;
+	else if(new_angle == 180.0f) 	MOUSE.face_direction = SOUTH;
 	else if(new_angle == -180.0f) MOUSE.face_direction = SOUTH;
 }
-void MOVE_ONE_CELL_FORWARD(sMOUSE *mouse)
+void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 {
 	if(MOUSE.face_direction == NORTH)		// if facing NORTH
 	{
-		if(mouse->actual_position_x == 0.0f && mouse->actual_position_y == 0.0f)
+		if(mouse->actual_position_x == 0.0f && mouse->actual_position_y == 0.0f)	// only at first cell 
 		{
-			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + 219.0f);
+			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + ((number_of_cells * 180.0f) + 39.0f));
 		}
-		else MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + 180.0f);
+		else MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + (number_of_cells * 180.0f));
 	}
 	else if(MOUSE.face_direction == SOUTH) // if facing SOUTH
 	{
-		MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y - 180.0f);
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y - (number_of_cells * 180.0f));
 	}
 	else if(MOUSE.face_direction == WEST) // if facing WEST
 	{
-		MOVE_SET_POSITION(mouse, mouse->actual_position_x - 180.0f, mouse->actual_position_y);
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x - (number_of_cells * 180.0f), mouse->actual_position_y);
 	}
 	else if(MOUSE.face_direction == EAST) // if facing EAST
 	{
-		MOVE_SET_POSITION(mouse, mouse->actual_position_x + 180.0f, mouse->actual_position_y);
+		MOVE_SET_POSITION(mouse, mouse->actual_position_x + (number_of_cells * 180.0f), mouse->actual_position_y);
 	}
 	
 	

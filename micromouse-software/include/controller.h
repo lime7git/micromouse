@@ -56,6 +56,6 @@ void MOVE_CONTROLLER_DISABLE(sMOUSE *mouse);
 bool MOVE_CONTROLLER_IS_ENABLE(sMOUSE *mouse);
 void MOVE_SET_POSITION(sMOUSE *mouse, float new_posX, float new_posY);
 void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_ang);
-void MOVE_ONE_CELL_FORWARD(sMOUSE *mouse);
+void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells);
 
 #endif

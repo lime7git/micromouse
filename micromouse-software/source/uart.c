@@ -152,7 +152,9 @@ void COMMAND_Execute(char *command)
 			
 			if(param_buffer[0][0] == 'F' && param_buffer[0][1] == 'W' && param_buffer[0][2] == 'D')
 			{
-				MOVE_ONE_CELL_FORWARD(&MOUSE);
+				uint8_t num_of_cells = atoi(param_buffer[1]);
+				
+				if(num_of_cells > 0) MOVE_CELL_FORWARD(&MOUSE, num_of_cells);
 			}
 			else
 			{

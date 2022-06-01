@@ -7,4 +7,8 @@
 void TIM7_1KHz_INTERRUPT_Init(void);
 void TIM7_IRQHandler(void);
 
+void TIM9_1MHz_INTERRUPT_INIT(void);
+void TIM1_BRK_TIM9_IRQHandler(void);
+void delay_us(uint8_t us);
+
 #endif

@@ -3,7 +3,7 @@
 sMOUSE MOUSE;
 
 float Fkp = 0.75f, Fkd = 0.07f;
-float Rkp = 1.25f, Rkd = 0.01f;
+float Rkp = 1.25f, Rkd = 0.05f;
 
 void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 {
@@ -31,10 +31,10 @@ void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 	
 	out = (Fkp * mouse->distance_to_travel) + (Fkd * (mouse->distance_to_travel - previous_distance_to_travel) / TIME_STAMP);
 	
-	if(out > 300.0f)
-		out = 300.0f;
-	else if(out < -300.0f)
-		out = -300.0f;
+	if(out > FORWARD_MAX_SPEED)
+		out = FORWARD_MAX_SPEED;
+	else if(out < -FORWARD_MAX_SPEED)
+		out = -FORWARD_MAX_SPEED;
 	
 	if(mouse->distance_to_travel > 5.0f)
 	{
@@ -88,18 +88,18 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 
 	out = (Rkp * mouse->angle_to_achieve) + (Rkd * (mouse->angle_to_achieve - previous_ang_to_achieve) / TIME_STAMP);
 	
-	if(out > 300.0f)
+	if(out > DIRECTION_MAX_SPEED)
 	{
-		out = 300.0f;
+		out = DIRECTION_MAX_SPEED;
 	}
-	else if(out < -300.0f)
+	else if(out < -DIRECTION_MAX_SPEED)
 	{
-		out = -300.0f;
+		out = -DIRECTION_MAX_SPEED;
 	}
 	
 	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
 	{
-		mouse->forward *= 0.8f;
+		mouse->forward *= 0.75f;
 		mouse->direction = out;
 	}
 	else

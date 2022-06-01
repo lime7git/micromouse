@@ -25,7 +25,7 @@ void ENCODERS_Init(void)
 	GPIOA->AFR[1] |= 0x10000000;
 	GPIOB->AFR[0] |= 0x00001000;
 	
-	TIM5->PSC = 1;
+	TIM5->PSC = 0;
 	TIM5->ARR = 0xFFFFFFFF;
 	
 	TIM5->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0; // IC1 mapped on TI1, IC2 mapped on TI2
@@ -33,7 +33,7 @@ void ENCODERS_Init(void)
 	TIM5->SMCR 	|= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; // encoder mode 4 edges
 	TIM5->CR1 	|= TIM_CR1_CEN; // counter enable
 	
-	TIM2->PSC = 1;
+	TIM2->PSC = 0;
 	TIM2->ARR = 0xFFFFFFFF;
 	
 	TIM2->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;

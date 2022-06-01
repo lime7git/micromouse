@@ -5,6 +5,7 @@
 #include "motors.h"
 #include "controller.h"
 #include "clock.h"
+#include "timer.h"
 #include <math.h>
 
 volatile uint16_t ADC1_readings[300];
@@ -147,7 +148,7 @@ double SENSOR_GET_LEFT_FRONT_DISTANCE(eSENSORSunit unit)
 			sensor_mean_enviroment += ADC2_readings[0];
 		}
 	IR_LEFT_FRONT_ON;
-	delay_ms(1);
+	delay_us(IR_LED_SWITCHING_TIME_DELAY);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 			sensor_mean_raw += ADC2_readings[0];
@@ -179,7 +180,7 @@ double SENSOR_GET_RIGHT_FRONT_DISTANCE(eSENSORSunit unit)
 			sensor_mean_enviroment += ADC2_readings[2];
 		}
 	IR_RIGHT_FRONT_ON;
-	delay_ms(1);
+	delay_us(IR_LED_SWITCHING_TIME_DELAY);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 			sensor_mean_raw += ADC2_readings[2];
@@ -211,7 +212,7 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit)
 			sensor_mean_enviroment += ADC2_readings[1];
 		}
 	IR_LEFT_SIDE_ON;
-	delay_ms(1);
+	delay_us(IR_LED_SWITCHING_TIME_DELAY);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 			sensor_mean_raw += ADC2_readings[1];
@@ -244,7 +245,7 @@ double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit)
 			sensor_mean_enviroment += ADC2_readings[3];
 		}
 	IR_RIGHT_SIDE_ON;
-	delay_ms(1);
+	delay_us(IR_LED_SWITCHING_TIME_DELAY);
 		for(int i = 0; i < NUMBER_OF_MEASURMENTS; i++)
 		{
 			sensor_mean_raw += ADC2_readings[3];

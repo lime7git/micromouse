@@ -13,6 +13,9 @@
 uint32_t current_milis;
 uint32_t previous_milis;
 
+bool flag_sensors = false;
+bool flag_sensors_in_progress = false;
+
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -26,6 +29,7 @@ int main(void)
 	BUTTON_EXTI_Init();
 	UART1_IT_Init();
 	TIM7_1KHz_INTERRUPT_Init();
+	TIM9_1MHz_INTERRUPT_INIT();
 	
 	MOTOR_PID_INIT(&MOTOR_LEFT,  LEFT_MOTOR, 0.021f, 0.08f, 0.0003f);
 	MOTOR_PID_INIT(&MOTOR_RIGHT, RIGHT_MOTOR, 0.021f, 0.08f, 0.0003f);
@@ -42,11 +46,21 @@ int main(void)
 		
 	while(1)
 	{	
+		
+		if(flag_sensors)
+		{
+			TEST_PIN2_ON;
+		flag_sensors_in_progress = true;	
+			
 		MOUSE.left_front_sensor_mm 	= SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
 		MOUSE.right_side_sensor_mm 	= SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
 		MOUSE.left_side_sensor_mm 	= SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
 		MOUSE.right_front_sensor_mm = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
 			
+		flag_sensors = false;
+		flag_sensors_in_progress = false;
+			TEST_PIN2_OFF;
+		}
 	
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
@@ -57,7 +71,7 @@ int main(void)
 		{
 			delay_ms(1000);
 			MOVE_CELL_FORWARD(&MOUSE, 1);
-
+		
 			BUTTON_OK.wasPressed = false;
 		}	
 

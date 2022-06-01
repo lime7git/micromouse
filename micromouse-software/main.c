@@ -10,8 +10,6 @@
 #include "controller.h"
 #include "timer.h"
 
-int32_t enctest;
-
 int main(void)
 {
 	tCircular_buffer_init(&UART_Buffer, 128);
@@ -41,59 +39,48 @@ int main(void)
 		
 	while(1)
 	{
-		TEST_PIN2_ON;
-		
-		enctest = (int32_t)TIM5->CNT;
-		
-		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
-		MOUSE.left_front_sensor_mm = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
-		MOUSE.right_side_sensor_mm = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
-		MOUSE.left_side_sensor_mm = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
+			TEST_PIN2_ON;
+		MOUSE.battery_voltage 			= ADC_GET_BATTERY_VOLTAGE_MEAN();
+		MOUSE.left_front_sensor_mm 	= SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
+		MOUSE.right_side_sensor_mm 	= SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
+		MOUSE.left_side_sensor_mm 	= SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
 		MOUSE.right_front_sensor_mm = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
+			TEST_PIN2_OFF;
 		
-		TEST_PIN2_OFF;
-		
-		
+	
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
 
-			
+
 		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))
 		{
-				delay_ms(500);
-				MOVE_ONE_CELL_FORWARD(&MOUSE);
+			delay_ms(1000);
+			MOVE_CELL_FORWARD(&MOUSE, 1);
 
-				BUTTON_OK.wasPressed = false;
+			BUTTON_OK.wasPressed = false;
 		}	
-		
-			
+
 		if(BUTTON_OK.wasPressed && NORMAL_PRESS(BUTTON_OK.time))
 		{
-			delay_ms(500);
-			
+			delay_ms(1000);
 			MOVE_SET_ORIENTATION(&MOUSE, 90.0f);
-			
 				
 			BUTTON_OK.wasPressed = false;
 		}	
 		
 		if(BUTTON_OK.wasPressed && LONG_PRESS(BUTTON_OK.time))
 		{
-			delay_ms(500);
-			
+			delay_ms(1000);
 			MOVE_SET_ORIENTATION(&MOUSE, 180.0f);
-			
 				
 			BUTTON_OK.wasPressed = false;
 		}	
-		
-				
+			
 		if(BUTTON_SEL.wasPressed && LONG_PRESS(BUTTON_SEL.time))
-			{
-				STATE_Selection();
+		{
+			STATE_Selection();
 				
-				BUTTON_SEL.wasPressed = false;
-			}
-
+			BUTTON_SEL.wasPressed = false;
+		}
 	}
 }

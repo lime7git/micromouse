@@ -33,7 +33,7 @@ int main(void)
 	MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
 	
-	
+	MOUSE.face_direction = NORTH;
 	MOUSE.state = MOUSE_IDLE;
 	
 	TEST_PIN2_OFF;

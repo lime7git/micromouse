@@ -181,11 +181,20 @@ void COMMAND_Execute(char *command)
 			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
 			GET_COMMAND_PARAMS(command, param_buffer);
 			
-			if(param_buffer[0][0] == '?')
+			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
 			{
 			char buf[256];
+			char direction[12];
+				
+			if(MOUSE.face_direction == NORTH)	sprintf(direction, "NORHT\r\n");
+			else if(MOUSE.face_direction == SOUTH)	sprintf(direction, "SOUTH\r\n");
+			else if(MOUSE.face_direction == EAST)	sprintf(direction, "EAST\r\n");
+			else if(MOUSE.face_direction == WEST)	sprintf(direction, "WEST\r\n");
+			else sprintf(direction, "UNKNOWN\r\n");
+				
 			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\nTotalDistL = %1.f\r\nTotalDistR = %1.f\r\n", (double)MOUSE.actual_position_x, (double)MOUSE.actual_position_y, (double)MOUSE.actual_angle, MOTOR_LEFT.enc, MOTOR_RIGHT.enc,MOTOR_LEFT.totalDist, MOTOR_RIGHT.totalDist);	
 			UART1_Log(buf);
+			UART1_Log(direction);
 			}
 			
 			break;

@@ -11,9 +11,15 @@
 #define RAD_TO_DEG 57.295779513f
 #define TIME_STAMP 0.01f
 
+#define  WEST    1    // binary 0000 0001 
+#define  SOUTH   2    // binary 0000 0010 
+#define  EAST    4    // binary 0000 0100 
+#define  NORTH   8    // binary 0000 1000
+
 typedef struct{
 	
 	eMouseState state;
+	uint8_t face_direction;
 	bool is_controller_enable;
 	bool forward_control;
 	bool rotation_control;

@@ -10,9 +10,6 @@
 #include "controller.h"
 #include "timer.h"
 
-uint32_t current_milis;
-uint32_t previous_milis;
-
 bool flag_sensors = false;
 bool flag_sensors_in_progress = false;
 
@@ -62,9 +59,11 @@ int main(void)
 			TEST_PIN2_OFF;
 		}
 	
+	
 		STATE_Handle(); 
 		UART1_COMMAND_PARSERHandler(&UART_Buffer);
 		ADC_BATTERY_VOLTAGE_UPDATE();
+		LED_SYSTEM_UPDATE();
 
 
 		if(BUTTON_OK.wasPressed && SHORT_PRESS(BUTTON_OK.time))

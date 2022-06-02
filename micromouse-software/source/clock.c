@@ -1,7 +1,7 @@
 #include "clock.h"
 
-volatile static uint32_t tick;
-volatile static uint32_t battery_tick;
+volatile static uint32_t tick_delay;
+volatile static uint32_t tick_system;
 
 void CLOCK_Init(void)
 {
@@ -30,17 +30,17 @@ void CLOCK_Init(void)
 
 void SysTick_Handler(void)
 {
-	tick++;
-	battery_tick++;
+	tick_delay++;
+	tick_system++;
 }
 
 void delay_ms(uint32_t ms)
 {
-	tick = 0;
-	while(tick < ms);
+	tick_delay = 0;
+	while(tick_delay < ms);
 }
 
-uint32_t GET_BATTERY_TICK(void)
+uint32_t GET_SYSTEM_TICK(void)
 {
-	return battery_tick;
+	return tick_system;
 }

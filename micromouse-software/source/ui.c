@@ -14,6 +14,8 @@ extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
 extern sMOT MOTOR_RIGHT;
 
+volatile static uint32_t previous_led_system_tick = 0;
+
 void STATE_Handle(void)
 {	
 		switch (MOUSE.state)
@@ -46,7 +48,6 @@ void STATE_Handle(void)
 				LED_Switch(LED1, OFF);
 				LED_Switch(LED2, OFF);
 				LED_Switch(LED3, OFF);
-				LED_Switch(LED4, OFF);
 				
 				IR_LEFT_FRONT_OFF;
 				IR_RIGHT_FRONT_OFF;
@@ -158,4 +159,12 @@ void STATE_Selection(void)
 	
 	LED_Switch(LED_ALL,OFF);
 	MOUSE.state = mode;
+}
+void LED_SYSTEM_UPDATE(void)
+{
+		if(GET_SYSTEM_TICK() - previous_led_system_tick >= LED_SYSTEM_DELAY)
+		{
+			LED_Switch(LED4, TOG);
+			previous_led_system_tick = GET_SYSTEM_TICK();
+		}
 }

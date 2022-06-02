@@ -5,6 +5,8 @@
 #include "stm32f4xx.h"
 #include "stdbool.h"
 
+#define LED_SYSTEM_DELAY 250
+
 typedef enum {
 	
 	MOUSE_INIT = 0, 
@@ -32,5 +34,6 @@ void LED_DISPLAY_DIGIT_IN_BINARY(uint8_t number);
 
 
 void STATE_Selection(void);
+void LED_SYSTEM_UPDATE(void);
 
 #endif

@@ -8,13 +8,15 @@
 #include "timer.h"
 #include <math.h>
 
-volatile uint16_t ADC1_readings[300];
-volatile uint16_t ADC2_readings[4];
+volatile static uint16_t ADC1_readings[300];
+volatile static uint16_t ADC2_readings[4];
 
-volatile double sensor_enviroment_value;
-volatile double sensor_raw_value;
-volatile double sensor_mean_enviroment = 0.0;
-volatile double sensor_mean_raw = 0.0;
+volatile static double sensor_enviroment_value;
+volatile static double sensor_raw_value;
+volatile static double sensor_mean_enviroment = 0.0;
+volatile static double sensor_mean_raw = 0.0;
+
+volatile static uint32_t pervious_battery_tick = 0;
 
 void ADC1_DMA_Init(void)
 {
@@ -126,9 +128,10 @@ double ADC_GET_TEMPERATURE_INTERAL(void)	{	return CONV_2_CELCIUS_DEG(ADC1_readin
 double ADC_GET_VREF_INTERNAL(void)				{	return CONV_2_ADC_VOLTAGE(ADC1_readings[2]);			}
 void ADC_BATTERY_VOLTAGE_UPDATE(void)
 {
-	if(GET_BATTERY_TICK() % BATTERY_MEASURMENT_DELAY == 0)
+	if(GET_SYSTEM_TICK() - pervious_battery_tick > BATTERY_MEASURMENT_DELAY)
 	{
 		MOUSE.battery_voltage = ADC_GET_BATTERY_VOLTAGE_MEAN();
+		pervious_battery_tick = GET_SYSTEM_TICK();
 	}
 }
 

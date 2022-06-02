@@ -48,12 +48,4 @@ double SENSOR_GET_LEFT_SIDE_DISTANCE(eSENSORSunit unit);
 double SENSOR_GET_RIGHT_SIDE_DISTANCE(eSENSORSunit unit);
 
 
-extern volatile uint16_t ADC1_readings[300];
-extern volatile uint16_t ADC2_readings[4];
-
-extern volatile double sensor_enviroment_value;
-extern volatile double sensor_raw_value;
-extern volatile double sensor_mean_enviroment;
-extern volatile double sensor_mean_raw;
-
 #endif

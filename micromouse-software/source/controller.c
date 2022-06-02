@@ -3,7 +3,7 @@
 sMOUSE MOUSE;
 
 float Fkp = 0.75f, Fkd = 0.07f;
-float Rkp = 1.25f, Rkd = 0.05f;
+float Rkp = 0.08f, Rkd = 0.01f;
 
 void MOVE_CONTROLLER_FORWARD(sMOUSE *mouse)
 {
@@ -54,6 +54,7 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	
 	if(mouse->forward_control) // if running forward
 	{
+		Rkp = 0.08f;
 //		if(mouse->right_side_sensor_mm < 140.0f && mouse->left_side_sensor_mm < 140.0f)	// if there is both walls
 //		{
 //			mouse->angle_to_achieve = mouse->right_side_sensor_mm - mouse->left_side_sensor_mm;
@@ -75,6 +76,7 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	else // if rotate in place 
 	{	
 		mouse->angle_to_achieve = mouse->new_angle - mouse->actual_angle;
+		Rkp = 0.75f;
 	}
 	
 	if(mouse->angle_to_achieve < -180.0f)
@@ -99,13 +101,10 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	
 	if(mouse->angle_to_achieve < -2.5f || mouse->angle_to_achieve > 2.5f)
 	{
-		mouse->forward *= 0.75f;
-		mouse->direction = out;
+		mouse->forward *= 0.85f;
 	}
-	else
-	{
-		mouse->direction = 0.0f;
-	}
+	
+	mouse->direction = out;
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)
 {

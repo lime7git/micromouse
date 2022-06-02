@@ -16,8 +16,8 @@
 #define  EAST    4    // binary 0000 0100 
 #define  NORTH   8    // binary 0000 1000
 
-#define FORWARD_MAX_SPEED 50.0f
-#define DIRECTION_MAX_SPEED 50.0f
+#define FORWARD_MAX_SPEED 80.0f
+#define DIRECTION_MAX_SPEED 80.0f
 
 typedef struct{
 	

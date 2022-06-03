@@ -194,7 +194,7 @@ void COMMAND_Execute(char *command)
 			else if(MOUSE.face_direction == WEST)	sprintf(direction, "WEST\r\n");
 			else sprintf(direction, "UNKNOWN\r\n");
 				
-			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\nTotalDistL = %1.f\r\nTotalDistR = %1.f\r\n", (double)MOUSE.actual_position_x, (double)MOUSE.actual_position_y, (double)MOUSE.actual_angle, MOTOR_LEFT.enc, MOTOR_RIGHT.enc,MOTOR_LEFT.totalDist, MOTOR_RIGHT.totalDist);	
+			sprintf(buf, "\r\nX = %1.f\r\nY = %1.f\r\nAng = %1.f\r\nEncL = %d\r\nEncR = %d\r\nTotalDistL = %1.f\r\nTotalDistR = %1.f\r\nIndx = %d\r\n", (double)MOUSE.actual_position_x, (double)MOUSE.actual_position_y, (double)MOUSE.actual_angle, MOTOR_LEFT.enc, MOTOR_RIGHT.enc,MOTOR_LEFT.totalDist, MOTOR_RIGHT.totalDist, MOUSE.current_map_index);	
 			UART1_Log(buf);
 			UART1_Log(direction);
 			}
@@ -208,44 +208,44 @@ void COMMAND_Execute(char *command)
 			
 			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
 			{	
-			char buf[512];
-			double LF,RF,LS,RS;
-				
-			if(param_buffer[1][0] == 'R' && param_buffer[1][1] == 'A' && param_buffer[1][2] == 'W')
-			{
-				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
-				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
-				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
-				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
-			}
-			else if(param_buffer[1][0] == 'M' && param_buffer[1][1] == 'M')
-			{
-				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
-				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
-				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
-				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
-			}
-			else if(param_buffer[1][0] == 'C' && param_buffer[1][1] == 'M')
-			{
-				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(CM);
-				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(CM);
-				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(CM);
-				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(CM);
-			}
-			else
-			{
-				LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
-				RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
-				LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
-				RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
-			}
-				
-				
-			sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|%.2f   |    |%.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|%.2f  ++    ++%.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
-			LF,RF, \
-			LS,RS);
+				char buf[512];
+				double LF,RF,LS,RS;
+					
+				if(param_buffer[1][0] == 'R' && param_buffer[1][1] == 'A' && param_buffer[1][2] == 'W')
+				{
+					LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
+					RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
+					LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
+					RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
+				}
+				else if(param_buffer[1][0] == 'M' && param_buffer[1][1] == 'M')
+				{
+					LF = SENSOR_GET_LEFT_FRONT_DISTANCE(MM);
+					RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(MM);
+					LS = SENSOR_GET_LEFT_SIDE_DISTANCE(MM);
+					RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(MM);
+				}
+				else if(param_buffer[1][0] == 'C' && param_buffer[1][1] == 'M')
+				{
+					LF = SENSOR_GET_LEFT_FRONT_DISTANCE(CM);
+					RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(CM);
+					LS = SENSOR_GET_LEFT_SIDE_DISTANCE(CM);
+					RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(CM);
+				}
+				else
+				{
+					LF = SENSOR_GET_LEFT_FRONT_DISTANCE(RAW);
+					RS = SENSOR_GET_RIGHT_SIDE_DISTANCE(RAW);
+					LS = SENSOR_GET_LEFT_SIDE_DISTANCE(RAW);
+					RF = SENSOR_GET_RIGHT_FRONT_DISTANCE(RAW);
+				}
+					
+					
+				sprintf(buf, "\r\n+-----------------------+\r\n|         ^    ^        |\r\n|         |    |        |\r\n|%.2f   |    |%.2f  |\r\n|         |    |        |\r\n|         |    |        |\r\n|         +----+        |\r\n|        ++    ++       |\r\n|<-------+|    |+------>|\r\n|%.2f  ++    ++%.2f  |\r\n|         +----+        |\r\n|                       |\r\n+-----------------------+", \
+				LF,RF, \
+				LS,RS);
 
-			UART1_Log(buf);
+				UART1_Log(buf);
 			}
 			
 			if((param_buffer[0][0] == 'L' && param_buffer[0][1] == 'F'))
@@ -321,6 +321,23 @@ void COMMAND_Execute(char *command)
 			
 			break;
 		}
+		case MAP:
+		{
+			char param_buffer[PARAM_BUFFER_ROWS][PARAM_BUFFER_COLS];
+			GET_COMMAND_PARAMS(command, param_buffer);
+			
+			if(param_buffer[0][0] == 'G' && param_buffer[0][1] == 'E' && param_buffer[0][2] == 'T')
+			{	
+				MAP_PRINT(&MOUSE);
+			}
+			
+			if(param_buffer[0][0] == 'U' && param_buffer[0][1] == 'P' && param_buffer[0][2] == 'D' && param_buffer[0][3] == 'A' && param_buffer[0][4] == 'T' && param_buffer[0][5] == 'E')
+			{	
+				MAP_UPDATE(&MOUSE);
+			}
+			
+			break;
+		}
 	}
 }
 eCOMMANDS COMMAND_GET_TYPE(char *command)
@@ -347,6 +364,7 @@ eCOMMANDS COMMAND_GET_TYPE(char *command)
 	else if(strncmp(command_type, "POSITION", counter) == 0) type = POSITION;
 	else if(strncmp(command_type, "SENSORS", counter) == 0) type = SENSORS;
 	else if(strncmp(command_type, "NRST", counter) == 0) type = NRST;
+	else if(strncmp(command_type, "MAP", counter) == 0) type = MAP;
 	
 	return type;
 }

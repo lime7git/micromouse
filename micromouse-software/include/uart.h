@@ -13,6 +13,7 @@
 #include "adc.h"
 #include "controller.h"
 #include "clock.h"
+#include "map.h"
 
 #define PARAM_BUFFER_ROWS 4
 #define PARAM_BUFFER_COLS 32
@@ -31,7 +32,8 @@ typedef enum{
 	ROTATE,
 	POSITION,
 	SENSORS,
-	NRST
+	NRST,
+	MAP
 } eCOMMANDS;
 
 extern tCircular_buffer UART_Buffer;

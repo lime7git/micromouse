@@ -105,6 +105,12 @@ void MOVE_CONTROLLER_DIRECTION(sMOUSE *mouse)
 	}
 	
 	mouse->direction = out;
+	
+	if(!(mouse->forward_control) && fabs(mouse->angle_to_achieve) < 0.5f)
+	{
+		mouse->direction = 0.0f;
+		mouse->state = MOUSE_STOP;
+	}
 }
 void MOVE_CONTROLLER_ENABLE(sMOUSE *mouse)
 {
@@ -150,19 +156,28 @@ void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + ((number_of_cells * 180.0f) + 39.0f));
 		}
 		else MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + (number_of_cells * 180.0f));
+		
+		mouse->current_map_index += number_of_cells * 3;
 	}
 	else if(MOUSE.face_direction == SOUTH) // if facing SOUTH
 	{
 		MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y - (number_of_cells * 180.0f));
+		
+		mouse->current_map_index -= number_of_cells * 3;
 	}
 	else if(MOUSE.face_direction == WEST) // if facing WEST
 	{
 		MOVE_SET_POSITION(mouse, mouse->actual_position_x - (number_of_cells * 180.0f), mouse->actual_position_y);
+		
+		mouse->current_map_index += number_of_cells;
 	}
 	else if(MOUSE.face_direction == EAST) // if facing EAST
 	{
 		MOVE_SET_POSITION(mouse, mouse->actual_position_x + (number_of_cells * 180.0f), mouse->actual_position_y);
+		
+		mouse->current_map_index -= number_of_cells;
 	}
+	
 	
 	
 }

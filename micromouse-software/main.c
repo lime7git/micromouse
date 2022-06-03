@@ -9,6 +9,7 @@
 #include "pid.h"
 #include "controller.h"
 #include "timer.h"
+#include "map.h"
 
 bool flag_sensors = false;
 bool flag_sensors_in_progress = false;
@@ -35,11 +36,14 @@ int main(void)
 	MOTOR_PID_DISABLE(&MOTOR_RIGHT);
 	MOVE_CONTROLLER_DISABLE(&MOUSE);
 	
+	MAP_INIT(&MOUSE);
+	
 	MOUSE.face_direction = NORTH;
 	MOUSE.state = MOUSE_IDLE;
 	
 	TEST_PIN2_OFF;
 	TEST_PIN_OFF;
+	
 		
 	while(1)
 	{	

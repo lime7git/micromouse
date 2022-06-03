@@ -47,6 +47,9 @@ typedef struct{
 	double left_side_sensor_mm;
 	double right_side_sensor_mm;
 	
+	uint8_t map[18];
+	uint8_t current_map_index;
+	
 } sMOUSE;
 
 extern sMOUSE MOUSE;

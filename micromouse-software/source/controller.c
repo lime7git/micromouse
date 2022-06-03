@@ -169,13 +169,13 @@ void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 	{
 		MOVE_SET_POSITION(mouse, mouse->actual_position_x - (number_of_cells * 180.0f), mouse->actual_position_y);
 		
-		mouse->current_map_index += number_of_cells;
+		mouse->current_map_index -= number_of_cells;
 	}
 	else if(MOUSE.face_direction == EAST) // if facing EAST
 	{
 		MOVE_SET_POSITION(mouse, mouse->actual_position_x + (number_of_cells * 180.0f), mouse->actual_position_y);
 		
-		mouse->current_map_index -= number_of_cells;
+		mouse->current_map_index += number_of_cells;
 	}
 	
 	

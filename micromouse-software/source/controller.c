@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "map.h"
 
 sMOUSE MOUSE;
 
@@ -153,6 +154,7 @@ void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 	{
 		if(mouse->actual_position_x == 0.0f && mouse->actual_position_y == 0.0f)	// only at first cell 
 		{
+			MAP_UPDATE(&MOUSE);
 			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + ((number_of_cells * 180.0f) + 39.0f));
 		}
 		else MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + (number_of_cells * 180.0f));

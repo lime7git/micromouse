@@ -3,16 +3,6 @@
 #include "controller.h"
 #include "uart.h"
 
-#define  WEST    1    // binary 0000 0001 
-#define  SOUTH   2    // binary 0000 0010 
-#define  EAST    4    // binary 0000 0100 
-#define  NORTH   8    // binary 0000 1000
-
-#define POST '+'
-#define WALL_HORIZONTAL '-'
-#define WALL_VERTICAL '|'
-#define SPACE ' '
-
 /*
 Every map's cell coded on 1 byte as follow : 2#0000 NESW
 If the wall is present on the direction there is 1 in code if not there is 0.
@@ -116,72 +106,77 @@ void MAP_ADD_WALL(sMOUSE *mouse, uint8_t wall_position)
 }
 void MAP_UPDATE(sMOUSE *mouse)
 {
-	switch(mouse->face_direction)
+	if((MOUSE.map[MOUSE.current_map_index] & VISITED) == 0)
 	{
-		case NORTH: 
-			{
-				if(mouse->left_side_sensor_mm < 140.f)
+		mouse->map[mouse->current_map_index] |= VISITED;
+		
+		switch(mouse->face_direction)
+		{
+			case NORTH: 
 				{
-					MAP_ADD_WALL(mouse, WEST);
-				}
-				if(mouse->right_side_sensor_mm < 140.f)
+					if(mouse->left_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, WEST);
+					}
+					if(mouse->right_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, EAST);
+					}
+					if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, NORTH);
+					}	
+				break;
+			}
+			case EAST: 
 				{
-					MAP_ADD_WALL(mouse, EAST);
-				}
-				if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
+					if(mouse->left_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, NORTH);
+					}
+					if(mouse->right_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, SOUTH);
+					}
+					if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, EAST);
+					}					
+				break;
+			}
+			case SOUTH: 
 				{
-					MAP_ADD_WALL(mouse, NORTH);
-				}	
-			break;
+					if(mouse->left_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, EAST);
+					}
+					if(mouse->right_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, WEST);
+					}
+					if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, SOUTH);
+					}					
+				break;
+			}
+			case WEST: 
+				{
+					if(mouse->left_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, SOUTH);
+					}
+					if(mouse->right_side_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, NORTH);
+					}
+					if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
+					{
+						MAP_ADD_WALL(mouse, WEST);
+					}			
+				break;
+			}			
 		}
-		case EAST: 
-			{
-				if(mouse->left_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, NORTH);
-				}
-				if(mouse->right_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, SOUTH);
-				}
-				if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, EAST);
-				}					
-			break;
-		}
-		case SOUTH: 
-			{
-				if(mouse->left_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, EAST);
-				}
-				if(mouse->right_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, WEST);
-				}
-				if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, SOUTH);
-				}					
-			break;
-		}
-		case WEST: 
-			{
-				if(mouse->left_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, SOUTH);
-				}
-				if(mouse->right_side_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, NORTH);
-				}
-				if(mouse->right_front_sensor_mm < 140.f && mouse->left_front_sensor_mm < 140.f)
-				{
-					MAP_ADD_WALL(mouse, WEST);
-				}			
-			break;
-		}			
 	}
 }
 void MAP_PRINT(sMOUSE *mouse)
@@ -246,6 +241,17 @@ void MAP_PRINT(sMOUSE *mouse)
 			buf[0] = WALL_VERTICAL;
 			buf[1] = SPACE;
 			buf[2] = SPACE;
+				if(j == 22 | j == 18 | j == 14 | j == 10 | j == 6 | j == 2) 
+				{
+					if((mouse->map[index] & VISITED) != 0)
+					{
+						buf[2] = CELL_VISITED;
+					}
+					else 
+					{
+						buf[2] = CELL_NOT_VISITED;
+					}
+				}
 			buf[3] = SPACE;
 			if((mouse->map[index] & EAST) != 0)
 			{
@@ -257,6 +263,17 @@ void MAP_PRINT(sMOUSE *mouse)
 			}
 			buf[5] = SPACE;
 			buf[6] = SPACE;
+				if(j == 22 | j == 18 | j == 14 | j == 10 | j == 6 | j == 2) 
+				{
+					if((mouse->map[index + 1] & VISITED) != 0)
+					{
+						buf[6] = CELL_VISITED;
+					}
+					else 
+					{
+						buf[6] = CELL_NOT_VISITED;
+					}
+				}			
 			buf[7] = SPACE;
 			if((mouse->map[index + 1] & EAST) != 0)
 			{
@@ -268,6 +285,17 @@ void MAP_PRINT(sMOUSE *mouse)
 			}
 			buf[9] = SPACE;
 			buf[10] = SPACE;
+				if(j == 22 | j == 18 | j == 14 | j == 10 | j == 6 | j == 2) 
+				{
+					if((mouse->map[index + 2] & VISITED) != 0)
+					{
+						buf[10] = CELL_VISITED;
+					}
+					else 
+					{
+						buf[10] = CELL_NOT_VISITED;
+					}
+				}			
 			buf[11] = SPACE;
 			buf[12] = WALL_VERTICAL;
 			

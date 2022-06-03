@@ -9,6 +9,7 @@
 #include "pid.h"
 #include "controller.h"
 #include "encoders.h"
+#include "map.h"
 
 extern sMOUSE MOUSE;
 extern sMOT MOTOR_LEFT;
@@ -49,11 +50,12 @@ void STATE_Handle(void)
 				LED_Switch(LED2, OFF);
 				LED_Switch(LED3, OFF);
 				
+				if(MOUSE.current_map_index != 0) MAP_UPDATE(&MOUSE);
+				
 				IR_LEFT_FRONT_OFF;
 				IR_RIGHT_FRONT_OFF;
 				IR_LEFT_SIDE_OFF;
 				IR_RIGHT_SIDE_OFF;
-			
 			break;
 			}
 			case MOUSE_IDLE:

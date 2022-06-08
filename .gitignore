@@ -14,3 +14,4 @@ micromouse-software/micromouse.uvoptx
 micromouse-software/micromouse.uvprojx
 .gitattributes
 micromouse-other/encoder-magnet-disc-3d/console.log
+build-micromouse-maze-simulator-Desktop_Qt_6_3_0_MinGW_64_bit-Debug/**

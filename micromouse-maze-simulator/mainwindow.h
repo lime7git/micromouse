@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "qgraphicsitem.h"
+#include "cell.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,5 +19,12 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    QGraphicsScene *scene;
+    Cell *cells[16][16];
+
+    unsigned int cellStartIndex;
+    unsigned int cellFinishIndex;
+
 };
 #endif // MAINWINDOW_H

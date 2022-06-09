@@ -17,6 +17,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public Q_SLOTS:
+    void pushButtonTest_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -25,6 +28,8 @@ private:
 
     unsigned int cellStartIndex;
     unsigned int cellFinishIndex;
+
+
 
 };
 #endif // MAINWINDOW_H

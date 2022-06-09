@@ -13,11 +13,6 @@ typedef enum
     CELL_PATH,
 } eCELL_TYPE;
 
-typedef enum
-{
-    CELL_NOT_VISITED = 0,
-    CELL_VISITED
-} eCELL_STATUS;
 
 #define  WEST    1    // binary 0000 0001
 #define  SOUTH   2    // binary 0000 0010
@@ -49,9 +44,8 @@ public:
     QGraphicsRectItem *posts[4];
     QGraphicsTextItem *cellText;
     eCELL_TYPE type;
-    eCELL_STATUS status;
 
-    unsigned int index;
+    unsigned __int8 index;
     bool visited;
     int x;
     int y;

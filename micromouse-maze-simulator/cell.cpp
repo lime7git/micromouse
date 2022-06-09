@@ -32,7 +32,7 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
 
     this->index = index;
     type = CELL_NULL;
-    status = CELL_NOT_VISITED;
+    visited = false;
     this->x = x;
     this->y = y;
     walls = 0;

@@ -2,6 +2,8 @@
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
 
+#include <QStack>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -9,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->pushButtonTest, SIGNAL(clicked()), this, SLOT(pushButtonTest_clicked()));
-
+    connect(ui->pushButtonClearWalls, SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
+    connect(ui->pushButtonGenerate, SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -40,6 +43,17 @@ void MainWindow::pushButtonTest_clicked()
     }
     cell_start_conut = 1;
     cell_finish_count = 4;
+}
+
+void MainWindow::pushButtonClearWalls_clicked()
+{
+    MAP_CLEAR();
+}
+
+void MainWindow::pushButtonGenerate_clicked()
+{
+    MAP_CLEAR();
+    MAP_GENERATE_ITERATIVE(0,0);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -133,8 +147,206 @@ void MainWindow::MAP_INIT_16x16()
         }
     }
 
+    for(int i = 0; i < 16; i++)
+    {
+        cells[i][15]->wallEast->setVisible(true);
+        cells[i][15]->walls ^= EAST;
+    }
+    for(int i = 0; i < 16; i++)
+    {
+        cells[i][0]->wallWest->setVisible(true);
+        cells[i][0]->walls ^= WEST;
+    }
+    for(int i = 0; i < 16; i++)
+    {
+        cells[0][i]->wallNorth->setVisible(true);
+        cells[0][i]->walls ^= NORTH;
+    }
+    for(int i = 0; i < 16; i++)
+    {
+        cells[15][i]->wallSouth->setVisible(true);
+        cells[15][i]->walls ^= SOUTH;
+    }
+}
+
+void MainWindow::MAP_CLEAR()
+{
+    cell_start_conut = 0;
+    cell_finish_count = 0;
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            cells[j][i]->type = CELL_NULL;
+            cells[j][i]->walls = 0;
+            cells[j][i]->visited = false;
+            cells[j][i]->wallNorth->setVisible(false);
+            cells[j][i]->wallEast->setVisible(false);
+            cells[j][i]->wallSouth->setVisible(false);
+            cells[j][i]->wallWest->setVisible(false);
+            cells[j][i]->SET_BRUSH();
+        }
+    }
+
     for(int i = 0; i < 16; i++) cells[i][15]->wallEast->setVisible(true);
     for(int i = 0; i < 16; i++) cells[i][0]->wallWest->setVisible(true);
     for(int i = 0; i < 16; i++) cells[0][i]->wallNorth->setVisible(true);
     for(int i = 0; i < 16; i++) cells[15][i]->wallSouth->setVisible(true);
 }
+
+void MainWindow::MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i)
+{
+    // fill maze with all walls
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            cells[j][i]->walls = 15;
+            cells[j][i]->wallNorth->setVisible(true);
+            cells[j][i]->wallEast->setVisible(true);
+            cells[j][i]->wallSouth->setVisible(true);
+            cells[j][i]->wallWest->setVisible(true);
+        }
+    }
+
+    //create stack
+    QStack<Cell*> stack;
+    Cell *current_cell;
+    unsigned int unvisited_neighbour = 0;
+    bool north_neighbour = false;
+    bool east_neighbour = false;
+    bool south_neighbour = false;
+    bool west_neighbour = false;
+
+    // 1. Choose the initial cell, mark it as visited and push it to the stack
+    cells[j][i]->visited = true;
+    stack.push(cells[j][i]);
+
+    /*2. While the stack is not empty
+        1. Pop a cell from the stack and make it a current cell
+        2. If the current cell has any neighbours which have not been visited
+           1. Push the current cell to the stack
+           2. Choose one of the unvisited neighbours
+           3. Remove the wall between the current cell and the chosen cell
+           4. Mark the chosen cell as visited and push it to the stack
+        */
+
+    while (!stack.isEmpty()) // 2.
+    {
+        current_cell = stack.pop(); // 1.
+
+        for(int i=0;i<16;i++) // 2.
+        {
+            for(int j=0;j<16;j++)
+            {
+                if(current_cell->index == cells[j][i]->index)
+                {
+                    unvisited_neighbour = 0;
+                    north_neighbour = false;
+                    east_neighbour = false;
+                    south_neighbour = false;
+                    west_neighbour = false;
+
+                    if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited)
+                    {
+                        unvisited_neighbour++;
+                        west_neighbour = true;
+                    }
+                    if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited)
+                    {
+                        unvisited_neighbour++;
+                        east_neighbour = true;
+                    }
+                    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited)
+                    {
+                        unvisited_neighbour++;
+                        north_neighbour = true;
+                    }
+                    if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited)
+                    {
+                        unvisited_neighbour++;
+                        south_neighbour = true;
+                    }
+                }
+            }
+        }
+
+        if(unvisited_neighbour > 0) // 2.
+        {
+            stack.push(current_cell);
+
+
+
+            for(int i=0;i<16;i++) // 2.
+            {
+                for(int j=0;j<16;j++)
+                {
+                    if(current_cell->index == cells[j][i]->index)
+                    {
+                        while(1)
+                        {
+                            int random;
+                            random = random_in_range(0, 3);
+
+                            if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && west_neighbour && random == 0)
+                            {
+                              cells[j][i]->wallWest->setVisible(false);
+                              cells[j][i]->walls ^= WEST;
+                              cells[j][(i - 1 < 0) ? 0 : i - 1]->wallEast->setVisible(false);
+                              cells[j][(i - 1 < 0) ? 0 : i - 1]->walls ^= EAST;
+                              cells[j][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+                              stack.push(cells[j][(i - 1 < 0) ? 0 : i - 1]);
+                              break;
+                            }
+                            if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && east_neighbour && random == 1)
+                            {
+                              cells[j][i]->wallEast->setVisible(false);
+                              cells[j][i]->walls ^= EAST;
+                              cells[j][(i + 1 > 15) ? 15 : i + 1]->wallWest->setVisible(false);
+                              cells[j][(i + 1 > 15) ? 15 : i + 1]->walls ^= WEST;
+                              cells[j][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+                              stack.push(cells[j][(i + 1 > 15) ? 15 : i + 1]);
+                              break;
+                            }
+                            if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && north_neighbour && random == 2)
+                            {
+                              cells[j][i]->wallNorth->setVisible(false);
+                              cells[j][i]->walls ^= NORTH;
+                              cells[(j - 1 < 0) ? 0 : j - 1][i]->wallSouth->setVisible(false);
+                              cells[(j - 1 < 0) ? 0 : j - 1][i]->walls ^= SOUTH;
+                              cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
+                              stack.push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+                              break;
+                            }
+                            if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && south_neighbour && random == 3)
+                            {
+                              cells[j][i]->wallSouth->setVisible(false);
+                              cells[j][i]->walls ^= SOUTH;
+                              cells[(j + 1 > 15) ? 15 : j + 1][i]->wallNorth->setVisible(false);
+                              cells[(j + 1 > 15) ? 15 : j + 1][i]->walls ^= NORTH;
+                              cells[(j + 1 > 15) ? 15 : j + 1][i]->visited = true;
+                              stack.push(cells[(j + 1 > 15) ? 15 : j + 1][i]);
+                              break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+}
+
+int MainWindow::random_in_range(int min, int max)
+{
+    static bool first = true;
+       if (first)
+       {
+          srand( time(NULL) ); //seeding for the first time only!
+          first = false;
+       }
+       return min + rand() % (( max + 1 ) - min);
+}
+

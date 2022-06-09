@@ -7,18 +7,18 @@ Cell::Cell(int x, int y, QGraphicsScene *scene)
     QBrush wallBrush(Qt::darkGray);
     QBrush postBrush(Qt::black);
     QBrush nullBrush(Qt::lightGray);
-    QPen blackpen(Qt::black);
+    QPen outlinePen(Qt::transparent);
 
-    rect = scene->addRect(x, y, CELL_WIDTH, CELL_HEIGHT, blackpen, nullBrush);
-    posts[0] = scene->addRect(x, y, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
-    posts[1] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
-    posts[2] = scene->addRect(x, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
-    posts[3] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
+    rect = scene->addRect(x + POST_WIDTH, y + POST_HEIGHT, CELL_WIDTH - (2 * POST_WIDTH), CELL_HEIGHT - (2 * POST_HEIGHT), outlinePen, nullBrush);
+    posts[0] = scene->addRect(x, y, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
+    posts[1] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
+    posts[2] = scene->addRect(x, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
+    posts[3] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
 
-    wallNorth   = scene->addRect(x + POST_WIDTH, y, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, blackpen, wallBrush);
-    wallEast    = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, blackpen, wallBrush);
-    wallSouth   = scene->addRect(x + POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, blackpen, wallBrush);
-    wallWest    = scene->addRect(x, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, blackpen, wallBrush);
+    wallNorth   = scene->addRect(x + POST_WIDTH, y, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, outlinePen, wallBrush);
+    wallEast    = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, outlinePen, wallBrush);
+    wallSouth   = scene->addRect(x + POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, outlinePen, wallBrush);
+    wallWest    = scene->addRect(x, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, outlinePen, wallBrush);
 
     wallNorth->setVisible(false);
     wallEast->setVisible(false);

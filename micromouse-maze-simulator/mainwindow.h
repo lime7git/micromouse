@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMouseEvent>
 #include "qgraphicsitem.h"
 #include "cell.h"
 
@@ -20,16 +21,16 @@ public:
 public Q_SLOTS:
     void pushButtonTest_clicked();
 
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
     Ui::MainWindow *ui;
 
     QGraphicsScene *scene;
     Cell *cells[16][16];
 
-    unsigned int cellStartIndex;
-    unsigned int cellFinishIndex;
-
-
+    void MAP_INIT_16x16();
 
 };
 #endif // MAINWINDOW_H

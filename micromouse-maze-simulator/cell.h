@@ -63,7 +63,6 @@ public:
     bool IS_WALL_WEST(void);
 
     void SET_BRUSH();
-
 };
 
 #endif // CELL_H

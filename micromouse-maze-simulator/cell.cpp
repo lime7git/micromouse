@@ -4,16 +4,17 @@
 
 Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
 {
-    QBrush wallBrush(Qt::darkGray);
+    QBrush wallBrush(Qt::black);
     QBrush postBrush(Qt::black);
     QBrush nullBrush(Qt::lightGray);
     QPen outlinePen(Qt::transparent);
+    QPen postOutlinePen(Qt::transparent);
 
     rect = scene->addRect(x + POST_WIDTH, y + POST_HEIGHT, CELL_WIDTH - (2 * POST_WIDTH), CELL_HEIGHT - (2 * POST_HEIGHT), outlinePen, nullBrush);
-    posts[0] = scene->addRect(x, y, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
-    posts[1] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
-    posts[2] = scene->addRect(x, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
-    posts[3] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, outlinePen, postBrush);
+    posts[0] = scene->addRect(x, y, POST_WIDTH, POST_HEIGHT, postOutlinePen, postBrush);
+    posts[1] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y, POST_WIDTH, POST_HEIGHT, postOutlinePen, postBrush);
+    posts[2] = scene->addRect(x, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, postOutlinePen, postBrush);
+    posts[3] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, postOutlinePen, postBrush);
 
     wallNorth   = scene->addRect(x + POST_WIDTH, y, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, outlinePen, wallBrush);
     wallEast    = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, outlinePen, wallBrush);

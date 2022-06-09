@@ -43,6 +43,7 @@ public:
     QGraphicsRectItem *wallWest;
     QGraphicsRectItem *posts[4];
     QGraphicsTextItem *cellText;
+    QGraphicsTextItem *solverIndexText;
     eCELL_TYPE type;
 
     unsigned __int8 index;

@@ -40,6 +40,7 @@ void MainWindow::pushButtonTest_clicked()
         {
             cells[j][i]->type = CELL_NULL;
             if(cells[j][i]->index == 0) cells[j][i]->type = CELL_START;
+            if(cells[j][i]->index == 0) cells[j][i]->visited = true;
             if(cells[j][i]->index == 119) cells[j][i]->type = CELL_FINISH;
             if(cells[j][i]->index == 120) cells[j][i]->type = CELL_FINISH;
             if(cells[j][i]->index == 135) cells[j][i]->type = CELL_FINISH;
@@ -232,6 +233,7 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->walls = 0;
             cells[j][i]->visited = false;
             cells[j][i]->solver_index = 0;
+            cells[j][i]->solverIndexText->setPlainText("");
             cells[j][i]->wallNorth->setVisible(false);
             cells[j][i]->wallEast->setVisible(false);
             cells[j][i]->wallSouth->setVisible(false);
@@ -437,6 +439,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
                         if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
                         {
                             cells[j][(i - 1 < 0) ? 0 : i - 1]->solver_index = cells[j][i]->solver_index + 1;
+                            cells[j][(i - 1 < 0) ? 0 : i - 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
                             cells[j][(i - 1 < 0) ? 0 : i - 1]->visited = true;
                             cells[j][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
                             SOLVE_FLOOD_FILL(j,(i - 1 < 0) ? 0 : i - 1);
@@ -444,6 +447,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
                         if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
                         {
                             cells[j][(i + 1 > 15) ? 15 : i + 1]->solver_index = cells[j][i]->solver_index + 1;
+                            cells[j][(i + 1 > 15) ? 15 : i + 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
                             cells[j][(i + 1 > 15) ? 15 : i + 1]->visited = true;
                             cells[j][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
                             SOLVE_FLOOD_FILL(j,(i + 1 > 15) ? 15 : i + 1);
@@ -451,6 +455,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
                         if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
                         {
                             cells[(j - 1 < 0) ? 0 : j - 1][i]->solver_index = cells[j][i]->solver_index + 1;
+                            cells[(j - 1 < 0) ? 0 : j - 1][i]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
                             cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
                             cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
                             SOLVE_FLOOD_FILL((j - 1 < 0) ? 0 : j - 1, i);
@@ -458,6 +463,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
                         if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
                         {
                             cells[(j + 1 > 15) ? 15 : j + 1][i]->solver_index = cells[j][i]->solver_index + 1;
+                            cells[(j + 1 > 15) ? 15 : j + 1][i]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
                             cells[(j + 1 > 15) ? 15 : j + 1][i]->visited = true;
                             cells[(j + 1 > 15) ? 15 : j + 1][i]->rect->setBrush(Qt::yellow);
                             SOLVE_FLOOD_FILL((j + 1 > 15) ? 15 : j + 1,i);

@@ -30,7 +30,16 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     cellText->setScale(0.8);
     cellText->setPos(x + POST_WIDTH, y + POST_HEIGHT);
 
+    solverIndexText = scene->addText("");
+    solverIndexText->setScale(0.8);
+    solverIndexText->setDefaultTextColor(Qt::darkGreen);
+    QFont Font = solverIndexText->font();
+    Font.setBold(true);
+    solverIndexText->setFont(Font);
+    solverIndexText->setPos(x + POST_WIDTH, y + (POST_HEIGHT * 3));
+
     this->index = index;
+    solver_index = 0;
     type = CELL_NULL;
     visited = false;
     this->x = x;

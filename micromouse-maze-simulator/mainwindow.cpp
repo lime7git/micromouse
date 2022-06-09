@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonTest,         SIGNAL(clicked()), this, SLOT(pushButtonTest_clicked()));
+    connect(ui->pushButtonFloodFill,    SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,   SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonGenerate,     SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
     connect(ui->pushButtonPath,         SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
@@ -30,7 +30,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::pushButtonTest_clicked()
+void MainWindow::pushButtonFloodFill_clicked()
 {
     cell_start_conut = 0;
     cell_finish_count = 0;

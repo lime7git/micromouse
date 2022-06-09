@@ -19,7 +19,7 @@ public:
     ~MainWindow();
 
 public Q_SLOTS:
-    void pushButtonTest_clicked();
+    void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonGenerate_clicked();
     void pushButtonPath_clicked();

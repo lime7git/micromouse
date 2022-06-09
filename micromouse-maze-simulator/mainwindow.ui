@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonTest">
+   <widget class="QPushButton" name="pushButtonFloodFill">
     <property name="geometry">
      <rect>
       <x>800</x>
@@ -34,7 +34,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Flood Fill</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonClearWalls">

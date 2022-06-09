@@ -36,6 +36,8 @@ private:
     void MAP_CLEAR();
     void MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i);
 
+    void SOLVE_FLOOD_FILL(unsigned int j, unsigned int i);
+
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;
 

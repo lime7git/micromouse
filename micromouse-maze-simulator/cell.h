@@ -51,6 +51,8 @@ public:
     int y;
     unsigned __int8 walls;
 
+    unsigned int solver_index;
+
     bool IS_WALL_NORTH(void);
     bool IS_WALL_EAST(void);
     bool IS_WALL_SOUTH(void);

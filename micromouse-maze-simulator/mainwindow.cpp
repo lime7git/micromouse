@@ -18,6 +18,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::pushButtonTest_clicked()
 {
+    scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
 
+    cells[0][0] = new Cell(400, 200,scene);
 }
-

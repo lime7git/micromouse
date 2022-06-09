@@ -1,23 +1,29 @@
 #include "cell.h"
 #include "qbrush.h"
+#include "qgraphicsscene.h"
 
-Cell::Cell()
+Cell::Cell(int x, int y, QGraphicsScene *scene)
 {
     QBrush wallBrush(Qt::darkGray);
     QBrush postBrush(Qt::black);
+    QBrush nullBrush(Qt::lightGray);
+    QPen blackpen(Qt::black);
 
-    wallNorth->setBrush(wallBrush);
-    wallEast->setBrush(wallBrush);
-    wallSouth->setBrush(wallBrush);
-    wallWest->setBrush(wallBrush);
+    rect = scene->addRect(x, y, CELL_WIDTH, CELL_HEIGHT, blackpen, nullBrush);
+    posts[0] = scene->addRect(x, y, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
+    posts[1] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
+    posts[2] = scene->addRect(x, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
+    posts[3] = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, POST_WIDTH, POST_HEIGHT, blackpen, postBrush);
 
-    posts[0]->setBrush(postBrush);
-    posts[1]->setBrush(postBrush);
-    posts[2]->setBrush(postBrush);
-    posts[3]->setBrush(postBrush);
+    wallNorth   = scene->addRect(x + POST_WIDTH, y, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, blackpen, wallBrush);
+    wallEast    = scene->addRect(x + CELL_WIDTH - POST_WIDTH, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, blackpen, wallBrush);
+    wallSouth   = scene->addRect(x + POST_WIDTH, y + CELL_HEIGHT - POST_HEIGHT, WALL_HORIZONTAL_WIDTH, WALL_HORIZONTAL_HEIGHT, blackpen, wallBrush);
+    wallWest    = scene->addRect(x, y + POST_HEIGHT, WALL_VERTICAL_WIDTH, WALL_VERTICAL_HEIGHT, blackpen, wallBrush);
 
-
-
+    wallNorth->setVisible(false);
+    wallEast->setVisible(false);
+    wallSouth->setVisible(false);
+    wallWest->setVisible(false);
 }
 
 bool Cell::IS_WALL_NORTH()

@@ -23,10 +23,22 @@ typedef enum
 #define  EAST    4    // binary 0000 0100
 #define  NORTH   8    // binary 0000 1000
 
+#define CELL_WIDTH  30
+#define CELL_HEIGHT 30
+
+#define POST_WIDTH  5
+#define POST_HEIGHT 5
+
+#define WALL_HORIZONTAL_WIDTH   20
+#define WALL_HORIZONTAL_HEIGHT  5
+
+#define WALL_VERTICAL_WIDTH   5
+#define WALL_VERTICAL_HEIGHT  20
+
 class Cell
 {
 public:
-    Cell();
+    Cell(int x, int y, QGraphicsScene *scene);
 
     QGraphicsRectItem *rect;
     QGraphicsRectItem *wallNorth;

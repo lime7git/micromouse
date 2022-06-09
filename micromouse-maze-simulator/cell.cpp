@@ -36,7 +36,6 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     this->x = x;
     this->y = y;
     walls = 0;
-
 }
 
 bool Cell::IS_WALL_NORTH()

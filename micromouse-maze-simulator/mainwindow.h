@@ -31,6 +31,8 @@ private:
     Cell *cells[16][16];
 
     void MAP_INIT_16x16();
+    unsigned int cell_start_conut;
+    unsigned int cell_finish_count;
 
 };
 #endif // MAINWINDOW_H

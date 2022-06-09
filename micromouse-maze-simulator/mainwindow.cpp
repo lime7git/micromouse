@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     MAP_INIT_16x16();
+    cell_start_conut = 0;
+    cell_finish_count = 0;
 }
 
 MainWindow::~MainWindow()
@@ -21,10 +23,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::pushButtonTest_clicked()
 {
+    cell_start_conut = 0;
+    cell_finish_count = 0;
     for(int i=0;i<16;i++)
     {
         for(int j=0;j<16;j++)
         {
+            cells[j][i]->type = CELL_NULL;
             if(cells[j][i]->index == 0) cells[j][i]->type = CELL_START;
             if(cells[j][i]->index == 119) cells[j][i]->type = CELL_FINISH;
             if(cells[j][i]->index == 120) cells[j][i]->type = CELL_FINISH;
@@ -33,6 +38,8 @@ void MainWindow::pushButtonTest_clicked()
             cells[j][i]->SET_BRUSH();
         }
     }
+    cell_start_conut = 1;
+    cell_finish_count = 4;
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -66,6 +73,42 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
                if(cells[j][i]->rect->isUnderMouse())
                {
+                    if(cells[j][i]->type == CELL_START)
+                    {
+                        if(cell_finish_count < 4)
+                        {
+                            cells[j][i]->type = CELL_FINISH;
+                            cell_finish_count++;
+                            cell_start_conut--;
+                        }
+                        else
+                        {
+                            cells[j][i]->type = CELL_NULL;
+                            cell_start_conut--;
+                        }
+                    }
+                    else if(cells[j][i]->type == CELL_FINISH)
+                    {
+                        cells[j][i]->type = CELL_NULL;
+                        cell_finish_count--;
+                    }
+                    else if(cells[j][i]->type == CELL_NULL)
+                    {
+                        if(cell_start_conut == 0)
+                        {
+                            cells[j][i]->type = CELL_START;
+                            cell_start_conut++;
+                        }
+                        else if(cell_finish_count < 4)
+                        {
+                            cells[j][i]->type = CELL_FINISH;
+                            cell_finish_count++;
+                        }
+
+                    }
+
+                    cells[j][i]->SET_BRUSH();
+
                     qDebug() << cells[j][i]->index << Qt::endl;
                     qDebug() << cells[j][i]->walls;
                }
@@ -74,6 +117,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
     }
 }
+
 
 void MainWindow::MAP_INIT_16x16()
 {

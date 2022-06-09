@@ -46,22 +46,22 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                if(cells[j][i]->wallNorth->isUnderMouse())
                {
                   cells[j][i]->wallNorth->setVisible(!cells[j][i]->wallNorth->isVisible());
-                  cells[j][i]->walls |= NORTH;
+                  cells[j][i]->walls ^= NORTH;
                }
                if(cells[j][i]->wallEast->isUnderMouse())
                {
                   cells[j][i]->wallEast->setVisible(!cells[j][i]->wallEast->isVisible());
-                  cells[j][i]->walls |= EAST;
+                  cells[j][i]->walls ^= EAST;
                }
                if(cells[j][i]->wallSouth->isUnderMouse())
                {
                   cells[j][i]->wallSouth->setVisible(!cells[j][i]->wallSouth->isVisible());
-                  cells[j][i]->walls |= SOUTH;
+                  cells[j][i]->walls ^= SOUTH;
                }
                if(cells[j][i]->wallWest->isUnderMouse())
                {
                   cells[j][i]->wallWest->setVisible(!cells[j][i]->wallWest->isVisible());
-                  cells[j][i]->walls |= WEST;
+                  cells[j][i]->walls ^= WEST;
                }
 
                if(cells[j][i]->rect->isUnderMouse())

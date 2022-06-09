@@ -35,4 +35,16 @@ void MainWindow::pushButtonTest_clicked()
     for(int i = 0; i < 16; i++) cells[0][i]->wallNorth->setVisible(true);
     for(int i = 0; i < 16; i++) cells[15][i]->wallSouth->setVisible(true);
 
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->index == 0) cells[j][i]->type = CELL_START;
+            if(cells[j][i]->index == 119) cells[j][i]->type = CELL_FINISH;
+            if(cells[j][i]->index == 120) cells[j][i]->type = CELL_FINISH;
+            if(cells[j][i]->index == 135) cells[j][i]->type = CELL_FINISH;
+            if(cells[j][i]->index == 136) cells[j][i]->type = CELL_FINISH;
+            cells[j][i]->SET_BRUSH();
+        }
+    }
 }

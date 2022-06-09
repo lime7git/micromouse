@@ -28,6 +28,14 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     cellText = scene->addText(QString::number(index));
     cellText->setScale(0.8);
     cellText->setPos(x + POST_WIDTH, y + POST_HEIGHT);
+
+    this->index = index;
+    type = CELL_NULL;
+    status = CELL_NOT_VISITED;
+    this->x = x;
+    this->y = y;
+    walls = 0;
+
 }
 
 bool Cell::IS_WALL_NORTH()

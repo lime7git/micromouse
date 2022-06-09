@@ -15,8 +15,8 @@ typedef enum
 
 typedef enum
 {
-    CELL_OPENED = 0,
-    CELL_CLOSED,
+    CELL_NOT_VISITED = 0,
+    CELL_VISITED
 } eCELL_STATUS;
 
 #define  WEST    1    // binary 0000 0001

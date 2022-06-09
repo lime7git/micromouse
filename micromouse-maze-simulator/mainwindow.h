@@ -23,6 +23,8 @@ public Q_SLOTS:
     void pushButtonClearWalls_clicked();
     void pushButtonGenerate_clicked();
     void pushButtonPath_clicked();
+    void pushButtonSaveMaze_clicked();
+    void pushButtonLoadMaze_clicked();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -36,6 +38,7 @@ private:
     void MAP_INIT_16x16();
     void MAP_CLEAR();
     void MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i);
+    void MAP_WALLS_UPDATE();
 
     void SOLVE_FLOOD_FILL(unsigned int j, unsigned int i);
 

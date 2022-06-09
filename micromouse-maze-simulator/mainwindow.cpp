@@ -2,6 +2,7 @@
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
 
+#include <QFile>
 #include <QStack>
 
 bool goal_reached = false;
@@ -16,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonClearWalls,   SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonGenerate,     SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
     connect(ui->pushButtonPath,         SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
+    connect(ui->pushButtonSaveMaze,     SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
+    connect(ui->pushButtonLoadMaze,     SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -66,6 +69,40 @@ void MainWindow::pushButtonGenerate_clicked()
 void MainWindow::pushButtonPath_clicked()
 {
 
+}
+
+void MainWindow::pushButtonSaveMaze_clicked()
+{
+    QFile file("D:/github-repos/micromouse/micromouse-other/maze-files/maze.txt");
+    file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+    QTextStream out(&file);
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            out << j << ";" << i << ";" << cells[j][i]->walls << "\n";
+        }
+    }
+       // optional, as QFile destructor will already do it:
+    file.close();
+}
+
+void MainWindow::pushButtonLoadMaze_clicked()
+{
+    MAP_CLEAR();
+
+    QFile file("D:/github-repos/micromouse/micromouse-other/maze-files/maze.txt");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        QList list = line.split(';');
+
+        cells[list[0].toInt()][list[1].toInt()]->walls |= list[2].toInt();
+    }
+    MAP_WALLS_UPDATE();
+    file.close();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -136,6 +173,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     cells[j][i]->SET_BRUSH();
 
                     qDebug() << "Cell index : " << cells[j][i]->index;
+                    qDebug() << "[" << j << "]" << "[" << i << "]";
+                    qDebug() << "Walls : " << cells[j][i]->walls;
                     qDebug() << "Solver index : " << cells[j][i]->solver_index << Qt::endl;
                }
             }
@@ -357,6 +396,20 @@ void MainWindow::MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i)
         for(int j=0;j<16;j++)
         {
             cells[j][i]->visited = false;
+        }
+    }
+}
+
+void MainWindow::MAP_WALLS_UPDATE()
+{
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if((cells[j][i]->walls & NORTH) != 0)   cells[j][i]->wallNorth->setVisible(true);
+            if((cells[j][i]->walls & EAST) != 0)    cells[j][i]->wallEast->setVisible(true);
+            if((cells[j][i]->walls & SOUTH) != 0)   cells[j][i]->wallSouth->setVisible(true);
+            if((cells[j][i]->walls & WEST) != 0)    cells[j][i]->wallWest->setVisible(true);
         }
     }
 }

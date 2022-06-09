@@ -2,7 +2,7 @@
 #include "qbrush.h"
 #include "qgraphicsscene.h"
 
-Cell::Cell(int x, int y, QGraphicsScene *scene)
+Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
 {
     QBrush wallBrush(Qt::darkGray);
     QBrush postBrush(Qt::black);
@@ -24,6 +24,10 @@ Cell::Cell(int x, int y, QGraphicsScene *scene)
     wallEast->setVisible(false);
     wallSouth->setVisible(false);
     wallWest->setVisible(false);
+
+    cellText = scene->addText(QString::number(index));
+    cellText->setScale(0.8);
+    cellText->setPos(x + POST_WIDTH, y + POST_HEIGHT);
 }
 
 bool Cell::IS_WALL_NORTH()

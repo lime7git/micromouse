@@ -12,9 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonTest, SIGNAL(clicked()), this, SLOT(pushButtonTest_clicked()));
-    connect(ui->pushButtonClearWalls, SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
-    connect(ui->pushButtonGenerate, SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
+    connect(ui->pushButtonTest,         SIGNAL(clicked()), this, SLOT(pushButtonTest_clicked()));
+    connect(ui->pushButtonClearWalls,   SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
+    connect(ui->pushButtonGenerate,     SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
+    connect(ui->pushButtonPath,         SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -46,6 +47,7 @@ void MainWindow::pushButtonTest_clicked()
     cell_start_conut = 1;
     cell_finish_count = 4;
 
+    goal_reached = false;
     SOLVE_FLOOD_FILL(0,0);
 }
 
@@ -59,6 +61,11 @@ void MainWindow::pushButtonGenerate_clicked()
     goal_reached = false;
     MAP_CLEAR();
     MAP_GENERATE_ITERATIVE(0,0);
+}
+
+void MainWindow::pushButtonPath_clicked()
+{
+
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -136,7 +143,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
     }
 }
-
 
 void MainWindow::MAP_INIT_16x16()
 {
@@ -357,7 +363,6 @@ void MainWindow::MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i)
 
 void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
 {
-
         unsigned int current_cell_index;
 
         current_cell_index = cells[j][i]->index;
@@ -407,10 +412,8 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i)
                     }
                 }
             }
-
         }
 }
-
 
 int MainWindow::random_in_range(int min, int max)
 {

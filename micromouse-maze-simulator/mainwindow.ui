@@ -63,6 +63,19 @@
      <string>Generate</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonPath">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>140</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Path</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

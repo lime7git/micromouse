@@ -22,6 +22,7 @@ public Q_SLOTS:
     void pushButtonTest_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonGenerate_clicked();
+    void pushButtonPath_clicked();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

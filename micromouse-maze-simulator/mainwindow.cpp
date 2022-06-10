@@ -48,6 +48,9 @@ void MainWindow::pushButtonFloodFill_clicked()
               start_j = j;
               start_i = i;
               startFound = true;
+              cells[j][i]->visited = true;
+              cells[j][i]->solver_index = 0;
+              cells[j][i]->solverIndexText->setPlainText(QString::number(0));
             }
             if(cells[j][i]->type == CELL_FINISH)
             {

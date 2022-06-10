@@ -14,12 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonFloodFill,    SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
-    connect(ui->pushButtonClearWalls,   SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
-    connect(ui->pushButtonGenerate,     SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
-    connect(ui->pushButtonPath,         SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
-    connect(ui->pushButtonSaveMaze,     SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
-    connect(ui->pushButtonLoadMaze,     SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
+    connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
+    connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
+    connect(ui->pushButtonGenerate,         SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
+    connect(ui->pushButtonPath,             SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
+    connect(ui->pushButtonSaveMaze,         SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
+    connect(ui->pushButtonLoadMaze,         SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
+    connect(ui->pushButtonSerialConnect,    SIGNAL(clicked()), this, SLOT(pushButtonSerialConnect_clicked()));
+    connect(ui->pushButtonSend,             SIGNAL(clicked()), this, SLOT(pushButtonSend_clicked()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -29,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    serial.close();
 }
 
 void MainWindow::pushButtonFloodFill_clicked()
@@ -142,6 +145,35 @@ void MainWindow::pushButtonLoadMaze_clicked()
     file.close();
 }
 
+void MainWindow::pushButtonSerialConnect_clicked()
+{
+    serial.setPortName("com9");
+    serial.setBaudRate(QSerialPort::Baud115200);
+    serial.setDataBits(QSerialPort::Data8);
+    serial.setParity(QSerialPort::NoParity);
+    serial.setStopBits(QSerialPort::OneStop);
+    serial.setFlowControl(QSerialPort::NoFlowControl);
+    bool status = serial.open(QIODevice::ReadWrite);
+
+    if(!status)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Unable to connect!");
+        msgBox.exec();
+    }
+    else
+    {
+        ui->pushButtonSend->setEnabled(true);
+        connect(&serial, &QSerialPort::readyRead, this, &MainWindow::serialReceived);
+    }
+
+}
+
+void MainWindow::pushButtonSend_clicked()
+{
+    serial.write(ui->plainTextEditSend->toPlainText().toUtf8());
+}
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton))
@@ -218,6 +250,13 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         }
 
     }
+}
+
+void MainWindow::serialReceived()
+{
+    QByteArray serialData = serial.readAll();
+    QString receivedData = QString::fromStdString(serialData.toStdString());
+    ui->textBrowserTerminal->append(receivedData);
 }
 
 void MainWindow::MAP_INIT_16x16()

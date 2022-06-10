@@ -91,6 +91,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonPath">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>830</x>
@@ -200,6 +203,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonSend">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>1350</x>
@@ -218,6 +224,27 @@
     </property>
     <property name="text">
      <string>Send</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonSerialConnect">
+    <property name="geometry">
+     <rect>
+      <x>1350</x>
+      <y>370</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
+    </property>
+    <property name="text">
+     <string>Connect</string>
     </property>
    </widget>
   </widget>

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
+#include <QSerialPort>
 #include "qgraphicsitem.h"
 #include "cell.h"
 
@@ -25,12 +26,19 @@ public Q_SLOTS:
     void pushButtonPath_clicked();
     void pushButtonSaveMaze_clicked();
     void pushButtonLoadMaze_clicked();
+    void pushButtonSerialConnect_clicked();
+    void pushButtonSend_clicked();
+
+
+    void serialReceived();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
+
+    QSerialPort serial;
 
     QGraphicsScene *scene;
     Cell *cells[16][16];

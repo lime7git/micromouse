@@ -19,8 +19,8 @@ typedef enum
 #define  EAST    4    // binary 0000 0100
 #define  NORTH   8    // binary 0000 1000
 
-#define CELL_WIDTH  50
-#define CELL_HEIGHT 50
+#define CELL_WIDTH  55
+#define CELL_HEIGHT 55
 
 #define POST_WIDTH  5
 #define POST_HEIGHT 5

@@ -11,27 +11,38 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Micromouse maze simulator</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(170, 170, 170);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>410</width>
-      <height>410</height>
+      <x>5</x>
+      <y>5</y>
+      <width>810</width>
+      <height>810</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonFloodFill">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>20</y>
+      <x>830</x>
+      <y>10</y>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
     </property>
     <property name="text">
      <string>Flood Fill</string>
@@ -40,11 +51,19 @@
    <widget class="QPushButton" name="pushButtonClearWalls">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>60</y>
+      <x>830</x>
+      <y>50</y>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
     </property>
     <property name="text">
      <string>Clear</string>
@@ -53,11 +72,19 @@
    <widget class="QPushButton" name="pushButtonGenerate">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>100</y>
+      <x>830</x>
+      <y>90</y>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
     </property>
     <property name="text">
      <string>Generate</string>
@@ -66,11 +93,19 @@
    <widget class="QPushButton" name="pushButtonPath">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>140</y>
+      <x>830</x>
+      <y>130</y>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
     </property>
     <property name="text">
      <string>Path</string>
@@ -79,11 +114,19 @@
    <widget class="QPushButton" name="pushButtonSaveMaze">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>180</y>
+      <x>830</x>
+      <y>170</y>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
     </property>
     <property name="text">
      <string>Save Maze</string>
@@ -92,14 +135,89 @@
    <widget class="QPushButton" name="pushButtonLoadMaze">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>220</y>
+      <x>830</x>
+      <y>210</y>
       <width>100</width>
       <height>30</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
+    </property>
     <property name="text">
      <string>Load Maze</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>825</x>
+      <y>350</y>
+      <width>670</width>
+      <height>10</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>370</y>
+      <width>10</width>
+      <height>600</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowserTerminal">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>370</y>
+      <width>500</width>
+      <height>385</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEditSend">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>765</y>
+      <width>500</width>
+      <height>50</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonSend">
+    <property name="geometry">
+     <rect>
+      <x>1350</x>
+      <y>765</y>
+      <width>100</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(230, 230, 230);</string>
+    </property>
+    <property name="text">
+     <string>Send</string>
     </property>
    </widget>
   </widget>

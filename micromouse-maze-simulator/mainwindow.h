@@ -40,7 +40,10 @@ private:
     void MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i);
     void MAP_WALLS_UPDATE();
 
-    void SOLVE_FLOOD_FILL(unsigned int j, unsigned int i);
+    void SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first,
+                          const std::optional<unsigned int>& finish_cell_second = std::nullopt,
+                          const std::optional<unsigned int>& finish_cell_third  = std::nullopt,
+                          const std::optional<unsigned int>& finish_cell_fourth = std::nullopt);
 
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;

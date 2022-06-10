@@ -26,9 +26,9 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     wallSouth->setVisible(false);
     wallWest->setVisible(false);
 
-    cellText = scene->addText(QString::number(index));
-    cellText->setScale(0.8);
-    cellText->setPos(x + POST_WIDTH, y + POST_HEIGHT);
+    cellIndexText = scene->addText(QString::number(index));
+    cellIndexText->setScale(0.8);
+    cellIndexText->setPos(x + POST_WIDTH, y + POST_HEIGHT);
 
     solverIndexText = scene->addText("");
     solverIndexText->setScale(0.8);

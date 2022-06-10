@@ -42,16 +42,16 @@ public:
     QGraphicsRectItem *wallSouth;
     QGraphicsRectItem *wallWest;
     QGraphicsRectItem *posts[4];
-    QGraphicsTextItem *cellText;
+    QGraphicsTextItem *cellIndexText;
     QGraphicsTextItem *solverIndexText;
     eCELL_TYPE type;
 
-    unsigned __int8 index;
     bool visited;
     int x;
     int y;
     unsigned __int8 walls;
 
+    unsigned __int8 index;
     unsigned int solver_index;
 
     bool IS_WALL_NORTH(void);

@@ -29,6 +29,12 @@ public Q_SLOTS:
     void pushButtonSerialConnect_clicked();
     void pushButtonSend_clicked();
 
+    void pushButtonFWD_clicked();
+    void pushButtonN_clicked();
+    void pushButtonE_clicked();
+    void pushButtonS_clicked();
+    void pushButtonW_clicked();
+
 
     void serialReceived();
 
@@ -57,6 +63,7 @@ private:
     unsigned int cell_finish_count;
 
     int random_in_range(int min, int max);
+    int MAP_VALID_INDEX(int index);
 
 };
 #endif // MAINWINDOW_H

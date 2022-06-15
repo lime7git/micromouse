@@ -4,6 +4,7 @@
 
 #include <QFile>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include <QStack>
 
 bool goal_reached = false;
@@ -22,6 +23,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonLoadMaze,         SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
     connect(ui->pushButtonSerialConnect,    SIGNAL(clicked()), this, SLOT(pushButtonSerialConnect_clicked()));
     connect(ui->pushButtonSend,             SIGNAL(clicked()), this, SLOT(pushButtonSend_clicked()));
+
+    connect(ui->pushButtonFWD,              SIGNAL(clicked()), this, SLOT(pushButtonFWD_clicked()));
+    connect(ui->pushButtonN,                SIGNAL(clicked()), this, SLOT(pushButtonN_clicked()));
+    connect(ui->pushButtonE,                SIGNAL(clicked()), this, SLOT(pushButtonE_clicked()));
+    connect(ui->pushButtonS,                SIGNAL(clicked()), this, SLOT(pushButtonS_clicked()));
+    connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -164,6 +171,11 @@ void MainWindow::pushButtonSerialConnect_clicked()
     else
     {
         ui->pushButtonSend->setEnabled(true);
+        ui->pushButtonFWD->setEnabled(true);
+        ui->pushButtonN->setEnabled(true);
+        ui->pushButtonE->setEnabled(true);
+        ui->pushButtonS->setEnabled(true);
+        ui->pushButtonW->setEnabled(true);
         connect(&serial, &QSerialPort::readyRead, this, &MainWindow::serialReceived);
     }
 
@@ -172,6 +184,31 @@ void MainWindow::pushButtonSerialConnect_clicked()
 void MainWindow::pushButtonSend_clicked()
 {
     serial.write(ui->plainTextEditSend->toPlainText().toUtf8());
+}
+
+void MainWindow::pushButtonFWD_clicked()
+{
+    serial.write("$MOVE=FWD,1#");
+}
+
+void MainWindow::pushButtonN_clicked()
+{
+    serial.write("$ROTATE=0#");
+}
+
+void MainWindow::pushButtonE_clicked()
+{
+    serial.write("$ROTATE=90#");
+}
+
+void MainWindow::pushButtonS_clicked()
+{
+    serial.write("$ROTATE=180#");
+}
+
+void MainWindow::pushButtonW_clicked()
+{
+    serial.write("$ROTATE=-90#");
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -257,6 +294,32 @@ void MainWindow::serialReceived()
     QByteArray serialData = serial.readAll();
     QString receivedData = QString::fromStdString(serialData.toStdString());
     ui->textBrowserTerminal->append(receivedData);
+
+
+
+    QStringList splitedData = receivedData.split('=');
+    splitedData = splitedData.last().split(',');
+    splitedData.last().remove(QRegularExpression("#"));
+
+    ui->textBrowserTerminal->append(splitedData.last());
+    ui->textBrowserTerminal->append(splitedData.first());
+
+    int index = MAP_VALID_INDEX(splitedData.first().toInt());
+
+
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->index == index)
+            {
+                cells[j][i]->walls = splitedData.last().toInt();
+                MAP_WALLS_UPDATE();
+            }
+        }
+    }
+
 }
 
 void MainWindow::MAP_INIT_16x16()
@@ -557,5 +620,39 @@ int MainWindow::random_in_range(int min, int max)
           first = false;
        }
        return min + rand() % (( max + 1 ) - min);
+}
+
+int MainWindow::MAP_VALID_INDEX(int index)
+{
+    int ret = 0;
+
+    switch (index) {
+        case 0: ret = 240;  break;
+        case 1: ret = 241;  break;
+        case 2: ret = 242;  break;
+
+        case 3: ret = 224;  break;
+        case 4: ret = 225;  break;
+        case 5: ret = 226;  break;
+
+        case 6: ret = 208;  break;
+        case 7: ret = 209;  break;
+        case 8: ret = 210;  break;
+
+        case 9: ret = 192;  break;
+        case 10: ret = 193;  break;
+        case 11: ret = 194;  break;
+
+        case 12: ret = 176;  break;
+        case 13: ret = 177;  break;
+        case 14: ret = 178;  break;
+
+        case 15: ret = 160;  break;
+        case 16: ret = 161;  break;
+        case 17: ret = 162;  break;
+    }
+
+
+    return ret;
 }
 

@@ -561,19 +561,36 @@ void MainWindow::MAP_WALLS_UPDATE()
 int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first, const std::optional<unsigned int> &finish_cell_second, const std::optional<unsigned int> &finish_cell_third, const std::optional<unsigned int> &finish_cell_fourth)
 {
     unsigned int current_cell_index;
+    unsigned int *finish_cell_index;
+    unsigned int finishCellSolverIndexs[4] = {256,256,256,256};
+    unsigned int count = 0;
     QStack<Cell*> *stack = nullptr;
     stack = new QStack<Cell*>();
 
+
     stack->push(cells[j][i]);
 
-    while(!goal_reached)
+    while(!stack->isEmpty())
     {
         current_cell_index = stack->pop()->index;
 
         if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
         {
             goal_reached = true;
-            return current_cell_index;
+
+            for(int i=0;i<16;i++)
+            {
+                for(int j=0;j<16;j++)
+                {
+                    if(current_cell_index == cells[j][i]->index)
+                    {
+                      finishCellSolverIndexs[count] = cells[j][i]->solver_index;
+                    }
+                }
+            }
+
+            count++;
+            continue;
         }
 
         for(int i=0;i<16;i++)
@@ -587,11 +604,25 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
             }
         }
 
-
-
-
     }
-    return 0;
+
+    finish_cell_index = std::min_element(std::begin(finishCellSolverIndexs), std::end(finishCellSolverIndexs));
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->index == finish_cell_first || cells[j][i]->index == finish_cell_second || cells[j][i]->index == finish_cell_third || cells[j][i]->index == finish_cell_fourth)
+            {
+                if(cells[j][i]->solver_index == *finish_cell_index)
+                {
+                    *finish_cell_index = cells[j][i]->index;
+                }
+            }
+        }
+    }
+
+    return *finish_cell_index;
 }
 
 void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack)
@@ -647,6 +678,8 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
          {
              if(finish_index == cells[j][i]->index)
              {
+               cells[j][i]->type = CELL_PATH;
+               cells[j][i]->SET_BRUSH();
                stack.push(cells[j][i]);
              }
          }

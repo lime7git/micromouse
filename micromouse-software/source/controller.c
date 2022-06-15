@@ -1,5 +1,6 @@
 #include "controller.h"
 #include "map.h"
+#include "uart.h"
 
 sMOUSE MOUSE;
 
@@ -152,9 +153,16 @@ void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 {
 	if(MOUSE.face_direction == NORTH)		// if facing NORTH
 	{
+			
+		
 		if(mouse->actual_position_x == 0.0f && mouse->actual_position_y == 0.0f)	// only at first cell 
 		{
 			MAP_UPDATE(&MOUSE);
+		
+			char buf[64];
+			sprintf(buf, "$MAP=%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index]);
+			UART1_Log(buf);
+			
 			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + ((number_of_cells * 180.0f) + 39.0f));
 		}
 		else MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + (number_of_cells * 180.0f));

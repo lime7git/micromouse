@@ -50,7 +50,14 @@ void STATE_Handle(void)
 				LED_Switch(LED2, OFF);
 				LED_Switch(LED3, OFF);
 				
-				if(MOUSE.current_map_index != 0) MAP_UPDATE(&MOUSE);
+				if(MOUSE.current_map_index != 0 && ((MOUSE.map[MOUSE.current_map_index] & VISITED) == 0)) // if mouse isnt in initial cell and current cell is not visited yet
+				{
+					MAP_UPDATE(&MOUSE);
+					
+					char buf[64];
+					sprintf(buf, "$MAP=%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index]);
+					UART1_Log(buf);
+				}
 				
 				IR_LEFT_FRONT_OFF;
 				IR_RIGHT_FRONT_OFF;

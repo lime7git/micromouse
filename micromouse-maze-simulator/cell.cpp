@@ -32,7 +32,7 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
 
     solverIndexText = scene->addText("");
     solverIndexText->setScale(0.8);
-    solverIndexText->setDefaultTextColor(Qt::darkGreen);
+    solverIndexText->setDefaultTextColor(Qt::green);
     QFont Font = solverIndexText->font();
     Font.setBold(true);
     solverIndexText->setFont(Font);

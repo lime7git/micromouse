@@ -54,11 +54,12 @@ private:
     void MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i);
     void MAP_WALLS_UPDATE();
 
-    void SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first,
+    int SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first,
                           const std::optional<unsigned int>& finish_cell_second = std::nullopt,
                           const std::optional<unsigned int>& finish_cell_third  = std::nullopt,
                           const std::optional<unsigned int>& finish_cell_fourth = std::nullopt);
     void SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack);
+    void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
 
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;

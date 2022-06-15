@@ -74,24 +74,28 @@ void MainWindow::pushButtonFloodFill_clicked()
 
     if((startFound && finishFound) == true)
     {
+        int finishIndex;
+
         switch (finishCount)
         {
         case 1:
-            SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0]);
+           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0]);
         break;
 
         case 2:
-            SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1]);
+           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1]);
         break;
 
         case 3:
-            SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2]);
+           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2]);
         break;
 
         case 4:
-            SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2], finishIndexs[3]);
+           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2], finishIndexs[3]);
         break;
         }
+
+        SOLVE_FLOOD_GENERATE_PATH(finishIndex);
     }
         else
         {
@@ -554,7 +558,7 @@ void MainWindow::MAP_WALLS_UPDATE()
     }
 }
 
-void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first, const std::optional<unsigned int> &finish_cell_second, const std::optional<unsigned int> &finish_cell_third, const std::optional<unsigned int> &finish_cell_fourth)
+int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first, const std::optional<unsigned int> &finish_cell_second, const std::optional<unsigned int> &finish_cell_third, const std::optional<unsigned int> &finish_cell_fourth)
 {
     unsigned int current_cell_index;
     QStack<Cell*> *stack = nullptr;
@@ -569,7 +573,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int f
         if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
         {
             goal_reached = true;
-            return;
+            return current_cell_index;
         }
 
         for(int i=0;i<16;i++)
@@ -587,6 +591,7 @@ void MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int f
 
 
     }
+    return 0;
 }
 
 void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack)
@@ -609,15 +614,6 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
 
         stack->push(cells[j][(i + 1 > 15) ? 15 : i + 1]);
      }
-    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
-    {
-        cells[(j - 1 < 0) ? 0 : j - 1][i]->solver_index = cells[j][i]->solver_index + 1;
-        cells[(j - 1 < 0) ? 0 : j - 1][i]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
-        cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
-        cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
-
-        stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
-    }
     if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
     {
         cells[(j + 1 > 15) ? 15 : j + 1][i]->solver_index = cells[j][i]->solver_index + 1;
@@ -627,8 +623,81 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
 
         stack->push(cells[(j + 1 > 15) ? 15 : j + 1][i]);
      }
+    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
+    {
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->solver_index = cells[j][i]->solver_index + 1;
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
+
+        stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+    }
 
     QWidget::repaint();
+}
+
+void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
+{
+     QStack<Cell*> stack;
+     int current_cell_index;
+
+     for(int i=0;i<16;i++)
+     {
+         for(int j=0;j<16;j++)
+         {
+             if(finish_index == cells[j][i]->index)
+             {
+               stack.push(cells[j][i]);
+             }
+         }
+     }
+
+     while(!stack.isEmpty())
+     {
+        current_cell_index = stack.pop()->index;
+
+        for(int i=0;i<16;i++)
+        {
+            for(int j=0;j<16;j++)
+            {
+                if(current_cell_index == cells[j][i]->index)
+                {
+
+                    if(cells[j][(i - 1 < 0) ? 0 : i - 1]->solver_index == (cells[j][i]->solver_index - 1) && !cells[j][i]->IS_WALL_WEST())
+                    {
+                        cells[j][(i - 1 < 0) ? 0 : i - 1]->type = CELL_PATH;
+                        cells[j][(i - 1 < 0) ? 0 : i - 1]->SET_BRUSH();
+                        stack.push(cells[j][(i - 1 < 0) ? 0 : i - 1]);
+                     }
+                    else if(cells[j][(i + 1 > 15) ? 15 : i + 1]->solver_index == (cells[j][i]->solver_index - 1) && !cells[j][i]->IS_WALL_EAST())
+                    {
+                        cells[j][(i + 1 > 15) ? 15 : i + 1]->type = CELL_PATH;
+                        cells[j][(i + 1 > 15) ? 15 : i + 1]->SET_BRUSH();
+                        stack.push(cells[j][(i + 1 > 15) ? 15 : i + 1]);
+                     }
+                    else if(cells[(j + 1 > 15) ? 15 : j + 1][i]->solver_index == (cells[j][i]->solver_index - 1) && !cells[j][i]->IS_WALL_SOUTH())
+                    {
+                        cells[(j + 1 > 15) ? 15 : j + 1][i]->type = CELL_PATH;
+                        cells[(j + 1 > 15) ? 15 : j + 1][i]->SET_BRUSH();
+                        stack.push(cells[(j + 1 > 15) ? 15 : j + 1][i]);
+                     }
+                    else if(cells[(j - 1 < 0) ? 0 : j - 1][i]->solver_index == (cells[j][i]->solver_index - 1) && !cells[j][i]->IS_WALL_NORTH())
+                    {
+                        cells[(j - 1 < 0) ? 0 : j - 1][i]->type = CELL_PATH;
+                        cells[(j - 1 < 0) ? 0 : j - 1][i]->SET_BRUSH();
+                        stack.push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+                    }
+
+                }
+            }
+        }
+
+        QWidget::repaint();
+     }
+
+
+
+
 }
 
 int MainWindow::random_in_range(int min, int max)

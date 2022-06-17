@@ -34,6 +34,7 @@ typedef enum
 class Cell
 {
 public:
+    Cell();
     Cell(int x, int y, unsigned int index, QGraphicsScene *scene);
 
     QGraphicsRectItem *rect;
@@ -52,14 +53,22 @@ public:
     unsigned __int8 walls;
 
     unsigned __int8 index;
+
+    // flood-fill
     unsigned int solver_index;
+
+    // A star
+    int gCost;
+    int hCost;
+
+    int get_fCost(void);
 
     bool IS_WALL_NORTH(void);
     bool IS_WALL_EAST(void);
     bool IS_WALL_SOUTH(void);
     bool IS_WALL_WEST(void);
 
-    void SET_BRUSH();
+    void SET_BRUSH(void);
 };
 
 #endif // CELL_H

@@ -23,7 +23,7 @@ public Q_SLOTS:
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonGenerate_clicked();
-    void pushButtonPath_clicked();
+    void pushButtonAStar_clicked();
     void pushButtonSaveMaze_clicked();
     void pushButtonLoadMaze_clicked();
     void pushButtonSerialConnect_clicked();
@@ -60,6 +60,8 @@ private:
                           const std::optional<unsigned int>& finish_cell_fourth = std::nullopt);
     void SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack);
     void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
+
+    void A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index);
 
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;

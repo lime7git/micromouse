@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QStack>
+#include <QList>
 
 bool goal_reached = false;
 
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonGenerate,         SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
-    connect(ui->pushButtonPath,             SIGNAL(clicked()), this, SLOT(pushButtonPath_clicked()));
+    connect(ui->pushButtonAStar,            SIGNAL(clicked()), this, SLOT(pushButtonAStar_clicked()));
     connect(ui->pushButtonSaveMaze,         SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
     connect(ui->pushButtonLoadMaze,         SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
     connect(ui->pushButtonSerialConnect,    SIGNAL(clicked()), this, SLOT(pushButtonSerialConnect_clicked()));
@@ -117,9 +118,27 @@ void MainWindow::pushButtonGenerate_clicked()
     MAP_GENERATE_ITERATIVE(0,0);
 }
 
-void MainWindow::pushButtonPath_clicked()
+void MainWindow::pushButtonAStar_clicked()
 {
+    unsigned int startCellIndex, finishCellIndex;
 
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->type == CELL_START)
+            {
+              startCellIndex = cells[j][i]->index;
+            }
+            if(cells[j][i]->type == CELL_FINISH)
+            {
+              finishCellIndex = cells[j][i]->index;
+            }
+        }
+    }
+
+
+    A_STAR_FIND_PATH(startCellIndex, finishCellIndex);
 }
 
 void MainWindow::pushButtonSaveMaze_clicked()
@@ -567,6 +586,9 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
     QStack<Cell*> *stack = nullptr;
     stack = new QStack<Cell*>();
 
+    QStack<Cell*> *temp_stack = nullptr;
+    temp_stack = new QStack<Cell*>();
+
 
     stack->push(cells[j][i]);
 
@@ -603,6 +625,53 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
                 }
             }
         }
+
+        if(stack->size() >= 2)
+        {
+            while(!stack->empty())
+            {
+                temp_stack->push(stack->pop());
+            }
+
+            while(!temp_stack->empty())
+            {
+                current_cell_index = temp_stack->pop()->index;
+
+                if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
+                {
+                    goal_reached = true;
+
+                    for(int i=0;i<16;i++)
+                    {
+                        for(int j=0;j<16;j++)
+                        {
+                            if(current_cell_index == cells[j][i]->index)
+                            {
+                              finishCellSolverIndexs[count] = cells[j][i]->solver_index;
+                            }
+                        }
+                    }
+
+                    count++;
+                    continue;
+                }
+
+                for(int i=0;i<16;i++)
+                {
+                    for(int j=0;j<16;j++)
+                    {
+                        if(current_cell_index == cells[j][i]->index)
+                        {
+                          SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
 
     }
 
@@ -729,6 +798,74 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
      }
 
 
+
+
+}
+
+void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index)
+{
+    Cell startCell;
+    Cell finishCell;
+
+    QList<Cell> *openSet = new QList<Cell>();
+    QList<Cell> *closeSet = new QList<Cell>();
+
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(start_cell_index == cells[j][i]->index)
+            {
+                startCell = *cells[j][i];
+            }
+
+            if(finish_cell_index == cells[j][i]->index)
+            {
+                finishCell = *cells[j][i];
+            }
+        }
+    }
+
+    openSet->append(startCell);
+
+    while(!openSet->empty())
+    {
+        Cell currentCell;
+
+        currentCell = openSet->first();
+
+        for(auto item : *openSet)
+        {
+            if(item.get_fCost() < currentCell.get_fCost() || (item.get_fCost() == currentCell.get_fCost() && item.hCost < currentCell.hCost))
+            {
+                currentCell = item;
+            }
+        }
+
+       // openSet->removeOne(currentCell);
+
+        QList<Cell>::iterator it = openSet->begin();
+        while(it != openSet->end())
+        {
+            if(it->index == currentCell.index)
+            {
+                it = openSet->erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        closeSet->append(currentCell);
+
+        if(currentCell.index == finishCell.index)
+        {
+            return;
+        }
+
+    }
 
 
 }

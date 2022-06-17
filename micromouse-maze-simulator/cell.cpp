@@ -2,6 +2,11 @@
 #include "qbrush.h"
 #include "qgraphicsscene.h"
 
+Cell::Cell()
+{
+
+}
+
 Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
 {
     QBrush wallBrush(Qt::black);
@@ -45,6 +50,11 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     this->x = x;
     this->y = y;
     walls = 0;
+}
+
+int Cell::get_fCost()
+{
+    return gCost + hCost;
 }
 
 bool Cell::IS_WALL_NORTH()

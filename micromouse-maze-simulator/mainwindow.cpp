@@ -168,7 +168,11 @@ void MainWindow::pushButtonLoadMaze_clicked()
 {
     MAP_CLEAR();
 
-    QFile file("D:/github-repos/micromouse/micromouse-other/maze-files/maze.txt");
+    QDir dir("D:/github-repos/micromouse/micromouse-other/maze-files/");
+    QString fileName = ui->comboBoxLoad->currentText();
+    QFileInfo path(dir, fileName);
+
+    QFile file(path.canonicalFilePath());
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     while (!file.atEnd()) {

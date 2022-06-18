@@ -36,10 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     cell_start_conut = 0;
     cell_finish_count = 0;
 
-    QDir path("D:/github-repos/micromouse/micromouse-other/maze-files/");
-    QStringList files = path.entryList(QDir::Files);
-    ui->comboBoxLoad->addItems(files);
-    ui->comboBoxLoad->show();
+    COMBO_BOX_MAZES_UPDATE();
 }
 
 MainWindow::~MainWindow()
@@ -149,19 +146,65 @@ void MainWindow::pushButtonAStar_clicked()
 
 void MainWindow::pushButtonSaveMaze_clicked()
 {
-    QFile file("D:/github-repos/micromouse/micromouse-other/maze-files/maze.txt");
-    file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
-    QTextStream out(&file);
+    QString dirPath("D:/github-repos/micromouse/micromouse-other/maze-files/");
+    QString fileName = ui->lineEditSaveText->text();
 
-    for(int i=0;i<16;i++)
+    if(fileName.isEmpty())
     {
-        for(int j=0;j<16;j++)
-        {
-            out << j << ";" << i << ";" << cells[j][i]->walls << "\n";
-        }
+        QMessageBox msgBox;
+        msgBox.setText("Please type maze name!");
+        msgBox.exec();
     }
-       // optional, as QFile destructor will already do it:
-    file.close();
+    else
+    {
+        QString path(dirPath + fileName + ".txt");
+
+        QFile file(path);
+        if(file.exists())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Maze already exsist.");
+            msgBox.setInformativeText("Do You want to overwrite?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::No);
+            int ret = msgBox.exec();
+
+            if(ret == QMessageBox::Yes)
+            {
+                file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+                QTextStream out(&file);
+
+                    for(int i=0;i<16;i++)
+                    {
+                        for(int j=0;j<16;j++)
+                        {
+                            out << j << ";" << i << ";" << cells[j][i]->walls << "\n";
+                        }
+                    }
+                   // optional, as QFile destructor will already do it:
+                file.close();
+
+            }
+
+        }
+        else
+        {
+            file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+            QTextStream out(&file);
+
+                for(int i=0;i<16;i++)
+                {
+                    for(int j=0;j<16;j++)
+                    {
+                        out << j << ";" << i << ";" << cells[j][i]->walls << "\n";
+                    }
+                }
+               // optional, as QFile destructor will already do it:
+            file.close();
+        }
+
+        COMBO_BOX_MAZES_UPDATE();
+    }
 }
 
 void MainWindow::pushButtonLoadMaze_clicked()
@@ -320,6 +363,16 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         }
 
     }
+}
+
+void MainWindow::COMBO_BOX_MAZES_UPDATE()
+{
+    QDir path("D:/github-repos/micromouse/micromouse-other/maze-files/");
+    QStringList files = path.entryList(QDir::Files);
+    files.sort();
+    ui->comboBoxLoad->clear();
+    ui->comboBoxLoad->addItems(files);
+    ui->comboBoxLoad->show();
 }
 
 void MainWindow::serialReceived()

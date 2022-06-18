@@ -40,6 +40,7 @@ public Q_SLOTS:
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void COMBO_BOX_MAZES_UPDATE(void);
 
 private:
     Ui::MainWindow *ui;

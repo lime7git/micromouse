@@ -7,6 +7,7 @@
 #include <QRegularExpression>
 #include <QStack>
 #include <QList>
+#include <QDir>
 
 bool goal_reached = false;
 
@@ -34,6 +35,11 @@ MainWindow::MainWindow(QWidget *parent)
     MAP_INIT_16x16();
     cell_start_conut = 0;
     cell_finish_count = 0;
+
+    QDir path("D:/github-repos/micromouse/micromouse-other/maze-files/");
+    QStringList files = path.entryList(QDir::Files);
+    ui->comboBoxLoad->addItems(files);
+    ui->comboBoxLoad->show();
 }
 
 MainWindow::~MainWindow()
@@ -594,37 +600,6 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
 
     while(!stack->isEmpty())
     {
-        current_cell_index = stack->pop()->index;
-
-        if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
-        {
-            goal_reached = true;
-
-            for(int i=0;i<16;i++)
-            {
-                for(int j=0;j<16;j++)
-                {
-                    if(current_cell_index == cells[j][i]->index)
-                    {
-                      finishCellSolverIndexs[count] = cells[j][i]->solver_index;
-                    }
-                }
-            }
-
-            count++;
-            continue;
-        }
-
-        for(int i=0;i<16;i++)
-        {
-            for(int j=0;j<16;j++)
-            {
-                if(current_cell_index == cells[j][i]->index)
-                {
-                  SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
-                }
-            }
-        }
 
         if(stack->size() >= 2)
         {
@@ -664,6 +639,41 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
                         {
                           SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
                         }
+                    }
+                }
+            }
+        }
+        else
+        {
+            current_cell_index = stack->pop()->index;
+
+            if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
+            {
+                goal_reached = true;
+
+                for(int i=0;i<16;i++)
+                {
+                    for(int j=0;j<16;j++)
+                    {
+                        if(current_cell_index == cells[j][i]->index)
+                        {
+                          finishCellSolverIndexs[count] = cells[j][i]->solver_index;
+                        }
+                    }
+                }
+
+                count++;
+                continue;
+            }
+
+
+            for(int i=0;i<16;i++)
+            {
+                for(int j=0;j<16;j++)
+                {
+                    if(current_cell_index == cells[j][i]->index)
+                    {
+                      SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
                     }
                 }
             }

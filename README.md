@@ -2,7 +2,7 @@
 
 Project of a micromouse type mobile robot based on STM32 and designed PCB used as a chasis. It is my Master's Degree thesis at The Kielce University of Technology.
 
-Project involve robot hardware and software design, build a small maze where robot will be tested and program a maze simulator windows application to test and compare different maze search alghoritms. The simulator is created with Qt 6 libary and Qt Creator IDE. Hardware design was created with EasyEDA. Robot's software was written in C language in Keil uVision5 IDE.
+Project involve robot hardware and software design, build a small maze where robot will be tested and program a maze simulator windows application to test and compare different maze search alghoritms. The simulator is created with Qt 6 libary and Qt Creator IDE. Hardware design was created with EasyEDA. Robot's software was written in C programming language in Keil uVision5 IDE.
 
 ![image5](https://user-images.githubusercontent.com/88197474/166207429-0b169141-2661-4d89-8a53-ffa148ccd0f4.jpg)
 

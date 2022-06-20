@@ -1001,6 +1001,11 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
 
         QWidget::repaint();
     }
+
+    currentCell->type = CELL_PATH;
+    currentCell->SET_BRUSH();
+
+    QWidget::repaint();
 }
 
 

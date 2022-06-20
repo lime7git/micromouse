@@ -138,6 +138,7 @@ void MainWindow::pushButtonGenerate_clicked()
 void MainWindow::pushButtonAStar_clicked()
 {
     unsigned int startCellIndex, finishCellIndex;
+    bool startFound = false, finishFound = false;
 
     for(int i=0;i<16;i++)
     {
@@ -146,16 +147,26 @@ void MainWindow::pushButtonAStar_clicked()
             if(cells[j][i]->type == CELL_START)
             {
               startCellIndex = cells[j][i]->index;
+              startFound = true;
             }
             if(cells[j][i]->type == CELL_FINISH)
             {
               finishCellIndex = cells[j][i]->index;
+              finishFound = true;
             }
         }
     }
 
-
-    A_STAR_FIND_PATH(startCellIndex, finishCellIndex);
+    if(startFound && finishFound)
+    {
+        A_STAR_FIND_PATH(startCellIndex, finishCellIndex);
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You need to define start and finish cells!");
+        msgBox.exec();
+    }
 }
 
 void MainWindow::pushButtonSaveMaze_clicked()

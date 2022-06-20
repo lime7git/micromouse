@@ -410,6 +410,38 @@
      <string>Allow diagonal</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButtonFloodFillBiDirectional">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>11</y>
+      <width>112</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Bi-directional</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButtonAStarBiDirectional">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>42</y>
+      <width>112</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Bi-directional</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

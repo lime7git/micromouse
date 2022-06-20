@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     COMBO_BOX_MAZES_UPDATE();
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -356,6 +355,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
                     qDebug() << "Cell index : " << cells[j][i]->index;
                     qDebug() << "[" << j << "]" << "[" << i << "]";
+                    qDebug() << "x[" << cells[j][i]->x << "]" << "y[" << cells[j][i]->y << "]";
                     qDebug() << "Walls : " << cells[j][i]->walls;
                     qDebug() << "Solver index : " << cells[j][i]->solver_index << Qt::endl;
                }
@@ -871,11 +871,11 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
 
 void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index)
 {
-    Cell startCell;
-    Cell finishCell;
+    Cell *startCell;
+    Cell *finishCell;
 
-    QList<Cell> *openSet = new QList<Cell>();
-    QList<Cell> *closeSet = new QList<Cell>();
+    QList<Cell*> openSet;
+    QList<Cell*> closeSet;
 
 
     for(int i=0;i<16;i++)
@@ -884,59 +884,142 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
         {
             if(start_cell_index == cells[j][i]->index)
             {
-                startCell = *cells[j][i];
+                startCell = cells[j][i];
             }
 
             if(finish_cell_index == cells[j][i]->index)
             {
-                finishCell = *cells[j][i];
+                finishCell = cells[j][i];
             }
         }
     }
 
-    openSet->append(startCell);
+    openSet.append(startCell);
 
-    while(!openSet->empty())
+    while(!openSet.empty())
     {
-        Cell currentCell;
+        Cell *currentCell = nullptr;
 
-        currentCell = openSet->first();
+        currentCell = openSet.first();
 
-        for(auto item : *openSet)
+        for(auto cell : openSet)
         {
-            if(item.get_fCost() < currentCell.get_fCost() || (item.get_fCost() == currentCell.get_fCost() && item.hCost < currentCell.hCost))
+            if(cell->get_fCost() < currentCell->get_fCost() || (cell->get_fCost() == currentCell->get_fCost() && cell->hCost < currentCell->hCost))
             {
-                currentCell = item;
+                currentCell = cell;
             }
         }
 
-       // openSet->removeOne(currentCell);
+        openSet.removeOne(currentCell);
+        closeSet.append(currentCell);
 
-        QList<Cell>::iterator it = openSet->begin();
-        while(it != openSet->end())
+        if(currentCell->index == finishCell->index)
         {
-            if(it->index == currentCell.index)
-            {
-                it = openSet->erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
-
-        closeSet->append(currentCell);
-
-        if(currentCell.index == finishCell.index)
-        {
+            A_STAR_GENERATE_PATH(startCell, finishCell);
             return;
         }
 
+        for(auto neighbour : A_STAR_GET_NEIGHBOURS(*currentCell))
+        {
+            int newMovmentCostToNeighbour = currentCell->gCost + GET_DISTANCE_BETWEEN_CELLS(*currentCell, *neighbour);
+
+            if(newMovmentCostToNeighbour < neighbour->gCost || !openSet.contains(neighbour))
+            {
+                neighbour->gCost = newMovmentCostToNeighbour;
+                neighbour->hCost = GET_DISTANCE_BETWEEN_CELLS(*neighbour, *finishCell);
+                neighbour->parent = currentCell;
+
+                if(!openSet.contains(neighbour))
+                {
+                    openSet.append(neighbour);
+                }
+            }
+        }
     }
-
-
 }
 
+QList<Cell*> MainWindow::A_STAR_GET_NEIGHBOURS(Cell cell)
+{
+    QList<Cell*> neighbours;
+
+    int j, i;
+
+    for(int x=0;x<16;x++)
+    {
+        for(int y=0;y<16;y++)
+        {
+            if(cell.index == cells[y][x]->index)
+            {
+                j = y;
+                i = x;
+            }
+        }
+    }
+
+    if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
+    {
+        cells[j][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+        cells[j][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
+        neighbours.append(cells[j][(i - 1 < 0) ? 0 : i - 1]);
+    }
+    if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
+    {
+        cells[j][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+        cells[j][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
+        neighbours.append(cells[j][(i + 1 > 15) ? 15 : i + 1]);
+    }
+    if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
+    {
+        cells[(j + 1 > 15) ? 15 : j + 1][i]->visited = true;
+        cells[(j + 1 > 15) ? 15 : j + 1][i]->rect->setBrush(Qt::yellow);
+        neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][i]);
+    }
+    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
+    {
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
+        cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
+        neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+    }
+
+    QWidget::repaint();
+
+    return neighbours;
+}
+
+void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell> path;
+    Cell *currentCell;
+    currentCell = finishCell;
+
+    while(currentCell->index != startCell->index)
+    {
+        path.append(*currentCell);
+        currentCell->type = CELL_PATH;
+        currentCell->SET_BRUSH();
+        currentCell = currentCell->parent;
+
+        QWidget::repaint();
+    }
+}
+
+
+int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
+{
+    /*
+     * distance between two cells normally is 1 * 10
+     * distance between two cells diagonally is 1 * 14
+    */
+
+    int distanceX = abs(cellA.x - cellB.x) / 50;
+    int distanceY = abs(cellA.y - cellB.y) / 50;
+
+    if(distanceX > distanceY)
+        return 14 * distanceY + 10 * (distanceX - distanceY);
+    else
+        return 14 * distanceX + 10 * (distanceY - distanceX);
+
+}
 int MainWindow::random_in_range(int min, int max)
 {
     static bool first = true;

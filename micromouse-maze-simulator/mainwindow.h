@@ -63,6 +63,9 @@ private:
     void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
 
     void A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index);
+    QList<Cell*> A_STAR_GET_NEIGHBOURS(Cell cell);
+    void A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell);
+    int GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB);
 
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;

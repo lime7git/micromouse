@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 7.0.2, 2022-06-18T22:58:47. -->
+<!-- Written by QtCreator 7.0.2, 2022-06-20T10:44:25. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -250,7 +250,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/github-repos/micromouse/build-micromouse-maze-simulator-Desktop_Qt_6_3_0_MinGW_64_bit-Debug</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

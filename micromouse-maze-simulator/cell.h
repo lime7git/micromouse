@@ -3,6 +3,7 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
+#include <QList>
 
 
 typedef enum
@@ -37,6 +38,15 @@ public:
     Cell();
     Cell(int x, int y, unsigned int index, QGraphicsScene *scene);
 
+       bool operator==(const Cell& other)const
+       {
+           if(this->index==(other.index))
+           {
+               return true;
+           }
+           return false;
+       }
+
     QGraphicsRectItem *rect;
     QGraphicsRectItem *wallNorth;
     QGraphicsRectItem *wallEast;
@@ -62,6 +72,7 @@ public:
     int hCost;
 
     int get_fCost(void);
+    Cell *parent;
 
     bool IS_WALL_NORTH(void);
     bool IS_WALL_EAST(void);

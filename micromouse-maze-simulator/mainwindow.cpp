@@ -457,7 +457,11 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->walls = 0;
             cells[j][i]->visited = false;
             cells[j][i]->solver_index = 0;
+            cells[j][i]->gCost = 0;
+            cells[j][i]->hCost = 0;
             cells[j][i]->solverIndexText->setPlainText("");
+            cells[j][i]->gText->setPlainText("");
+            cells[j][i]->hText->setPlainText("");
             cells[j][i]->wallNorth->setVisible(false);
             cells[j][i]->wallEast->setVisible(false);
             cells[j][i]->wallSouth->setVisible(false);
@@ -927,6 +931,9 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
             {
                 neighbour->gCost = newMovmentCostToNeighbour;
                 neighbour->hCost = GET_DISTANCE_BETWEEN_CELLS(*neighbour, *finishCell);
+                neighbour->solverIndexText->setPlainText("f" + QString::number(neighbour->get_fCost()));
+                neighbour->gText->setPlainText("g" + QString::number(neighbour->gCost));
+                neighbour->hText->setPlainText("h" + QString::number(neighbour->hCost));
                 neighbour->parent = currentCell;
 
                 if(!openSet.contains(neighbour))

@@ -43,12 +43,26 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     solverIndexText->setFont(Font);
     solverIndexText->setPos(x + POST_WIDTH, y + (POST_HEIGHT * 3));
 
+    gText = scene->addText("");
+    gText->setScale(0.65);
+    gText->setDefaultTextColor(Qt::blue);
+    gText->setFont(Font);
+    gText->setPos(x + POST_WIDTH, y + (POST_HEIGHT * 6));
+
+    hText = scene->addText("");
+    hText->setScale(0.65);
+    hText->setDefaultTextColor(Qt::blue);
+    hText->setFont(Font);
+    hText->setPos(x + (POST_WIDTH * 6), y + (POST_HEIGHT * 6));
+
     this->index = index;
     solver_index = 0;
     type = CELL_NULL;
     visited = false;
     this->x = x;
     this->y = y;
+    hCost = 0;
+    gCost = 0;
     walls = 0;
 }
 

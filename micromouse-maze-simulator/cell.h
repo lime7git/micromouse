@@ -55,6 +55,8 @@ public:
     QGraphicsRectItem *posts[4];
     QGraphicsTextItem *cellIndexText;
     QGraphicsTextItem *solverIndexText;
+    QGraphicsTextItem *gText;
+    QGraphicsTextItem *hText;
     eCELL_TYPE type;
 
     bool visited;

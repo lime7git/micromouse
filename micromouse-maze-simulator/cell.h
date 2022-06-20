@@ -14,7 +14,6 @@ typedef enum
     CELL_PATH,
 } eCELL_TYPE;
 
-
 #define  WEST    1    // binary 0000 0001
 #define  SOUTH   2    // binary 0000 0010
 #define  EAST    4    // binary 0000 0100
@@ -70,10 +69,11 @@ public:
     unsigned int solver_index;
 
     // A star
+
     int gCost;
     int hCost;
-
     int get_fCost(void);
+
     Cell *parent;
 
     bool IS_WALL_NORTH(void);

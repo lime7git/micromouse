@@ -7,6 +7,13 @@
 #include "qgraphicsitem.h"
 #include "cell.h"
 
+typedef enum
+{
+    ASTAR_MANHATTAN_DISTANCE = 0,
+    ASTAR_DIAGONAL_DISTANCE,
+    ASTAR_EUCLIDEAN_DISTANE,
+} eASTAR_HEURISTIC;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -35,12 +42,15 @@ public Q_SLOTS:
     void pushButtonS_clicked();
     void pushButtonW_clicked();
 
+    void comboBoxAStar_onChange(void);
+    void radioButtonAllowDiagonal(void);
 
     void serialReceived();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void COMBO_BOX_MAZES_UPDATE(void);
+
 
 private:
     Ui::MainWindow *ui;
@@ -67,8 +77,14 @@ private:
     void A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell);
     int GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB);
 
+    QMap<QString, eASTAR_HEURISTIC> aStarHeuristicOptions;
+
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;
+
+    // A star
+    eASTAR_HEURISTIC heuristicType;
+    bool allowDiagonal;
 
     int random_in_range(int min, int max);
     int MAP_VALID_INDEX(int index);

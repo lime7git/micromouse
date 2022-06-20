@@ -32,9 +32,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonS,                SIGNAL(clicked()), this, SLOT(pushButtonS_clicked()));
     connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
+    connect(ui->comboBoxAstar,             SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
+    connect(ui->radioButtonAllowDiagonal,  SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal()));
+
     MAP_INIT_16x16();
     cell_start_conut = 0;
     cell_finish_count = 0;
+
+
+    aStarHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
+    aStarHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
+    aStarHeuristicOptions.insert("Diagonal distance", ASTAR_DIAGONAL_DISTANCE);
+    ui->comboBoxAstar->clear();
+    ui->comboBoxAstar->addItems(aStarHeuristicOptions.keys());
+    ui->comboBoxAstar->setCurrentIndex(2);
+    ui->comboBoxAstar->show();
+    heuristicType = ASTAR_MANHATTAN_DISTANCE;
+    allowDiagonal = false;
+
 
     COMBO_BOX_MAZES_UPDATE();
 }
@@ -286,6 +301,23 @@ void MainWindow::pushButtonW_clicked()
     serial.write("$ROTATE=-90#");
 }
 
+void MainWindow::comboBoxAStar_onChange()
+{
+    heuristicType = aStarHeuristicOptions.value(ui->comboBoxAstar->currentText());
+}
+
+void MainWindow::radioButtonAllowDiagonal()
+{
+    if(ui->radioButtonAllowDiagonal->isChecked())
+           {
+            allowDiagonal = true;
+           }
+           else
+           {
+            allowDiagonal = false;
+           }
+}
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton))
@@ -358,6 +390,9 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     qDebug() << "x[" << cells[j][i]->x << "]" << "y[" << cells[j][i]->y << "]";
                     qDebug() << "Walls : " << cells[j][i]->walls;
                     qDebug() << "Solver index : " << cells[j][i]->solver_index << Qt::endl;
+
+                    qDebug() << allowDiagonal;
+                    qDebug() << heuristicType;
                }
             }
         }
@@ -899,6 +934,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
     }
 
     openSet.append(startCell);
+    startCell->visited = true;
 
     while(!openSet.empty())
     {
@@ -908,7 +944,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
 
         for(auto cell : openSet)
         {
-            if(cell->get_fCost() < currentCell->get_fCost() || (cell->get_fCost() == currentCell->get_fCost() && cell->hCost < currentCell->hCost))
+            if((cell->get_fCost() == currentCell->get_fCost() && cell->hCost < currentCell->hCost) || cell->get_fCost() < currentCell->get_fCost())
             {
                 currentCell = cell;
             }
@@ -925,12 +961,12 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
 
         for(auto neighbour : A_STAR_GET_NEIGHBOURS(*currentCell))
         {
-            int newMovmentCostToNeighbour = currentCell->gCost + GET_DISTANCE_BETWEEN_CELLS(*currentCell, *neighbour);
+            int newMovmentCostToNeighbour = currentCell->gCost + GET_DISTANCE_BETWEEN_CELLS(*neighbour, *currentCell);
 
-            if(newMovmentCostToNeighbour < neighbour->gCost || !openSet.contains(neighbour))
+            if(!openSet.contains(neighbour) || newMovmentCostToNeighbour < neighbour->gCost )
             {
                 neighbour->gCost = newMovmentCostToNeighbour;
-                neighbour->hCost = GET_DISTANCE_BETWEEN_CELLS(*neighbour, *finishCell);
+                neighbour->hCost = GET_DISTANCE_BETWEEN_CELLS(*finishCell, *neighbour);
                 neighbour->solverIndexText->setPlainText("f" + QString::number(neighbour->get_fCost()));
                 neighbour->gText->setPlainText("g" + QString::number(neighbour->gCost));
                 neighbour->hText->setPlainText("h" + QString::number(neighbour->hCost));
@@ -940,6 +976,8 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
                 {
                     openSet.append(neighbour);
                 }
+
+                QWidget::repaint();
             }
         }
     }
@@ -988,6 +1026,35 @@ QList<Cell*> MainWindow::A_STAR_GET_NEIGHBOURS(Cell cell)
         neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
+    if(allowDiagonal)
+    {
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        {
+            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        {
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        {
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        {
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+
+    }
+
     QWidget::repaint();
 
     return neighbours;
@@ -1026,11 +1093,27 @@ int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
     int distanceX = abs(cellA.x - cellB.x) / 50;
     int distanceY = abs(cellA.y - cellB.y) / 50;
 
-    if(distanceX > distanceY)
-        return 14 * distanceY + 10 * (distanceX - distanceY);
-    else
-        return 14 * distanceX + 10 * (distanceY - distanceX);
+    switch (heuristicType)
+    {
+    case ASTAR_MANHATTAN_DISTANCE:
+            return (distanceX + distanceY) * 10;
 
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE:
+            return 10 * (distanceX + distanceY) + (14 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_EUCLIDEAN_DISTANE:
+            return sqrt((distanceX * distanceX) + (distanceY * distanceY)) * 10;
+
+        break;
+
+    default:
+            return (distanceX + distanceY) * 10;
+        break;
+    }
 }
 int MainWindow::random_in_range(int min, int max)
 {

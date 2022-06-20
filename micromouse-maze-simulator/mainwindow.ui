@@ -387,6 +387,29 @@
      <string>Load Maze</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="comboBoxAstar">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>42</y>
+      <width>150</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButtonAllowDiagonal">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>42</y>
+      <width>112</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Allow diagonal</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

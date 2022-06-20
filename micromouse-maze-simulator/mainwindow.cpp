@@ -839,7 +839,7 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
-    QWidget::repaint();
+    ui->graphicsView->repaint();
 }
 
 void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
@@ -900,7 +900,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
         }
 
-        QWidget::repaint();
+        ui->graphicsView->repaint();
      }
 
 
@@ -944,7 +944,11 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
 
         for(auto cell : openSet)
         {
-            if((cell->get_fCost() == currentCell->get_fCost() && cell->hCost < currentCell->hCost) || cell->get_fCost() < currentCell->get_fCost())
+            if(cell->index == currentCell->index)
+            {
+                continue;
+            }
+            if(cell->get_fCost() < currentCell->get_fCost() || (cell->get_fCost() == currentCell->get_fCost() && cell->hCost < currentCell->hCost))
             {
                 currentCell = cell;
             }
@@ -952,6 +956,8 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
 
         openSet.removeOne(currentCell);
         closeSet.append(currentCell);
+        currentCell->rect->setBrush(Qt::magenta);
+        ui->graphicsView->repaint();
 
         if(currentCell->index == finishCell->index)
         {
@@ -962,6 +968,11 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
         for(auto neighbour : A_STAR_GET_NEIGHBOURS(*currentCell))
         {
             int newMovmentCostToNeighbour = currentCell->gCost + GET_DISTANCE_BETWEEN_CELLS(*neighbour, *currentCell);
+
+            if(closeSet.contains(neighbour))
+            {
+                continue;
+            }
 
             if(!openSet.contains(neighbour) || newMovmentCostToNeighbour < neighbour->gCost )
             {
@@ -977,7 +988,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
                     openSet.append(neighbour);
                 }
 
-                QWidget::repaint();
+                ui->graphicsView->repaint();
             }
         }
     }
@@ -1055,7 +1066,7 @@ QList<Cell*> MainWindow::A_STAR_GET_NEIGHBOURS(Cell cell)
 
     }
 
-    QWidget::repaint();
+    ui->graphicsView->repaint();
 
     return neighbours;
 }
@@ -1073,13 +1084,13 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         currentCell->SET_BRUSH();
         currentCell = currentCell->parent;
 
-        QWidget::repaint();
+        ui->graphicsView->repaint();
     }
 
     currentCell->type = CELL_PATH;
     currentCell->SET_BRUSH();
 
-    QWidget::repaint();
+    ui->graphicsView->repaint();
 }
 
 

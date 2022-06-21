@@ -33,7 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
     connect(ui->comboBoxAstar,             SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
-    connect(ui->radioButtonAllowDiagonal,  SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal()));
+    connect(ui->checkBoxAllowDiagonal,  SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
+    connect(ui->checkBoxFloodFillBiDirectional,  SIGNAL(clicked()), this, SLOT(radioButtonAllowFloodFillBiDirectional_onChange()));
+    connect(ui->checkBoxAStarBiDirectional,      SIGNAL(clicked()), this, SLOT(radioButtonAllowAStarBiDirectional_onChange()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -49,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxAstar->show();
     heuristicType = ASTAR_MANHATTAN_DISTANCE;
     allowDiagonal = false;
+    biDirectionalAStar = false;
+    biDirectionalFloodFill = false;
 
 
     COMBO_BOX_MAZES_UPDATE();
@@ -317,16 +321,40 @@ void MainWindow::comboBoxAStar_onChange()
     heuristicType = aStarHeuristicOptions.value(ui->comboBoxAstar->currentText());
 }
 
-void MainWindow::radioButtonAllowDiagonal()
+void MainWindow::radioButtonAllowDiagonal_onChange()
 {
-    if(ui->radioButtonAllowDiagonal->isChecked())
+    if(ui->checkBoxAllowDiagonal->isChecked())
            {
             allowDiagonal = true;
            }
            else
            {
             allowDiagonal = false;
+    }
+}
+
+void MainWindow::radioButtonAllowAStarBiDirectional_onChange()
+{
+    if(ui->checkBoxAStarBiDirectional->isChecked())
+           {
+            biDirectionalAStar = true;
            }
+           else
+           {
+            biDirectionalAStar = false;
+    }
+}
+
+void MainWindow::radioButtonAllowFloodFillBiDirectional_onChange()
+{
+    if(ui->checkBoxFloodFillBiDirectional->isChecked())
+           {
+            biDirectionalFloodFill = true;
+           }
+           else
+           {
+            biDirectionalFloodFill = false;
+    }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -401,9 +429,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     qDebug() << "x[" << cells[j][i]->x << "]" << "y[" << cells[j][i]->y << "]";
                     qDebug() << "Walls : " << cells[j][i]->walls;
                     qDebug() << "Solver index : " << cells[j][i]->solver_index << Qt::endl;
-
-                    qDebug() << allowDiagonal;
-                    qDebug() << heuristicType;
                }
             }
         }
@@ -703,6 +728,7 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
     temp_stack = new QStack<Cell*>();
 
 
+
     stack->push(cells[j][i]);
 
     while(!stack->isEmpty())
@@ -745,6 +771,7 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
                         if(current_cell_index == cells[j][i]->index)
                         {
                           SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
+
                         }
                     }
                 }
@@ -985,7 +1012,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
                 continue;
             }
 
-            if(!openSet.contains(neighbour) || newMovmentCostToNeighbour < neighbour->gCost )
+            if(newMovmentCostToNeighbour < neighbour->gCost || !openSet.contains(neighbour))
             {
                 neighbour->gCost = newMovmentCostToNeighbour;
                 neighbour->hCost = GET_DISTANCE_BETWEEN_CELLS(*finishCell, *neighbour);

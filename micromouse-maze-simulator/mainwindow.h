@@ -43,7 +43,9 @@ public Q_SLOTS:
     void pushButtonW_clicked();
 
     void comboBoxAStar_onChange(void);
-    void radioButtonAllowDiagonal(void);
+    void radioButtonAllowDiagonal_onChange(void);
+    void radioButtonAllowAStarBiDirectional_onChange(void);
+    void radioButtonAllowFloodFillBiDirectional_onChange(void);
 
     void serialReceived();
 
@@ -85,6 +87,8 @@ private:
     // A star
     eASTAR_HEURISTIC heuristicType;
     bool allowDiagonal;
+    bool biDirectionalFloodFill;
+    bool biDirectionalAStar;
 
     int random_in_range(int min, int max);
     int MAP_VALID_INDEX(int index);

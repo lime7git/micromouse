@@ -397,7 +397,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButtonAllowDiagonal">
+   <widget class="QCheckBox" name="checkBoxAllowDiagonal">
     <property name="geometry">
      <rect>
       <x>1080</x>
@@ -410,9 +410,9 @@
      <string>Allow diagonal</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButtonFloodFillBiDirectional">
+   <widget class="QCheckBox" name="checkBoxFloodFillBiDirectional">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -426,9 +426,9 @@
      <string>Bi-directional</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButtonAStarBiDirectional">
+   <widget class="QCheckBox" name="checkBoxAStarBiDirectional">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>

@@ -61,8 +61,8 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     visited = false;
     this->x = x;
     this->y = y;
-    hCost = 0;
-    gCost = 0;
+    hCost = std::numeric_limits<int>::max();
+    gCost = std::numeric_limits<int>::max();
     walls = 0;
 }
 

@@ -29,6 +29,7 @@ public:
 public Q_SLOTS:
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
+    void pushButtonClearPath_clicked();
     void pushButtonGenerate_clicked();
     void pushButtonAStar_clicked();
     void pushButtonSaveMaze_clicked();
@@ -46,6 +47,7 @@ public Q_SLOTS:
     void radioButtonAllowDiagonal_onChange(void);
     void radioButtonAllowAStarBiDirectional_onChange(void);
     void radioButtonAllowFloodFillBiDirectional_onChange(void);
+    void checkBoxShowSearching_onChange(void);
 
     void serialReceived();
 
@@ -61,6 +63,8 @@ private:
 
     QGraphicsScene *scene;
     Cell *cells[16][16];
+
+    bool showSearching;
 
     void MAP_INIT_16x16();
     void MAP_CLEAR();
@@ -83,6 +87,9 @@ private:
 
     unsigned int cell_start_conut;
     unsigned int cell_finish_count;
+
+    unsigned int lastStartIndex;
+    QList<int> lastFinishIndexs;
 
     // A star
     eASTAR_HEURISTIC heuristicType;

@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
+    connect(ui->pushButtonClearPath,        SIGNAL(clicked()), this, SLOT(pushButtonClearPath_clicked()));
     connect(ui->pushButtonGenerate,         SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
     connect(ui->pushButtonAStar,            SIGNAL(clicked()), this, SLOT(pushButtonAStar_clicked()));
     connect(ui->pushButtonSaveMaze,         SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->checkBoxAllowDiagonal,  SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
     connect(ui->checkBoxFloodFillBiDirectional,  SIGNAL(clicked()), this, SLOT(radioButtonAllowFloodFillBiDirectional_onChange()));
     connect(ui->checkBoxAStarBiDirectional,      SIGNAL(clicked()), this, SLOT(radioButtonAllowAStarBiDirectional_onChange()));
+    connect(ui->checkBoxShowSearching,      SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -53,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     allowDiagonal = false;
     biDirectionalAStar = false;
     biDirectionalFloodFill = false;
+    showSearching = true;
 
 
     COMBO_BOX_MAZES_UPDATE();
@@ -83,12 +86,14 @@ void MainWindow::pushButtonFloodFill_clicked()
               cells[j][i]->visited = true;
               cells[j][i]->solver_index = 0;
               cells[j][i]->solverIndexText->setPlainText(QString::number(0));
+              lastStartIndex = cells[j][i]->index;
             }
             if(cells[j][i]->type == CELL_FINISH)
             {
               finishIndexs[finishCount] = cells[j][i]->index;
               finishCount++;
               finishFound = true;
+              lastFinishIndexs.append(cells[j][i]->index);
             }
         }
     }
@@ -118,6 +123,7 @@ void MainWindow::pushButtonFloodFill_clicked()
         }
 
         SOLVE_FLOOD_GENERATE_PATH(finishIndex);
+        ui->pushButtonClearPath->setEnabled(true);
     }
         else
         {
@@ -130,6 +136,41 @@ void MainWindow::pushButtonFloodFill_clicked()
 void MainWindow::pushButtonClearWalls_clicked()
 {
     MAP_CLEAR();
+}
+
+void MainWindow::pushButtonClearPath_clicked()
+{
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->index == lastStartIndex)
+            {
+                cells[j][i]->type = CELL_START;
+            }
+            else if(lastFinishIndexs.contains(cells[j][i]->index))
+            {
+                cells[j][i]->type = CELL_FINISH;
+            }
+            else
+            {
+                cells[j][i]->type = CELL_NULL;
+            }
+
+            cells[j][i]->visited = false;
+            cells[j][i]->solver_index = 0;
+            cells[j][i]->gCost = std::numeric_limits<int>::max();;
+            cells[j][i]->hCost = std::numeric_limits<int>::max();;
+            cells[j][i]->solverIndexText->setPlainText("");
+            cells[j][i]->gText->setPlainText("");
+            cells[j][i]->hText->setPlainText("");
+            cells[j][i]->SET_BRUSH();
+        }
+    }
+
+    lastFinishIndexs.clear();
+    ui->pushButtonClearPath->setEnabled(false);
+
 }
 
 void MainWindow::pushButtonGenerate_clicked()
@@ -152,11 +193,13 @@ void MainWindow::pushButtonAStar_clicked()
             {
               startCellIndex = cells[j][i]->index;
               startFound = true;
+              lastStartIndex = cells[j][i]->index;
             }
             if(cells[j][i]->type == CELL_FINISH)
             {
               finishCellIndex = cells[j][i]->index;
               finishFound = true;
+              lastFinishIndexs.append(cells[j][i]->index);
             }
         }
     }
@@ -164,6 +207,7 @@ void MainWindow::pushButtonAStar_clicked()
     if(startFound && finishFound)
     {
         A_STAR_FIND_PATH(startCellIndex, finishCellIndex);
+        ui->pushButtonClearPath->setEnabled(true);
     }
     else
     {
@@ -357,6 +401,18 @@ void MainWindow::radioButtonAllowFloodFillBiDirectional_onChange()
     }
 }
 
+void MainWindow::checkBoxShowSearching_onChange()
+{
+    if(ui->checkBoxShowSearching->isChecked())
+           {
+            showSearching = true;
+           }
+           else
+           {
+            showSearching = false;
+    }
+}
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton))
@@ -388,6 +444,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
                if(cells[j][i]->rect->isUnderMouse())
                {
+                   qDebug() << cells[j][i]->type;
+
                     if(cells[j][i]->type == CELL_START)
                     {
                         if(cell_finish_count < 4)
@@ -519,6 +577,7 @@ void MainWindow::MAP_CLEAR()
 {
     cell_start_conut = 0;
     cell_finish_count = 0;
+    lastFinishIndexs.clear();
 
     for(int i=0;i<16;i++)
     {
@@ -528,8 +587,8 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->walls = 0;
             cells[j][i]->visited = false;
             cells[j][i]->solver_index = 0;
-            cells[j][i]->gCost = 0;
-            cells[j][i]->hCost = 0;
+            cells[j][i]->gCost = std::numeric_limits<int>::max();;
+            cells[j][i]->hCost = std::numeric_limits<int>::max();;
             cells[j][i]->solverIndexText->setPlainText("");
             cells[j][i]->gText->setPlainText("");
             cells[j][i]->hText->setPlainText("");
@@ -877,7 +936,7 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
-    ui->graphicsView->repaint();
+    if(showSearching) ui->graphicsView->repaint();
 }
 
 void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
@@ -938,7 +997,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
         }
 
-        ui->graphicsView->repaint();
+        if(showSearching) ui->graphicsView->repaint();
      }
 
 
@@ -971,6 +1030,8 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
         }
     }
 
+    startCell->gCost = 0;
+    startCell->hCost = GET_DISTANCE_BETWEEN_CELLS(*startCell,*finishCell);
     openSet.append(startCell);
     startCell->visited = true;
 
@@ -978,7 +1039,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
     {
         Cell *currentCell = nullptr;
 
-        currentCell = openSet.first();
+        currentCell = openSet.last();
 
         for(auto cell : openSet)
         {
@@ -995,7 +1056,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
         openSet.removeOne(currentCell);
         closeSet.append(currentCell);
         currentCell->rect->setBrush(Qt::magenta);
-        ui->graphicsView->repaint();
+        if(showSearching) ui->graphicsView->repaint();
 
         if(currentCell->index == finishCell->index)
         {
@@ -1026,7 +1087,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
                     openSet.append(neighbour);
                 }
 
-                ui->graphicsView->repaint();
+                if(showSearching) ui->graphicsView->repaint();
             }
         }
     }
@@ -1104,7 +1165,7 @@ QList<Cell*> MainWindow::A_STAR_GET_NEIGHBOURS(Cell cell)
 
     }
 
-    ui->graphicsView->repaint();
+    if(showSearching) ui->graphicsView->repaint();
 
     return neighbours;
 }
@@ -1122,13 +1183,13 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         currentCell->SET_BRUSH();
         currentCell = currentCell->parent;
 
-        ui->graphicsView->repaint();
+        if(showSearching) ui->graphicsView->repaint();
     }
 
     currentCell->type = CELL_PATH;
     currentCell->SET_BRUSH();
 
-    ui->graphicsView->repaint();
+    if(showSearching) ui->graphicsView->repaint();
 }
 
 

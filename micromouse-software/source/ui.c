@@ -55,7 +55,7 @@ void STATE_Handle(void)
 					MAP_UPDATE(&MOUSE);
 					
 					char buf[64];
-					sprintf(buf, "$MAP=%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index]);
+					sprintf(buf, "$MAP=%d,%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index], MOUSE.face_direction);
 					UART1_Log(buf);
 				}
 				

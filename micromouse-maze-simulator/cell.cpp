@@ -64,6 +64,19 @@ Cell::Cell(int x, int y, unsigned int index, QGraphicsScene *scene)
     hCost = std::numeric_limits<int>::max();
     gCost = std::numeric_limits<int>::max();
     walls = 0;
+
+
+    int centerX = x + ((2*POST_WIDTH + CELL_WIDTH) / 2);
+    int centerY = y + ((2*POST_HEIGHT + CELL_HEIGHT) / 2);
+    QPolygonF polygon;
+    triangle = new QGraphicsPolygonItem();
+    polygon << QPointF(centerX, centerY - 10) << QPointF(centerX + 5, centerY + 5) << QPointF(centerX - 5, centerY + 5);
+    triangle->setPolygon(polygon);
+    triangle->setPen(outlinePen);
+    triangle->setBrush(Qt::red);
+    scene->addItem(triangle);
+    triangle->setVisible(false);
+
 }
 
 int Cell::get_fCost()
@@ -106,3 +119,21 @@ void Cell::SET_BRUSH()
         case CELL_PATH      :   rect->setBrush(pathBrush);      break;
     }
 }
+
+void Cell::DRAW_TRIANGLE(int angle)
+{
+    int centerX = x + ((POST_WIDTH + CELL_WIDTH) / 2);
+    int centerY = y + ((POST_HEIGHT + CELL_HEIGHT) / 2);
+
+    QPolygonF polygon = triangle->polygon();
+
+    polygon =  QTransform().translate(centerX, centerY).rotate(angle).translate(-centerX, -centerY).map(polygon);
+    triangle->setPolygon(polygon);
+    triangle->setVisible(true);
+}
+
+void Cell::REMOVE_TRIANGLE()
+{
+    triangle->setVisible(false);
+}
+

@@ -148,6 +148,10 @@ void MOVE_SET_ORIENTATION(sMOUSE *mouse, float new_angle)
 	else if(new_angle == -90.0f) 	MOUSE.face_direction = WEST;
 	else if(new_angle == 180.0f) 	MOUSE.face_direction = SOUTH;
 	else if(new_angle == -180.0f) MOUSE.face_direction = SOUTH;
+	
+	char buf[64];
+  sprintf(buf, "$MAP=%d,%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index], MOUSE.face_direction);
+	UART1_Log(buf);
 }
 void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 {
@@ -160,7 +164,7 @@ void MOVE_CELL_FORWARD(sMOUSE *mouse, uint8_t number_of_cells)
 			MAP_UPDATE(&MOUSE);
 		
 			char buf[64];
-			sprintf(buf, "$MAP=%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index]);
+			sprintf(buf, "$MAP=%d,%d,%d#", MOUSE.current_map_index, MOUSE.map[MOUSE.current_map_index], MOUSE.face_direction);
 			UART1_Log(buf);
 			
 			MOVE_SET_POSITION(mouse, mouse->actual_position_x, mouse->actual_position_y + ((number_of_cells * 180.0f) + 39.0f));

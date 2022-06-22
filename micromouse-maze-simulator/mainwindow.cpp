@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     biDirectionalAStar = false;
     biDirectionalFloodFill = false;
     showSearching = true;
-
+    currentFaceDirection = NORTH;
 
     COMBO_BOX_MAZES_UPDATE();
 }
@@ -510,31 +510,84 @@ void MainWindow::serialReceived()
     QString receivedData = QString::fromStdString(serialData.toStdString());
     ui->textBrowserTerminal->append(receivedData);
 
-
-
     QStringList splitedData = receivedData.split('=');
     splitedData = splitedData.last().split(',');
     splitedData.last().remove(QRegularExpression("#"));
 
-    ui->textBrowserTerminal->append(splitedData.last());
-    ui->textBrowserTerminal->append(splitedData.first());
-
-    int index = MAP_VALID_INDEX(splitedData.first().toInt());
-
-
-
-    for(int i=0;i<16;i++)
+    if(splitedData.count() >= 3)
     {
-        for(int j=0;j<16;j++)
+        ui->textBrowserTerminal->append(splitedData.first() + "," + splitedData.at(1) + "," + splitedData.last());
+
+        int index = MAP_VALID_INDEX(splitedData.at(0).toInt());
+        int walls = splitedData.at(1).toInt();
+        int direction = splitedData.at(2).toInt();
+        int angle = 0;
+
+        for(int i=0;i<16;i++)
         {
-            if(cells[j][i]->index == index)
+            for(int j=0;j<16;j++)
             {
-                cells[j][i]->walls = splitedData.last().toInt();
-                MAP_WALLS_UPDATE();
+                if(direction != currentFaceDirection)
+                {
+                    switch(currentFaceDirection)
+                    {
+                    case NORTH:
+
+                        if(direction == WEST) angle = -90;
+                        else if(direction == SOUTH) angle = 180;
+                        else if(direction == EAST) angle = 90;
+                        else angle = 0;
+
+                        break;
+
+                    case EAST:
+
+                        if(direction == WEST) angle = 180;
+                        else if(direction == SOUTH) angle = 90;
+                        else if(direction == NORTH) angle = -90;
+                        else angle = 0;
+
+                        break;
+
+                    case SOUTH:
+
+                        if(direction == WEST) angle = 90;
+                        else if(direction == NORTH) angle = 180;
+                        else if(direction == EAST) angle = -90;
+                        else angle = 0;
+
+                        break;
+
+                    case WEST:
+
+                        if(direction == NORTH) angle = 90;
+                        else if(direction == SOUTH) angle = -90;
+                        else if(direction == EAST) angle = 180;
+                        else angle = 0;
+
+                        break;
+                    }
+
+                    currentFaceDirection = direction;
+                }
+                cells[j][i]->DRAW_TRIANGLE(angle);
+
+
+                if(cells[j][i]->index == index)
+                {
+                    cells[j][i]->walls = walls;
+                    cells[j][i]->rect->setBrush(Qt::yellow);
+                    MAP_WALLS_UPDATE();
+                }
+                else
+                {
+                    cells[j][i]->REMOVE_TRIANGLE();
+                }
+
+                ui->graphicsView->repaint();
             }
         }
     }
-
 }
 
 void MainWindow::MAP_INIT_16x16()
@@ -578,6 +631,7 @@ void MainWindow::MAP_CLEAR()
     cell_start_conut = 0;
     cell_finish_count = 0;
     lastFinishIndexs.clear();
+    currentFaceDirection = NORTH;
 
     for(int i=0;i<16;i++)
     {
@@ -597,6 +651,7 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->wallSouth->setVisible(false);
             cells[j][i]->wallWest->setVisible(false);
             cells[j][i]->SET_BRUSH();
+            cells[j][i]->REMOVE_TRIANGLE();
         }
     }
 

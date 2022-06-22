@@ -65,6 +65,7 @@ private:
     Cell *cells[16][16];
 
     bool showSearching;
+    int currentFaceDirection;
 
     void MAP_INIT_16x16();
     void MAP_CLEAR();

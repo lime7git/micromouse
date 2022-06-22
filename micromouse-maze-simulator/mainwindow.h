@@ -26,6 +26,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QGraphicsPolygonItem *triangle;
+
+    void DRAW_TRIANGLE(Cell *cell, int direction);
+    void REMOVE_TRIANGLE(void);
+
 public Q_SLOTS:
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
@@ -65,7 +70,6 @@ private:
     Cell *cells[16][16];
 
     bool showSearching;
-    int currentFaceDirection;
 
     void MAP_INIT_16x16();
     void MAP_CLEAR();

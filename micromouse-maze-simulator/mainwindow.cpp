@@ -33,11 +33,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonS,                SIGNAL(clicked()), this, SLOT(pushButtonS_clicked()));
     connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
-    connect(ui->comboBoxAstar,             SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
-    connect(ui->checkBoxAllowDiagonal,  SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
+    connect(ui->comboBoxAstar,                   SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
+    connect(ui->checkBoxAllowDiagonal,           SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
     connect(ui->checkBoxFloodFillBiDirectional,  SIGNAL(clicked()), this, SLOT(radioButtonAllowFloodFillBiDirectional_onChange()));
     connect(ui->checkBoxAStarBiDirectional,      SIGNAL(clicked()), this, SLOT(radioButtonAllowAStarBiDirectional_onChange()));
-    connect(ui->checkBoxShowSearching,      SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
+    connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     MAP_INIT_16x16();
     cell_start_conut = 0;
@@ -56,14 +56,41 @@ MainWindow::MainWindow(QWidget *parent)
     biDirectionalAStar = false;
     biDirectionalFloodFill = false;
     showSearching = true;
-    currentFaceDirection = NORTH;
+
+    QPolygonF polygon;
+    triangle = new QGraphicsPolygonItem();
+    triangle->setPolygon(polygon);
+    triangle->setBrush(Qt::red);
+    scene->addItem(triangle);
+    triangle->setVisible(false);
 
     COMBO_BOX_MAZES_UPDATE();
 }
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete scene;
     serial.close();
+}
+
+void MainWindow::DRAW_TRIANGLE(Cell *cell, int direction)
+{
+    int centerX = cell->x + ((POST_WIDTH + CELL_WIDTH) / 2);
+    int centerY = cell->y + ((POST_HEIGHT + CELL_HEIGHT) / 2);
+
+    triangle->polygon().clear();
+
+    QPolygonF polygon;
+    polygon << QPointF(centerX, centerY - 10) << QPointF(centerX + 5, centerY + 5) << QPointF(centerX - 5, centerY + 5);
+
+    polygon =  QTransform().translate(centerX, centerY).rotate(direction).translate(-centerX, -centerY).map(polygon);
+    triangle->setPolygon(polygon);
+    triangle->setVisible(true);
+}
+
+void MainWindow::REMOVE_TRIANGLE()
+{
+    triangle->setVisible(false);
 }
 
 void MainWindow::pushButtonFloodFill_clicked()
@@ -521,67 +548,24 @@ void MainWindow::serialReceived()
         int index = MAP_VALID_INDEX(splitedData.at(0).toInt());
         int walls = splitedData.at(1).toInt();
         int direction = splitedData.at(2).toInt();
-        int angle = 0;
+        int angle;
+
+        if(direction == NORTH) angle = 0;
+        else if(direction == EAST) angle = 90;
+        else if(direction == SOUTH) angle = 180;
+        else angle = -90;
 
         for(int i=0;i<16;i++)
         {
             for(int j=0;j<16;j++)
             {
-                if(direction != currentFaceDirection)
-                {
-                    switch(currentFaceDirection)
-                    {
-                    case NORTH:
-
-                        if(direction == WEST) angle = -90;
-                        else if(direction == SOUTH) angle = 180;
-                        else if(direction == EAST) angle = 90;
-                        else angle = 0;
-
-                        break;
-
-                    case EAST:
-
-                        if(direction == WEST) angle = 180;
-                        else if(direction == SOUTH) angle = 90;
-                        else if(direction == NORTH) angle = -90;
-                        else angle = 0;
-
-                        break;
-
-                    case SOUTH:
-
-                        if(direction == WEST) angle = 90;
-                        else if(direction == NORTH) angle = 180;
-                        else if(direction == EAST) angle = -90;
-                        else angle = 0;
-
-                        break;
-
-                    case WEST:
-
-                        if(direction == NORTH) angle = 90;
-                        else if(direction == SOUTH) angle = -90;
-                        else if(direction == EAST) angle = 180;
-                        else angle = 0;
-
-                        break;
-                    }
-
-                    currentFaceDirection = direction;
-                }
-                cells[j][i]->DRAW_TRIANGLE(angle);
-
 
                 if(cells[j][i]->index == index)
                 {
                     cells[j][i]->walls = walls;
                     cells[j][i]->rect->setBrush(Qt::yellow);
+                    DRAW_TRIANGLE(cells[j][i], angle);
                     MAP_WALLS_UPDATE();
-                }
-                else
-                {
-                    cells[j][i]->REMOVE_TRIANGLE();
                 }
 
                 ui->graphicsView->repaint();
@@ -631,7 +615,6 @@ void MainWindow::MAP_CLEAR()
     cell_start_conut = 0;
     cell_finish_count = 0;
     lastFinishIndexs.clear();
-    currentFaceDirection = NORTH;
 
     for(int i=0;i<16;i++)
     {
@@ -651,7 +634,7 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->wallSouth->setVisible(false);
             cells[j][i]->wallWest->setVisible(false);
             cells[j][i]->SET_BRUSH();
-            cells[j][i]->REMOVE_TRIANGLE();
+            REMOVE_TRIANGLE();
         }
     }
 

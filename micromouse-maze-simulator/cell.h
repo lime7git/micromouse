@@ -56,7 +56,7 @@ public:
     QGraphicsTextItem *solverIndexText;
     QGraphicsTextItem *gText;
     QGraphicsTextItem *hText;
-    QGraphicsPolygonItem *triangle;
+
 
     eCELL_TYPE type;
 
@@ -84,8 +84,6 @@ public:
     bool IS_WALL_WEST(void);
 
     void SET_BRUSH(void);
-    void DRAW_TRIANGLE(int angle);
-    void REMOVE_TRIANGLE(void);
 };
 
 #endif // CELL_H

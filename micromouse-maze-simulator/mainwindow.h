@@ -105,5 +105,11 @@ private:
     int random_in_range(int min, int max);
     int MAP_VALID_INDEX(int index);
 
+    void UPDATE_CELL_COUNT(int count);
+    void UPDATE_PATH_COUNT(int count);
+    void UPDATE_TURN_COUNT(int count);
+
+    void RESTART_SEARCH_COUNTS(void);
+
 };
 #endif // MAINWINDOW_H

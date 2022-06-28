@@ -30,8 +30,8 @@
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>825</x>
-      <y>350</y>
+      <x>830</x>
+      <y>500</y>
       <width>670</width>
       <height>10</height>
      </rect>
@@ -44,9 +44,9 @@
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>370</y>
-      <width>10</width>
-      <height>600</height>
+      <y>509</y>
+      <width>20</width>
+      <height>461</height>
      </rect>
     </property>
     <property name="orientation">
@@ -57,9 +57,9 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>370</y>
+      <y>514</y>
       <width>500</width>
-      <height>385</height>
+      <height>241</height>
      </rect>
     </property>
    </widget>
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>1350</x>
-      <y>370</y>
+      <y>520</y>
       <width>100</width>
       <height>30</height>
      </rect>
@@ -410,63 +410,195 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QGroupBox" name="groupBoxSearchInfo">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>830</x>
       <y>260</y>
-      <width>521</width>
-      <height>81</height>
+      <width>181</width>
+      <height>131</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Search info</string>
+    </property>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>154</width>
+       <height>88</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>5</number>
+      </property>
+      <item row="3" column="2">
+       <widget class="Line" name="line_10">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="Line" name="line_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="Line" name="line_8">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="labelTurnCount">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="Line" name="line_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="Line" name="line_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="labelCellCount">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="Line" name="line_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Turn count</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Cell count</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="labelPathCount">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Path count</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>textBrowserTerminal</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>plainTextEditSend</tabstop>
+  <tabstop>pushButtonSend</tabstop>
+  <tabstop>pushButtonSerialConnect</tabstop>
+  <tabstop>pushButtonFWD</tabstop>
+  <tabstop>pushButtonN</tabstop>
+  <tabstop>pushButtonE</tabstop>
+  <tabstop>pushButtonS</tabstop>
+  <tabstop>pushButtonW</tabstop>
+  <tabstop>pushButtonGenerate</tabstop>
+  <tabstop>comboBoxLoad</tabstop>
+  <tabstop>lineEditSaveText</tabstop>
+  <tabstop>pushButtonSaveMaze</tabstop>
+  <tabstop>checkBoxAStarBiDirectional</tabstop>
+  <tabstop>pushButtonFloodFill</tabstop>
+  <tabstop>pushButtonClearWalls</tabstop>
+  <tabstop>pushButtonLoadMaze</tabstop>
+  <tabstop>checkBoxAllowDiagonal</tabstop>
+  <tabstop>checkBoxFloodFillBiDirectional</tabstop>
+  <tabstop>comboBoxAstar</tabstop>
+  <tabstop>pushButtonAStar</tabstop>
+  <tabstop>checkBoxShowSearching</tabstop>
+  <tabstop>pushButtonClearPath</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

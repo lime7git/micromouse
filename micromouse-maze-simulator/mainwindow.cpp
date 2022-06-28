@@ -149,8 +149,30 @@ void MainWindow::pushButtonFloodFill_clicked()
         break;
         }
 
+        int count = 0;
+        for(int i=0;i<16;i++)
+        {
+            for(int j=0;j<16;j++)
+            {
+                if(cells[j][i]->rect->brush() == Qt::yellow) count++;
+            }
+        }
+
+        UPDATE_CELL_COUNT(count);
+        ui->groupBoxSearchInfo->setEnabled(true);
+
         SOLVE_FLOOD_GENERATE_PATH(finishIndex);
         ui->pushButtonClearPath->setEnabled(true);
+
+        int countPath = 0;
+        for(int i=0;i<16;i++)
+        {
+            for(int j=0;j<16;j++)
+            {
+                if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+            }
+        }
+        UPDATE_PATH_COUNT(countPath);
     }
         else
         {
@@ -197,6 +219,7 @@ void MainWindow::pushButtonClearPath_clicked()
 
     lastFinishIndexs.clear();
     ui->pushButtonClearPath->setEnabled(false);
+    RESTART_SEARCH_COUNTS();
 
 }
 
@@ -642,6 +665,8 @@ void MainWindow::MAP_CLEAR()
     for(int i = 0; i < 16; i++) cells[i][0]->wallWest->setVisible(true);
     for(int i = 0; i < 16; i++) cells[0][i]->wallNorth->setVisible(true);
     for(int i = 0; i < 16; i++) cells[15][i]->wallSouth->setVisible(true);
+
+    RESTART_SEARCH_COUNTS();
 }
 
 void MainWindow::MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i)
@@ -980,8 +1005,10 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
 void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
 {
      QStack<Cell*> stack;
-     int current_cell_index;
-
+     Cell *currentCell;
+     int turnCount = 0;
+     bool travelAlongX = false;
+     bool travelAlongY = false;
      for(int i=0;i<16;i++)
      {
          for(int j=0;j<16;j++)
@@ -997,13 +1024,13 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
 
      while(!stack.isEmpty())
      {
-        current_cell_index = stack.pop()->index;
+        currentCell = stack.pop();
 
         for(int i=0;i<16;i++)
         {
             for(int j=0;j<16;j++)
             {
-                if(current_cell_index == cells[j][i]->index)
+                if(currentCell->index == cells[j][i]->index)
                 {
 
                     if(cells[j][(i - 1 < 0) ? 0 : i - 1]->solver_index == (cells[j][i]->solver_index - 1) && !cells[j][i]->IS_WALL_WEST())
@@ -1035,12 +1062,35 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
         }
 
+        if(!stack.isEmpty())
+        {
+            if(currentCell->x == stack.first()->x && !travelAlongX && !travelAlongY)
+            {
+                travelAlongY = true;
+            }
+            else if(currentCell->y == stack.first()->y && !travelAlongX && !travelAlongY)
+            {
+                travelAlongX = true;
+            }
+
+            if(travelAlongX && currentCell->x == stack.first()->x)
+            {
+                turnCount++;
+                travelAlongX = false;
+                travelAlongY = true;
+            }
+            else if(travelAlongY && currentCell->y == stack.first()->y)
+            {
+                turnCount++;
+                travelAlongX = true;
+                travelAlongY = false;
+            }
+        }
+
         if(showSearching) ui->graphicsView->repaint();
      }
 
-
-
-
+     UPDATE_TURN_COUNT(turnCount);
 }
 
 void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index)
@@ -1215,11 +1265,51 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     Cell *currentCell;
     currentCell = finishCell;
 
+    int turnCount = 0;
+    bool travelAlongX = false;
+    bool travelAlongY = false;
+
+    int countCell = 0;
+    int countPath = 0;
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() != Qt::lightGray) countCell++;
+        }
+    }
+
+    UPDATE_CELL_COUNT(countCell - 1);
+    ui->groupBoxSearchInfo->setEnabled(true);
+
     while(currentCell->index != startCell->index)
     {
         path.append(*currentCell);
         currentCell->type = CELL_PATH;
         currentCell->SET_BRUSH();
+
+        if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
+        {
+            travelAlongY = true;
+        }
+        else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
+        {
+            travelAlongX = true;
+        }
+
+        if(travelAlongX && currentCell->x == currentCell->parent->x)
+        {
+            turnCount++;
+            travelAlongX = false;
+            travelAlongY = true;
+        }
+        else if(travelAlongY && currentCell->y == currentCell->parent->y)
+        {
+            turnCount++;
+            travelAlongX = true;
+            travelAlongY = false;
+        }
+
         currentCell = currentCell->parent;
 
         if(showSearching) ui->graphicsView->repaint();
@@ -1229,6 +1319,16 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     currentCell->SET_BRUSH();
 
     if(showSearching) ui->graphicsView->repaint();
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+        }
+    }
+    UPDATE_PATH_COUNT(countPath);
+    UPDATE_TURN_COUNT(turnCount);
 }
 
 
@@ -1307,5 +1407,28 @@ int MainWindow::MAP_VALID_INDEX(int index)
 
 
     return ret;
+}
+
+void MainWindow::UPDATE_CELL_COUNT(int count)
+{
+    ui->labelCellCount->setText(QString::number(count));
+}
+
+void MainWindow::UPDATE_PATH_COUNT(int count)
+{
+    ui->labelPathCount->setText(QString::number(count));
+}
+
+void MainWindow::UPDATE_TURN_COUNT(int count)
+{
+    ui->labelTurnCount->setText(QString::number(count));
+}
+
+void MainWindow::RESTART_SEARCH_COUNTS()
+{
+    ui->labelCellCount->setText("0");
+    ui->labelPathCount->setText("0");
+    ui->labelTurnCount->setText("0");
+    ui->groupBoxSearchInfo->setEnabled(false);
 }
 

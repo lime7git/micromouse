@@ -9,7 +9,7 @@
 #include <QList>
 #include <QDir>
 
-bool goal_reached = false;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -40,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     MAP_INIT_16x16();
-    cell_start_conut = 0;
-    cell_finish_count = 0;
+    cell_start_defined  = false;
+    cell_finish_defined = false;
 
 
     aStarHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
@@ -95,11 +95,10 @@ void MainWindow::REMOVE_TRIANGLE()
 
 void MainWindow::pushButtonFloodFill_clicked()
 {
-    int start_j = 0, start_i = 0;
+    Cell *startCell;
+    Cell *finishCell;
     bool startFound = false;
     bool finishFound = false;
-    int finishCount = 0;
-    int finishIndexs[4];
 
     for(int i=0;i<16;i++)
     {
@@ -107,8 +106,7 @@ void MainWindow::pushButtonFloodFill_clicked()
         {
             if(cells[j][i]->type == CELL_START)
             {
-              start_j = j;
-              start_i = i;
+              startCell = cells[j][i];
               startFound = true;
               cells[j][i]->visited = true;
               cells[j][i]->solver_index = 0;
@@ -117,8 +115,7 @@ void MainWindow::pushButtonFloodFill_clicked()
             }
             if(cells[j][i]->type == CELL_FINISH)
             {
-              finishIndexs[finishCount] = cells[j][i]->index;
-              finishCount++;
+              finishCell = cells[j][i];
               finishFound = true;
               lastFinishIndexs.append(cells[j][i]->index);
             }
@@ -128,58 +125,43 @@ void MainWindow::pushButtonFloodFill_clicked()
 
     if((startFound && finishFound) == true)
     {
-        int finishIndex;
 
-        switch (finishCount)
+        SOLVE_FLOOD_FILL(startCell, finishCell);
+
+        if(goal_reached)
         {
-        case 1:
-           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0]);
-        break;
-
-        case 2:
-           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1]);
-        break;
-
-        case 3:
-           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2]);
-        break;
-
-        case 4:
-           finishIndex = SOLVE_FLOOD_FILL(start_j, start_i, finishIndexs[0], finishIndexs[1], finishIndexs[2], finishIndexs[3]);
-        break;
-        }
-
-        int count = 0;
-        for(int i=0;i<16;i++)
-        {
-            for(int j=0;j<16;j++)
+            int count = 0;
+            for(int i=0;i<16;i++)
             {
-                if(cells[j][i]->rect->brush() == Qt::yellow) count++;
+                for(int j=0;j<16;j++)
+                {
+                    if(cells[j][i]->rect->brush() == Qt::yellow) count++;
+                }
             }
-        }
 
-        UPDATE_CELL_COUNT(count);
-        ui->groupBoxSearchInfo->setEnabled(true);
+            UPDATE_CELL_COUNT(count);
+            ui->groupBoxSearchInfo->setEnabled(true);
 
-        SOLVE_FLOOD_GENERATE_PATH(finishIndex);
-        ui->pushButtonClearPath->setEnabled(true);
+            SOLVE_FLOOD_GENERATE_PATH(finishCell->index);
+            ui->pushButtonClearPath->setEnabled(true);
 
-        int countPath = 0;
-        for(int i=0;i<16;i++)
-        {
-            for(int j=0;j<16;j++)
+            int countPath = 0;
+            for(int i=0;i<16;i++)
             {
-                if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+                for(int j=0;j<16;j++)
+                {
+                    if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+                }
             }
+            UPDATE_PATH_COUNT(countPath);
         }
-        UPDATE_PATH_COUNT(countPath);
     }
-        else
-        {
-            QMessageBox msgBox;
-            msgBox.setText("You need to define start and finish cells!");
-            msgBox.exec();
-        }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You need to define start and finish cells!");
+        msgBox.exec();
+    }
 }
 
 void MainWindow::pushButtonClearWalls_clicked()
@@ -498,36 +480,35 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
                     if(cells[j][i]->type == CELL_START)
                     {
-                        if(cell_finish_count < 4)
+                        if(!cell_finish_defined)
                         {
                             cells[j][i]->type = CELL_FINISH;
-                            cell_finish_count++;
-                            cell_start_conut--;
+                            cell_finish_defined = true;
+                            cell_start_defined = false;
                         }
                         else
                         {
                             cells[j][i]->type = CELL_NULL;
-                            cell_start_conut--;
+                            cell_start_defined = false;
                         }
                     }
                     else if(cells[j][i]->type == CELL_FINISH)
                     {
                         cells[j][i]->type = CELL_NULL;
-                        cell_finish_count--;
+                        cell_finish_defined = false;
                     }
                     else if(cells[j][i]->type == CELL_NULL)
                     {
-                        if(cell_start_conut == 0)
+                        if(!cell_start_defined)
                         {
                             cells[j][i]->type = CELL_START;
-                            cell_start_conut++;
+                            cell_start_defined = true;
                         }
-                        else if(cell_finish_count < 4)
+                        else if(!cell_finish_defined)
                         {
                             cells[j][i]->type = CELL_FINISH;
-                            cell_finish_count++;
+                            cell_finish_defined = true;
                         }
-
                     }
 
                     cells[j][i]->SET_BRUSH();
@@ -635,8 +616,8 @@ void MainWindow::MAP_INIT_16x16()
 
 void MainWindow::MAP_CLEAR()
 {
-    cell_start_conut = 0;
-    cell_finish_count = 0;
+    cell_start_defined  = false;
+    cell_finish_defined = false;
     lastFinishIndexs.clear();
 
     for(int i=0;i<16;i++)
@@ -837,23 +818,19 @@ void MainWindow::MAP_WALLS_UPDATE()
     }
 }
 
-int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first, const std::optional<unsigned int> &finish_cell_second, const std::optional<unsigned int> &finish_cell_third, const std::optional<unsigned int> &finish_cell_fourth)
+void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
 {
     unsigned int current_cell_index;
-    unsigned int *finish_cell_index;
-    unsigned int finishCellSolverIndexs[4] = {256,256,256,256};
-    unsigned int count = 0;
+
     QStack<Cell*> *stack = nullptr;
     stack = new QStack<Cell*>();
 
     QStack<Cell*> *temp_stack = nullptr;
     temp_stack = new QStack<Cell*>();
 
+    stack->push(startCell);
 
-
-    stack->push(cells[j][i]);
-
-    while(!stack->isEmpty())
+    while(!stack->isEmpty() && !goal_reached)
     {
 
         if(stack->size() >= 2)
@@ -867,23 +844,12 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
             {
                 current_cell_index = temp_stack->pop()->index;
 
-                if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
+                if(current_cell_index == finishCell->index)
                 {
                     goal_reached = true;
-
-                    for(int i=0;i<16;i++)
-                    {
-                        for(int j=0;j<16;j++)
-                        {
-                            if(current_cell_index == cells[j][i]->index)
-                            {
-                              finishCellSolverIndexs[count] = cells[j][i]->solver_index;
-                            }
-                        }
-                    }
-
-                    count++;
-                    continue;
+                    delete(stack);
+                    delete(temp_stack);
+                    return;
                 }
 
                 for(int i=0;i<16;i++)
@@ -892,8 +858,7 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
                     {
                         if(current_cell_index == cells[j][i]->index)
                         {
-                          SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
-
+                          SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack, finishCell);
                         }
                     }
                 }
@@ -903,23 +868,12 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
         {
             current_cell_index = stack->pop()->index;
 
-            if(current_cell_index == finish_cell_first || current_cell_index == finish_cell_second || current_cell_index == finish_cell_third || current_cell_index == finish_cell_fourth)
+            if(current_cell_index == finishCell->index)
             {
                 goal_reached = true;
-
-                for(int i=0;i<16;i++)
-                {
-                    for(int j=0;j<16;j++)
-                    {
-                        if(current_cell_index == cells[j][i]->index)
-                        {
-                          finishCellSolverIndexs[count] = cells[j][i]->solver_index;
-                        }
-                    }
-                }
-
-                count++;
-                continue;
+                delete(stack);
+                delete(temp_stack);
+                return;
             }
 
 
@@ -929,38 +883,18 @@ int MainWindow::SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int fi
                 {
                     if(current_cell_index == cells[j][i]->index)
                     {
-                      SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack);
+                      SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(j, i, stack, finishCell);
                     }
                 }
             }
         }
-
-
-
-
-
     }
 
-    finish_cell_index = std::min_element(std::begin(finishCellSolverIndexs), std::end(finishCellSolverIndexs));
-
-    for(int i=0;i<16;i++)
-    {
-        for(int j=0;j<16;j++)
-        {
-            if(cells[j][i]->index == finish_cell_first || cells[j][i]->index == finish_cell_second || cells[j][i]->index == finish_cell_third || cells[j][i]->index == finish_cell_fourth)
-            {
-                if(cells[j][i]->solver_index == *finish_cell_index)
-                {
-                    *finish_cell_index = cells[j][i]->index;
-                }
-            }
-        }
-    }
-
-    return *finish_cell_index;
+    delete(stack);
+    delete(temp_stack);
 }
 
-void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack)
+void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack, Cell *finishCell)
 {
     if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
     {
@@ -969,6 +903,11 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         cells[j][(i - 1 < 0) ? 0 : i - 1]->visited = true;
         cells[j][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
 
+        if(cells[j][(i - 1 < 0) ? 0 : i - 1]->index == finishCell->index)
+        {
+            goal_reached = true;
+            return;
+        }
         stack->push(cells[j][(i - 1 < 0) ? 0 : i - 1]);
      }
     if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
@@ -978,6 +917,11 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         cells[j][(i + 1 > 15) ? 15 : i + 1]->visited = true;
         cells[j][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
 
+        if(cells[j][(i + 1 > 15) ? 15 : i + 1]->index == finishCell->index)
+        {
+            goal_reached = true;
+            return;
+        }
         stack->push(cells[j][(i + 1 > 15) ? 15 : i + 1]);
      }
     if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
@@ -987,6 +931,11 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         cells[(j + 1 > 15) ? 15 : j + 1][i]->visited = true;
         cells[(j + 1 > 15) ? 15 : j + 1][i]->rect->setBrush(Qt::yellow);
 
+        if(cells[(j + 1 > 15) ? 15 : j + 1][i]->index == finishCell->index)
+        {
+            goal_reached = true;
+            return;
+        }
         stack->push(cells[(j + 1 > 15) ? 15 : j + 1][i]);
      }
     if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
@@ -996,6 +945,11 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
         cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
 
+        if(cells[(j - 1 < 0) ? 0 : j - 1][i]->index == finishCell->index)
+        {
+            goal_reached = true;
+            return;
+        }
         stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 

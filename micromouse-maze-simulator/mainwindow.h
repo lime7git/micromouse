@@ -76,31 +76,28 @@ private:
     void MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i);
     void MAP_WALLS_UPDATE();
 
-    int SOLVE_FLOOD_FILL(unsigned int j, unsigned int i, unsigned int finish_cell_first,
-                          const std::optional<unsigned int>& finish_cell_second = std::nullopt,
-                          const std::optional<unsigned int>& finish_cell_third  = std::nullopt,
-                          const std::optional<unsigned int>& finish_cell_fourth = std::nullopt);
-    void SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack);
-    void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
+    bool cell_start_defined;
+    bool cell_finish_defined;
 
+    void SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell);
+    void SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack, Cell *finishCell);
+    void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
+    bool goal_reached = false;
+
+    // A star
     void A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index);
     QList<Cell*> A_STAR_GET_NEIGHBOURS(Cell cell);
     void A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell);
     int GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB);
 
     QMap<QString, eASTAR_HEURISTIC> aStarHeuristicOptions;
-
-    unsigned int cell_start_conut;
-    unsigned int cell_finish_count;
-
-    unsigned int lastStartIndex;
-    QList<int> lastFinishIndexs;
-
-    // A star
     eASTAR_HEURISTIC heuristicType;
     bool allowDiagonal;
     bool biDirectionalFloodFill;
     bool biDirectionalAStar;
+
+    unsigned int lastStartIndex;
+    QList<int> lastFinishIndexs;
 
     int random_in_range(int min, int max);
     int MAP_VALID_INDEX(int index);

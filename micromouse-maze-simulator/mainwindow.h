@@ -10,7 +10,8 @@
 typedef enum
 {
     ASTAR_MANHATTAN_DISTANCE = 0,
-    ASTAR_DIAGONAL_DISTANCE,
+    ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV,
+    ASTAR_DIAGONAL_DISTANCE_OCTILE,
     ASTAR_EUCLIDEAN_DISTANE,
 } eASTAR_HEURISTIC;
 
@@ -37,6 +38,7 @@ public Q_SLOTS:
     void pushButtonClearPath_clicked();
     void pushButtonGenerate_clicked();
     void pushButtonAStar_clicked();
+    void pushButtonBFS_clicked();
     void pushButtonSaveMaze_clicked();
     void pushButtonLoadMaze_clicked();
     void pushButtonSerialConnect_clicked();
@@ -49,9 +51,11 @@ public Q_SLOTS:
     void pushButtonW_clicked();
 
     void comboBoxAStar_onChange(void);
+    void comboBoxBFS_onChange(void);
     void radioButtonAllowDiagonal_onChange(void);
     void radioButtonAllowAStarBiDirectional_onChange(void);
     void radioButtonAllowFloodFillBiDirectional_onChange(void);
+    void checkBoxBFSAllowDiagonal_onChange(void);
     void checkBoxShowSearching_onChange(void);
 
     void serialReceived();
@@ -95,6 +99,17 @@ private:
     bool allowDiagonal;
     bool biDirectionalFloodFill;
     bool biDirectionalAStar;
+
+    // Greedy BFS
+    void BFS_FIND_PATH(Cell *startCell, Cell *finishCell);
+    QList<Cell*> BFS_GET_NEIGHBOURS(Cell *cell);
+    void BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell);
+    int BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB);
+
+    QMap<QString, eASTAR_HEURISTIC> BFSHeuristicOptions;
+    eASTAR_HEURISTIC heuristicTypeBFS;
+    bool allowDiagonalBFS;
+
 
     unsigned int lastStartIndex;
     QList<int> lastFinishIndexs;

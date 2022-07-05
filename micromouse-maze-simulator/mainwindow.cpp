@@ -9,8 +9,6 @@
 #include <QList>
 #include <QDir>
 
-
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -34,10 +32,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
     connect(ui->comboBoxAstar,                   SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
+    connect(ui->comboBoxBFS,                     SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxBFS_onChange()));
     connect(ui->checkBoxAllowDiagonal,           SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
     connect(ui->checkBoxFloodFillBiDirectional,  SIGNAL(clicked()), this, SLOT(radioButtonAllowFloodFillBiDirectional_onChange()));
     connect(ui->checkBoxAStarBiDirectional,      SIGNAL(clicked()), this, SLOT(radioButtonAllowAStarBiDirectional_onChange()));
     connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
+
+    connect(ui->checkBoxAllowDiagonalBFS,        SIGNAL(clicked()), this, SLOT(checkBoxBFSAllowDiagonal_onChange()));
+    connect(ui->pushButtonBFS,                   SIGNAL(clicked()), this, SLOT(pushButtonBFS_clicked()));
 
     MAP_INIT_16x16();
     cell_start_defined  = false;
@@ -46,16 +48,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     aStarHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
     aStarHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
-    aStarHeuristicOptions.insert("Diagonal distance", ASTAR_DIAGONAL_DISTANCE);
+    aStarHeuristicOptions.insert("Diagonal - Chebyshev distance", ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV);
+    aStarHeuristicOptions.insert("Diagonal - Octile distance", ASTAR_DIAGONAL_DISTANCE_OCTILE);
     ui->comboBoxAstar->clear();
     ui->comboBoxAstar->addItems(aStarHeuristicOptions.keys());
-    ui->comboBoxAstar->setCurrentIndex(2);
+    ui->comboBoxAstar->setCurrentIndex(3);
     ui->comboBoxAstar->show();
     heuristicType = ASTAR_MANHATTAN_DISTANCE;
     allowDiagonal = false;
     biDirectionalAStar = false;
     biDirectionalFloodFill = false;
     showSearching = true;
+
+    BFSHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
+    BFSHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
+    BFSHeuristicOptions.insert("Diagonal - Chebyshev distance", ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV);
+    BFSHeuristicOptions.insert("Diagonal - Octile distance", ASTAR_DIAGONAL_DISTANCE_OCTILE);
+    ui->comboBoxBFS->clear();
+    ui->comboBoxBFS->addItems(BFSHeuristicOptions.keys());
+    ui->comboBoxBFS->setCurrentIndex(3);
+    ui->comboBoxBFS->show();
+    heuristicTypeBFS = ASTAR_MANHATTAN_DISTANCE;
+    allowDiagonalBFS = false;
 
     QPolygonF polygon;
     triangle = new QGraphicsPolygonItem();
@@ -249,6 +263,43 @@ void MainWindow::pushButtonAStar_clicked()
     }
 }
 
+void MainWindow::pushButtonBFS_clicked()
+{
+    Cell *startCell, *finishCell;
+    bool startFound = false, finishFound = false;
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->type == CELL_START)
+            {
+              startCell = cells[j][i];
+              startFound = true;
+              lastStartIndex = cells[j][i]->index;
+            }
+            if(cells[j][i]->type == CELL_FINISH)
+            {
+              finishCell = cells[j][i];
+              finishFound = true;
+              lastFinishIndexs.append(cells[j][i]->index);
+            }
+        }
+    }
+
+    if(startFound && finishFound)
+    {
+        BFS_FIND_PATH(startCell, finishCell);
+        ui->pushButtonClearPath->setEnabled(true);
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You need to define start and finish cells!");
+        msgBox.exec();
+    }
+}
+
 void MainWindow::pushButtonSaveMaze_clicked()
 {
     QString dirPath("D:/github-repos/micromouse/micromouse-other/maze-files/");
@@ -397,6 +448,11 @@ void MainWindow::comboBoxAStar_onChange()
     heuristicType = aStarHeuristicOptions.value(ui->comboBoxAstar->currentText());
 }
 
+void MainWindow::comboBoxBFS_onChange()
+{
+    heuristicTypeBFS = BFSHeuristicOptions.value(ui->comboBoxBFS->currentText());
+}
+
 void MainWindow::radioButtonAllowDiagonal_onChange()
 {
     if(ui->checkBoxAllowDiagonal->isChecked())
@@ -430,6 +486,18 @@ void MainWindow::radioButtonAllowFloodFillBiDirectional_onChange()
            else
            {
             biDirectionalFloodFill = false;
+    }
+}
+
+void MainWindow::checkBoxBFSAllowDiagonal_onChange()
+{
+    if(ui->checkBoxAllowDiagonalBFS->isChecked())
+           {
+            allowDiagonalBFS = true;
+           }
+           else
+           {
+            allowDiagonalBFS = false;
     }
 }
 
@@ -1064,7 +1132,7 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
     {
         Cell *currentCell = nullptr;
 
-        currentCell = openSet.last();
+        currentCell = openSet.first();
 
         for(auto cell : openSet)
         {
@@ -1285,8 +1353,242 @@ int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
 
         break;
 
-    case ASTAR_DIAGONAL_DISTANCE:
+    case ASTAR_DIAGONAL_DISTANCE_OCTILE:
             return 10 * (distanceX + distanceY) + (14 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV:
+            return 10 * (distanceX + distanceY) + (10 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_EUCLIDEAN_DISTANE:
+            return sqrt((distanceX * distanceX) + (distanceY * distanceY)) * 10;
+
+        break;
+
+    default:
+            return (distanceX + distanceY) * 10;
+        break;
+    }
+}
+
+void MainWindow::BFS_FIND_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell*> openSet;
+    QList<Cell*> closeSet;
+
+
+    startCell->hCost = BFS_GET_DISTANCE_BETWEEN_CELLS(*startCell,*finishCell);
+    openSet.append(startCell);
+    startCell->visited = true;
+
+    while(!openSet.empty())
+    {
+        Cell *currentCell = nullptr;
+
+        currentCell = openSet.first();
+
+        for(auto cell : openSet)
+        {
+            if(cell->index == currentCell->index)
+            {
+                continue;
+            }
+            if(cell->hCost < currentCell->hCost)
+            {
+                currentCell = cell;
+            }
+        }
+
+        openSet.removeOne(currentCell);
+        closeSet.append(currentCell);
+        currentCell->rect->setBrush(Qt::magenta);
+        if(showSearching) ui->graphicsView->repaint();
+
+        for(auto neighbour : BFS_GET_NEIGHBOURS(currentCell))
+        {
+            if(closeSet.contains(neighbour))
+            {
+                continue;
+            }
+
+            if(neighbour->index == finishCell->index)
+            {
+                neighbour->hCost = BFS_GET_DISTANCE_BETWEEN_CELLS(*neighbour,*finishCell);
+                neighbour->hText->setPlainText("h" + QString::number(neighbour->hCost));
+                neighbour->parent = currentCell;
+                neighbour->rect->setBrush(Qt::yellow);
+                BFS_GENERATE_PATH(startCell, finishCell);
+                return;
+            }
+                if(!openSet.contains(neighbour))
+                {
+                neighbour->hCost = BFS_GET_DISTANCE_BETWEEN_CELLS(*neighbour,*finishCell);
+                neighbour->hText->setPlainText("h" + QString::number(neighbour->hCost));
+                neighbour->parent = currentCell;
+                neighbour->rect->setBrush(Qt::yellow);
+                openSet.append(neighbour);
+                }
+
+                if(showSearching) ui->graphicsView->repaint();
+            }
+    }
+}
+
+QList<Cell *> MainWindow::BFS_GET_NEIGHBOURS(Cell *cell)
+{
+    QList<Cell*> neighbours;
+
+    int j, i;
+
+    for(int x=0;x<16;x++)
+    {
+        for(int y=0;y<16;y++)
+        {
+            if(cell->index == cells[y][x]->index)
+            {
+                j = y;
+                i = x;
+            }
+        }
+    }
+
+    if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
+    {
+        neighbours.append(cells[j][(i - 1 < 0) ? 0 : i - 1]);
+    }
+    if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
+    {
+        neighbours.append(cells[j][(i + 1 > 15) ? 15 : i + 1]);
+    }
+    if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
+    {
+        neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][i]);
+    }
+    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
+    {
+        neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+    }
+
+    if(allowDiagonalBFS)
+    {
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        {
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        {
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        {
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        {
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+
+    }
+
+    if(showSearching) ui->graphicsView->repaint();
+
+    return neighbours;
+}
+
+void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell> path;
+    Cell *currentCell;
+    currentCell = finishCell;
+
+    int turnCount = 0;
+    bool travelAlongX = false;
+    bool travelAlongY = false;
+
+    int countCell = 0;
+    int countPath = 0;
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() != Qt::lightGray) countCell++;
+        }
+    }
+
+    UPDATE_CELL_COUNT(countCell - 1);
+    ui->groupBoxSearchInfo->setEnabled(true);
+
+    while(currentCell->index != startCell->index)
+    {
+        path.append(*currentCell);
+        currentCell->type = CELL_PATH;
+        currentCell->SET_BRUSH();
+
+        if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
+        {
+            travelAlongY = true;
+        }
+        else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
+        {
+            travelAlongX = true;
+        }
+
+        if(travelAlongX && currentCell->x == currentCell->parent->x)
+        {
+            turnCount++;
+            travelAlongX = false;
+            travelAlongY = true;
+        }
+        else if(travelAlongY && currentCell->y == currentCell->parent->y)
+        {
+            turnCount++;
+            travelAlongX = true;
+            travelAlongY = false;
+        }
+
+        currentCell = currentCell->parent;
+
+        if(showSearching) ui->graphicsView->repaint();
+    }
+
+    currentCell->type = CELL_PATH;
+    currentCell->SET_BRUSH();
+
+    if(showSearching) ui->graphicsView->repaint();
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+        }
+    }
+    UPDATE_PATH_COUNT(countPath);
+    UPDATE_TURN_COUNT(turnCount);
+}
+
+int MainWindow::BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
+{
+    int distanceX = abs(cellA.x - cellB.x) / 50;
+    int distanceY = abs(cellA.y - cellB.y) / 50;
+
+    switch (heuristicTypeBFS)
+    {
+    case ASTAR_MANHATTAN_DISTANCE:
+            return (distanceX + distanceY) * 10;
+
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE_OCTILE:
+            return 10 * (distanceX + distanceY) + (14 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV:
+            return 10 * (distanceX + distanceY) + (10 - 2 * 10) * fmin(distanceX, distanceY);
 
         break;
 

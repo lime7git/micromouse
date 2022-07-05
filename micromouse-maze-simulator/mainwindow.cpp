@@ -844,14 +844,6 @@ void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
             {
                 current_cell_index = temp_stack->pop()->index;
 
-                if(current_cell_index == finishCell->index)
-                {
-                    goal_reached = true;
-                    delete(stack);
-                    delete(temp_stack);
-                    return;
-                }
-
                 for(int i=0;i<16;i++)
                 {
                     for(int j=0;j<16;j++)
@@ -867,15 +859,6 @@ void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
         else
         {
             current_cell_index = stack->pop()->index;
-
-            if(current_cell_index == finishCell->index)
-            {
-                goal_reached = true;
-                delete(stack);
-                delete(temp_stack);
-                return;
-            }
-
 
             for(int i=0;i<16;i++)
             {
@@ -1285,7 +1268,6 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     UPDATE_TURN_COUNT(turnCount);
 }
 
-
 int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
 {
     /*
@@ -1318,6 +1300,7 @@ int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
         break;
     }
 }
+
 int MainWindow::random_in_range(int min, int max)
 {
     static bool first = true;

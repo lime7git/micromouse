@@ -33,6 +33,7 @@ public:
     void REMOVE_TRIANGLE(void);
 
 public Q_SLOTS:
+    void pushButtonRecursive_clicked();
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonClearPath_clicked();
@@ -56,6 +57,7 @@ public Q_SLOTS:
     void radioButtonAllowAStarBiDirectional_onChange(void);
     void radioButtonAllowFloodFillBiDirectional_onChange(void);
     void checkBoxBFSAllowDiagonal_onChange(void);
+    void checkBoxFloodAllowDiagonal_onChange(void);
     void checkBoxShowSearching_onChange(void);
 
     void serialReceived();
@@ -83,10 +85,17 @@ private:
     bool cell_start_defined;
     bool cell_finish_defined;
 
+
+    //recursive
+    bool RECURSIVE(Cell *cell, Cell *finishCell);
+    void RECURSIVE_GENERATE_PATH(Cell *startCell, Cell *finishCell);
+
+    // flood fill
     void SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell);
     void SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *stack, Cell *finishCell);
     void SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index);
     bool goal_reached = false;
+    bool allowDiagonalFlood = false;
 
     // A star
     void A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index);

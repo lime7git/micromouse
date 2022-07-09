@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->pushButtonRecursive,        SIGNAL(clicked()), this, SLOT(pushButtonRecursive_clicked()));
     connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonClearPath,        SIGNAL(clicked()), this, SLOT(pushButtonClearPath_clicked()));
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     connect(ui->checkBoxAllowDiagonalBFS,        SIGNAL(clicked()), this, SLOT(checkBoxBFSAllowDiagonal_onChange()));
+    connect(ui->checkBoxAllowDiagonalFlood,      SIGNAL(clicked()), this, SLOT(checkBoxFloodAllowDiagonal_onChange()));
     connect(ui->pushButtonBFS,                   SIGNAL(clicked()), this, SLOT(pushButtonBFS_clicked()));
 
     MAP_INIT_16x16();
@@ -70,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxBFS->show();
     heuristicTypeBFS = ASTAR_MANHATTAN_DISTANCE;
     allowDiagonalBFS = false;
+    allowDiagonalFlood = false;
 
     QPolygonF polygon;
     triangle = new QGraphicsPolygonItem();
@@ -105,6 +108,56 @@ void MainWindow::DRAW_TRIANGLE(Cell *cell, int direction)
 void MainWindow::REMOVE_TRIANGLE()
 {
     triangle->setVisible(false);
+}
+
+void MainWindow::pushButtonRecursive_clicked()
+{
+    Cell *startCell;
+    Cell *finishCell;
+    bool startFound = false;
+    bool finishFound = false;
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->type == CELL_START)
+            {
+              startCell = cells[j][i];
+              startFound = true;
+              lastStartIndex = cells[j][i]->index;
+            }
+            if(cells[j][i]->type == CELL_FINISH)
+            {
+              finishCell = cells[j][i];
+              finishFound = true;
+              lastFinishIndexs.append(cells[j][i]->index);
+            }
+        }
+    }
+    goal_reached = false;
+
+    if((startFound && finishFound) == true)
+    {
+
+        goal_reached = RECURSIVE(startCell, finishCell);
+
+        if(goal_reached)
+        {
+            RECURSIVE_GENERATE_PATH(startCell, finishCell);
+            ui->pushButtonClearPath->setEnabled(true);
+
+        }
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You need to define start and finish cells!");
+        msgBox.exec();
+    }
+
+
+
 }
 
 void MainWindow::pushButtonFloodFill_clicked()
@@ -501,6 +554,18 @@ void MainWindow::checkBoxBFSAllowDiagonal_onChange()
     }
 }
 
+void MainWindow::checkBoxFloodAllowDiagonal_onChange()
+{
+    if(ui->checkBoxAllowDiagonalFlood->isChecked())
+           {
+            allowDiagonalFlood = true;
+           }
+           else
+           {
+            allowDiagonalFlood = false;
+    }
+}
+
 void MainWindow::checkBoxShowSearching_onChange()
 {
     if(ui->checkBoxShowSearching->isChecked())
@@ -886,6 +951,141 @@ void MainWindow::MAP_WALLS_UPDATE()
     }
 }
 
+bool MainWindow::RECURSIVE(Cell *cell, Cell *finishCell)
+{
+    if(cell == finishCell) return true;
+    if(cell->visited) return false;
+
+    cell->visited = true;
+    cell->rect->setBrush(Qt::yellow);
+    if(showSearching) ui->graphicsView->repaint();
+
+    int j, i;
+
+    for(int x=0;x<16;x++)
+    {
+        for(int y=0;y<16;y++)
+        {
+            if(cell->index == cells[y][x]->index)
+            {
+                j = y;
+                i = x;
+            }
+        }
+    }
+
+    if(!cells[j][i]->IS_WALL_WEST())
+    {
+        if(RECURSIVE(cells[j][(i - 1 < 0) ? 0 : i - 1], finishCell))
+        {
+            cells[j][(i - 1 < 0) ? 0 : i - 1]->parent = cell;
+            if(showSearching) ui->graphicsView->repaint();
+            return true;
+        }
+    }
+    if(!cells[j][i]->IS_WALL_EAST())
+    {
+        if(RECURSIVE(cells[j][(i + 1 > 15) ? 15 : i + 1], finishCell))
+        {
+            cells[j][(i + 1 > 15) ? 15 : i + 1]->parent = cell;
+            if(showSearching) ui->graphicsView->repaint();
+            return true;
+        }
+    }
+    if(!cells[j][i]->IS_WALL_SOUTH())
+    {
+        if(RECURSIVE(cells[(j + 1 > 15) ? 15 : j + 1][i], finishCell))
+        {
+            cells[(j + 1 > 15) ? 15 : j + 1][i]->parent = cell;
+            if(showSearching) ui->graphicsView->repaint();
+            return true;
+        }
+    }
+    if(!cells[j][i]->IS_WALL_NORTH())
+    {
+        if(RECURSIVE(cells[(j - 1 < 0) ? 0 : j - 1][i], finishCell))
+        {
+            cells[(j - 1 < 0) ? 0 : j - 1][i]->parent = cell;
+            if(showSearching) ui->graphicsView->repaint();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void MainWindow::RECURSIVE_GENERATE_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell> path;
+    Cell *currentCell;
+    currentCell = finishCell;
+
+    int turnCount = 0;
+    bool travelAlongX = false;
+    bool travelAlongY = false;
+
+    int countCell = 0;
+    int countPath = 0;
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() != Qt::lightGray) countCell++;
+        }
+    }
+
+    UPDATE_CELL_COUNT(countCell);
+    ui->groupBoxSearchInfo->setEnabled(true);
+
+    while(currentCell->index != startCell->index)
+    {
+        path.append(*currentCell);
+        currentCell->type = CELL_PATH;
+        currentCell->SET_BRUSH();
+
+        if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
+        {
+            travelAlongY = true;
+        }
+        else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
+        {
+            travelAlongX = true;
+        }
+
+        if(travelAlongX && currentCell->x == currentCell->parent->x)
+        {
+            turnCount++;
+            travelAlongX = false;
+            travelAlongY = true;
+        }
+        else if(travelAlongY && currentCell->y == currentCell->parent->y)
+        {
+            turnCount++;
+            travelAlongX = true;
+            travelAlongY = false;
+        }
+
+        currentCell = currentCell->parent;
+
+        if(showSearching) ui->graphicsView->repaint();
+    }
+
+    currentCell->type = CELL_PATH;
+    currentCell->SET_BRUSH();
+
+    if(showSearching) ui->graphicsView->repaint();
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+        }
+    }
+    UPDATE_PATH_COUNT(countPath);
+    UPDATE_TURN_COUNT(turnCount);
+}
+
 void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
 {
     unsigned int current_cell_index;
@@ -1004,6 +1204,67 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
         stack->push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
+    if(allowDiagonalFlood)
+    {
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        {
+           cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->solver_index = cells[j][i]->solver_index + 1;
+           cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
+           cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+           cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
+
+           if(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->index == finishCell->index)
+           {
+               goal_reached = true;
+               return;
+           }
+           stack->push(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        {
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->solver_index = cells[j][i]->solver_index + 1;
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
+
+            if(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->index == finishCell->index)
+            {
+                goal_reached = true;
+                return;
+            }
+            stack->push(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        {
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->solver_index = cells[j][i]->solver_index + 1;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
+
+            if(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->index == finishCell->index)
+            {
+                goal_reached = true;
+                return;
+            }
+            stack->push(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        {
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->solver_index = cells[j][i]->solver_index + 1;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
+            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
+
+            if(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->index == finishCell->index)
+            {
+                goal_reached = true;
+                return;
+            }
+            stack->push(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+
+    }
+
     if(showSearching) ui->graphicsView->repaint();
 }
 
@@ -1061,6 +1322,34 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
                         cells[(j - 1 < 0) ? 0 : j - 1][i]->type = CELL_PATH;
                         cells[(j - 1 < 0) ? 0 : j - 1][i]->SET_BRUSH();
                         stack.push(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+                    }
+                    else if(allowDiagonalFlood)
+                    {
+                        if((cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->solver_index == (cells[j][i]->solver_index - 1)) && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+                        {
+                            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->type = CELL_PATH;
+                            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->SET_BRUSH();
+                            stack.push(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
+                        }
+                        else if((cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->solver_index == (cells[j][i]->solver_index - 1)) && !cells[j][i]->IS_WALL_EAST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_SOUTH())
+                        {
+                            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->type = CELL_PATH;
+                            cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->SET_BRUSH();
+                            stack.push(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
+                        }
+                        else if((cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->solver_index == (cells[j][i]->solver_index - 1)) && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+                        {
+                            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->type = CELL_PATH;
+                            cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->SET_BRUSH();
+                            stack.push(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
+                        }
+                        else if((cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->solver_index == (cells[j][i]->solver_index - 1)) && !cells[j][i]->IS_WALL_WEST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_NORTH())
+                        {
+                            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->type = CELL_PATH;
+                            cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->SET_BRUSH();
+                            stack.push(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
+                        }
+
                     }
 
                 }

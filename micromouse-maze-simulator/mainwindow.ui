@@ -243,72 +243,14 @@
      <rect>
       <x>830</x>
       <y>10</y>
-      <width>523</width>
+      <width>565</width>
       <height>245</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" columnstretch="30,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
      <property name="spacing">
       <number>2</number>
      </property>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="comboBoxAstar"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="QPushButton" name="pushButtonGenerate">
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>Generate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QPushButton" name="pushButtonLoadMaze">
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>Load Maze</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="pushButtonClearPath">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>Clear Path</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QCheckBox" name="checkBoxAllowDiagonal">
-       <property name="text">
-        <string>Allow diagonal</string>
-       </property>
-      </widget>
-     </item>
      <item row="7" column="0">
       <widget class="QPushButton" name="pushButtonSaveMaze">
        <property name="font">
@@ -321,90 +263,6 @@
        </property>
        <property name="text">
         <string>Save Maze</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QPushButton" name="pushButtonClearWalls">
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="pushButtonFloodFill">
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>Flood Fill</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QComboBox" name="comboBoxLoad"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="checkBoxShowSearching">
-       <property name="text">
-        <string>Show searching</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QCheckBox" name="checkBoxAStarBiDirectional">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Bi-directional</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="lineEditSaveText"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="checkBoxFloodFillBiDirectional">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Bi-directional</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="pushButtonAStar">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(230, 230, 230);</string>
-       </property>
-       <property name="text">
-        <string>A*</string>
        </property>
       </widget>
      </item>
@@ -429,8 +287,172 @@
      <item row="4" column="1">
       <widget class="QComboBox" name="comboBoxBFS"/>
      </item>
+     <item row="3" column="3">
+      <widget class="QCheckBox" name="checkBoxAStarBiDirectional">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Bi-directional</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="pushButtonFloodFill">
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Flood Fill</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButtonRecursive">
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Recursive</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="checkBoxShowSearching">
+       <property name="text">
+        <string>Show searching</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QPushButton" name="pushButtonClearWalls">
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QCheckBox" name="checkBoxAllowDiagonal">
+       <property name="text">
+        <string>Allow diagonal</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="lineEditSaveText"/>
+     </item>
      <item row="4" column="2">
       <widget class="QCheckBox" name="checkBoxAllowDiagonalBFS">
+       <property name="text">
+        <string>Allow diagonal</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QPushButton" name="pushButtonGenerate">
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Generate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="pushButtonAStar">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>A*</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QComboBox" name="comboBoxLoad"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButtonClearPath">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Clear Path</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QPushButton" name="pushButtonLoadMaze">
+       <property name="font">
+        <font>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(230, 230, 230);</string>
+       </property>
+       <property name="text">
+        <string>Load Maze</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="comboBoxAstar"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QCheckBox" name="checkBoxFloodFillBiDirectional">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Bi-directional</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="checkBoxAllowDiagonalFlood">
        <property name="text">
         <string>Allow diagonal</string>
        </property>
@@ -445,7 +467,7 @@
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>260</y>
+      <y>360</y>
       <width>181</width>
       <height>131</height>
      </rect>
@@ -621,7 +643,6 @@
   <tabstop>pushButtonClearWalls</tabstop>
   <tabstop>pushButtonLoadMaze</tabstop>
   <tabstop>checkBoxAllowDiagonal</tabstop>
-  <tabstop>checkBoxFloodFillBiDirectional</tabstop>
   <tabstop>comboBoxAstar</tabstop>
   <tabstop>pushButtonAStar</tabstop>
   <tabstop>checkBoxShowSearching</tabstop>

@@ -647,7 +647,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     cells[j][i]->SET_BRUSH();
 
                     qDebug() << "Cell index : " << cells[j][i]->index;
-                    qDebug() << "[" << j << "]" << "[" << i << "]";
+                    qDebug() << "j[" << j << "]" << "i[" << i << "]";
                     qDebug() << "x[" << cells[j][i]->x << "]" << "y[" << cells[j][i]->y << "]";
                     qDebug() << "Walls : " << cells[j][i]->walls;
                     qDebug() << "Solver index : " << cells[j][i]->solver_index << Qt::endl;
@@ -1206,7 +1206,9 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
 
     if(allowDiagonalFlood)
     {
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited &&     // left top corner
+                ((!cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH()) ||
+                 (!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())))
         {
            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->solver_index = cells[j][i]->solver_index + 1;
            cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
@@ -1220,7 +1222,9 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
            }
            stack->push(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
         }
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited &&   // right top corner
+                ((!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST()) ||
+                 (!cells[j][i]->IS_WALL_EAST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_SOUTH())))
         {
             cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->solver_index = cells[j][i]->solver_index + 1;
             cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
@@ -1234,7 +1238,9 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
             }
             stack->push(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && // right bottom corner
+                ((!cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH()) ||
+                 (!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())))
         {
             cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->solver_index = cells[j][i]->solver_index + 1;
             cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
@@ -1248,7 +1254,9 @@ void MainWindow::SOLVE_FLOOD_FILL_FILL_NEIGHBOURS(int j, int i, QStack<Cell*> *s
             }
             stack->push(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited &&   // left bottom corner
+                ((!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST()) ||
+                 (!cells[j][i]->IS_WALL_WEST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_NORTH())))
         {
             cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->solver_index = cells[j][i]->solver_index + 1;
             cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->solverIndexText->setPlainText(QString::number(cells[j][i]->solver_index + 1));
@@ -1494,55 +1502,63 @@ QList<Cell*> MainWindow::A_STAR_GET_NEIGHBOURS(Cell cell)
         }
     }
 
+    /*
+     * x----------x----------x----------x
+     * |          |          |          |
+     * |[j-1][i-1]| [j-1][i] |[j-1][i+1]|
+     * |          |          |          |                        N
+     * x----------x----------x----------x                   x----------x
+     * |          |          |          |                   |          |
+     * | [j][i-1] |  [j][i]  | [j][i+1] |                 W |          | E
+     * |          |          |          |                   |          |
+     * x----------x----------x----------x                   x----------x
+     * |          |          |          |                        S
+     * |[j+1][i-1]| [j+1][i] |[j+1][i+1]|
+     * |          |          |          |
+     * x----------x----------x----------x
+     * */
+
     if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
     {
-        //cells[j][(i - 1 < 0) ? 0 : i - 1]->visited = true;
-        //cells[j][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
         neighbours.append(cells[j][(i - 1 < 0) ? 0 : i - 1]);
     }
     if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
     {
-        //cells[j][(i + 1 > 15) ? 15 : i + 1]->visited = true;
-        //cells[j][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
         neighbours.append(cells[j][(i + 1 > 15) ? 15 : i + 1]);
     }
     if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
     {
-       // cells[(j + 1 > 15) ? 15 : j + 1][i]->visited = true;
-        //cells[(j + 1 > 15) ? 15 : j + 1][i]->rect->setBrush(Qt::yellow);
         neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][i]);
     }
     if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
     {
-       // cells[(j - 1 < 0) ? 0 : j - 1][i]->visited = true;
-        //cells[(j - 1 < 0) ? 0 : j - 1][i]->rect->setBrush(Qt::yellow);
         neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
     if(allowDiagonal)
     {
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited &&     // left top corner
+                ((!cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH()) ||
+                 (!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())))
         {
-           // cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
-            //cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
             neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
         }
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited &&   // right top corner
+                ((!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST()) ||
+                 (!cells[j][i]->IS_WALL_EAST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_SOUTH())))
         {
-         //   cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
-            //cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
             neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && // right bottom corner
+                ((!cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH()) ||
+                 (!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())))
         {
-           // cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited = true;
-            //cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->rect->setBrush(Qt::yellow);
             neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited &&   // left bottom corner
+                ((!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST()) ||
+                 (!cells[j][i]->IS_WALL_WEST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_NORTH())))
         {
-          //  cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited = true;
-            //cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->rect->setBrush(Qt::yellow);
             neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
         }
 
@@ -1761,21 +1777,29 @@ QList<Cell *> MainWindow::BFS_GET_NEIGHBOURS(Cell *cell)
         neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
-    if(allowDiagonalBFS)
+    if(allowDiagonal)
     {
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited &&     // left top corner
+                ((!cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH()) ||
+                 (!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())))
         {
             neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
         }
-        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited &&   // right top corner
+                ((!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST()) ||
+                 (!cells[j][i]->IS_WALL_EAST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_SOUTH())))
         {
             neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && // right bottom corner
+                ((!cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH()) ||
+                 (!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())))
         {
             neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
         }
-        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited &&   // left bottom corner
+                ((!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST()) ||
+                 (!cells[j][i]->IS_WALL_WEST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_NORTH())))
         {
             neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
         }

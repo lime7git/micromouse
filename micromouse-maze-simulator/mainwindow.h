@@ -121,6 +121,10 @@ private:
     void UPDATE_CELL_COUNT(int count);
     void UPDATE_PATH_COUNT(int count);
     void UPDATE_TURN_COUNT(int count);
+    void UPDATE_RUN_TIME(float time);
+
+    float oneCellForwardTime = 0.5;
+    float turnTime = 1.0;
 
     void RESTART_SEARCH_COUNTS(void);
 

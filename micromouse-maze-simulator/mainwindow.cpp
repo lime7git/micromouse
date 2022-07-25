@@ -155,17 +155,7 @@ void MainWindow::pushButtonFloodFill_clicked()
             ui->groupBoxSearchInfo->setEnabled(true);
 
             SOLVE_FLOOD_GENERATE_PATH(finishCell->index);
-            ui->pushButtonClearPath->setEnabled(true);
-
-            int countPath = 0;
-            for(int i=0;i<16;i++)
-            {
-                for(int j=0;j<16;j++)
-                {
-                    if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
-                }
-            }
-            UPDATE_PATH_COUNT(countPath);
+            ui->pushButtonClearPath->setEnabled(true);         
         }
     }
     else
@@ -1067,6 +1057,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
      QStack<Cell*> stack;
      Cell *currentCell;
      int turnCount = 0;
+     int countPath = 0;
      bool travelAlongX = false;
      bool travelAlongY = false;
      bool travelDiagonal = false;
@@ -1097,6 +1088,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
      while(!stack.isEmpty())
      {
         currentCell = stack.pop();
+        countPath++;
 
         for(int i=0;i<16;i++)
         {
@@ -1266,6 +1258,9 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
      }
 
      UPDATE_TURN_COUNT(turnCount);
+     UPDATE_PATH_COUNT(countPath);
+     UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
+
 }
 
 void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int finish_cell_index)
@@ -1590,6 +1585,7 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     }
     UPDATE_PATH_COUNT(countPath);
     UPDATE_TURN_COUNT(turnCount);
+    UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
 }
 
 int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
@@ -1911,6 +1907,7 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     }
     UPDATE_PATH_COUNT(countPath);
     UPDATE_TURN_COUNT(turnCount);
+    UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
 }
 
 int MainWindow::BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
@@ -2006,11 +2003,17 @@ void MainWindow::UPDATE_TURN_COUNT(int count)
     ui->labelTurnCount->setText(QString::number(count));
 }
 
+void MainWindow::UPDATE_RUN_TIME(float time)
+{
+     ui->labelRunTime->setText(QString::number(time) + "s");
+}
+
 void MainWindow::RESTART_SEARCH_COUNTS()
 {
     ui->labelCellCount->setText("0");
     ui->labelPathCount->setText("0");
     ui->labelTurnCount->setText("0");
+    ui->labelRunTime->setText("0");
     ui->groupBoxSearchInfo->setEnabled(false);
 }
 

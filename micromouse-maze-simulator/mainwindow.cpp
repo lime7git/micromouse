@@ -1069,6 +1069,18 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
      int turnCount = 0;
      bool travelAlongX = false;
      bool travelAlongY = false;
+     bool travelDiagonal = false;
+
+     bool travelDiagonalMM = false;
+     bool travelDiagonalMP = false;
+     bool travelDiagonalPP = false;
+     bool travelDiagonalPM = false;
+
+     bool prevTravelDiagonalMM = false;
+     bool prevTravelDiagonalMP = false;
+     bool prevTravelDiagonalPP = false;
+     bool prevTravelDiagonalPM = false;
+
      for(int i=0;i<16;i++)
      {
          for(int j=0;j<16;j++)
@@ -1168,18 +1180,85 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             {
                 travelAlongX = true;
             }
+            else if((currentCell->y != stack.first()->y && currentCell->x != stack.first()->x) && !travelDiagonal)
+            {
+                travelDiagonal = true;
+            }
+
+            if(travelDiagonal)
+            {
+                prevTravelDiagonalMM = travelDiagonalMM;
+                prevTravelDiagonalMP = travelDiagonalMP;
+                prevTravelDiagonalPP = travelDiagonalPP;
+                prevTravelDiagonalPM = travelDiagonalPM;
+
+                if(currentCell->y > stack.first()->y && currentCell->x > stack.first()->x)
+                {
+                    travelDiagonalMM = false;
+                    travelDiagonalMP = false;
+                    travelDiagonalPP = true;
+                    travelDiagonalPM = false;
+                }
+                else if(currentCell->y < stack.first()->y && currentCell->x < stack.first()->x)
+                {
+                    travelDiagonalMM = true;
+                    travelDiagonalMP = false;
+                    travelDiagonalPP = false;
+                    travelDiagonalPM = false;
+                }
+                else if(currentCell->y < stack.first()->y && currentCell->x > stack.first()->x)
+                {
+                    travelDiagonalMM = false;
+                    travelDiagonalMP = false;
+                    travelDiagonalPP = false;
+                    travelDiagonalPM = true;
+                }
+                else if(currentCell->y != stack.first()->y && currentCell->x != stack.first()->x)
+                {
+                    travelDiagonalMM = false;
+                    travelDiagonalMP = true;
+                    travelDiagonalPP = false;
+                    travelDiagonalPM = false;
+                }
+
+
+
+                if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
+                   (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
+                {
+                    turnCount++;
+                }
+            }
 
             if(travelAlongX && currentCell->x == stack.first()->x)
             {
                 turnCount++;
                 travelAlongX = false;
                 travelAlongY = true;
+                travelDiagonal = false;
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
             }
             else if(travelAlongY && currentCell->y == stack.first()->y)
             {
                 turnCount++;
                 travelAlongX = true;
                 travelAlongY = false;
+                travelDiagonal = false;
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+            else if(travelDiagonal && ((currentCell->y == stack.first()->y) || (currentCell->x == stack.first()->x)))
+            {
+                turnCount++;
+                travelDiagonal = false;
+
+                if(currentCell->y == stack.first()->y) travelAlongX = false;
+                    else if(currentCell->x == stack.first()->x) travelAlongY = false;
             }
         }
 
@@ -1372,6 +1451,17 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     int turnCount = 0;
     bool travelAlongX = false;
     bool travelAlongY = false;
+    bool travelDiagonal = false;
+
+    bool travelDiagonalMM = false;
+    bool travelDiagonalMP = false;
+    bool travelDiagonalPP = false;
+    bool travelDiagonalPM = false;
+
+    bool prevTravelDiagonalMM = false;
+    bool prevTravelDiagonalMP = false;
+    bool prevTravelDiagonalPP = false;
+    bool prevTravelDiagonalPM = false;
 
     int countCell = 0;
     int countPath = 0;
@@ -1400,18 +1490,85 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         {
             travelAlongX = true;
         }
+        else if((currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x) && !travelDiagonal)
+        {
+            travelDiagonal = true;
+        }
+
+        if(travelDiagonal)
+        {
+            prevTravelDiagonalMM = travelDiagonalMM;
+            prevTravelDiagonalMP = travelDiagonalMP;
+            prevTravelDiagonalPP = travelDiagonalPP;
+            prevTravelDiagonalPM = travelDiagonalPM;
+
+            if(currentCell->y > currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = true;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x < currentCell->parent->x)
+            {
+                travelDiagonalMM = true;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = true;
+            }
+            else if(currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = true;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+
+
+
+            if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
+               (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
+            {
+                turnCount++;
+            }
+        }
 
         if(travelAlongX && currentCell->x == currentCell->parent->x)
         {
             turnCount++;
             travelAlongX = false;
             travelAlongY = true;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
         }
         else if(travelAlongY && currentCell->y == currentCell->parent->y)
         {
             turnCount++;
             travelAlongX = true;
             travelAlongY = false;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+        else if(travelDiagonal && ((currentCell->y == currentCell->parent->y) || (currentCell->x == currentCell->parent->x)))
+        {
+            turnCount++;
+            travelDiagonal = false;
+
+            if(currentCell->y == currentCell->parent->y) travelAlongX = false;
+                else if(currentCell->x == currentCell->parent->x) travelAlongY = false;
         }
 
         currentCell = currentCell->parent;
@@ -1615,6 +1772,18 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     bool travelAlongX = false;
     bool travelAlongY = false;
 
+    bool travelDiagonal = false;
+
+    bool travelDiagonalMM = false;
+    bool travelDiagonalMP = false;
+    bool travelDiagonalPP = false;
+    bool travelDiagonalPM = false;
+
+    bool prevTravelDiagonalMM = false;
+    bool prevTravelDiagonalMP = false;
+    bool prevTravelDiagonalPP = false;
+    bool prevTravelDiagonalPM = false;
+
     int countCell = 0;
     int countPath = 0;
     for(int i=0;i<16;i++)
@@ -1642,18 +1811,85 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         {
             travelAlongX = true;
         }
+        else if((currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x) && !travelDiagonal)
+        {
+            travelDiagonal = true;
+        }
+
+        if(travelDiagonal)
+        {
+            prevTravelDiagonalMM = travelDiagonalMM;
+            prevTravelDiagonalMP = travelDiagonalMP;
+            prevTravelDiagonalPP = travelDiagonalPP;
+            prevTravelDiagonalPM = travelDiagonalPM;
+
+            if(currentCell->y > currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = true;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x < currentCell->parent->x)
+            {
+                travelDiagonalMM = true;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = true;
+            }
+            else if(currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = true;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+
+
+
+            if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
+               (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
+            {
+                turnCount++;
+            }
+        }
 
         if(travelAlongX && currentCell->x == currentCell->parent->x)
         {
             turnCount++;
             travelAlongX = false;
             travelAlongY = true;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
         }
         else if(travelAlongY && currentCell->y == currentCell->parent->y)
         {
             turnCount++;
             travelAlongX = true;
             travelAlongY = false;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+        else if(travelDiagonal && ((currentCell->y == currentCell->parent->y) || (currentCell->x == currentCell->parent->x)))
+        {
+            turnCount++;
+            travelDiagonal = false;
+
+            if(currentCell->y == currentCell->parent->y) travelAlongX = false;
+                else if(currentCell->x == currentCell->parent->x) travelAlongY = false;
         }
 
         currentCell = currentCell->parent;

@@ -33,7 +33,6 @@ public:
     void REMOVE_TRIANGLE(void);
 
 public Q_SLOTS:
-    void pushButtonRecursive_clicked();
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonClearPath_clicked();
@@ -54,8 +53,6 @@ public Q_SLOTS:
     void comboBoxAStar_onChange(void);
     void comboBoxBFS_onChange(void);
     void radioButtonAllowDiagonal_onChange(void);
-    void radioButtonAllowAStarBiDirectional_onChange(void);
-    void radioButtonAllowFloodFillBiDirectional_onChange(void);
     void checkBoxBFSAllowDiagonal_onChange(void);
     void checkBoxFloodAllowDiagonal_onChange(void);
     void checkBoxShowSearching_onChange(void);
@@ -84,11 +81,6 @@ private:
 
     bool cell_start_defined;
     bool cell_finish_defined;
-
-
-    //recursive
-    bool RECURSIVE(Cell *cell, Cell *finishCell);
-    void RECURSIVE_GENERATE_PATH(Cell *startCell, Cell *finishCell);
 
     // flood fill
     void SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell);

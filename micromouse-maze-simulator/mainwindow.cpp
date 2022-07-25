@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonRecursive,        SIGNAL(clicked()), this, SLOT(pushButtonRecursive_clicked()));
     connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonClearPath,        SIGNAL(clicked()), this, SLOT(pushButtonClearPath_clicked()));
@@ -35,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->comboBoxAstar,                   SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
     connect(ui->comboBoxBFS,                     SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxBFS_onChange()));
     connect(ui->checkBoxAllowDiagonal,           SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
-    connect(ui->checkBoxFloodFillBiDirectional,  SIGNAL(clicked()), this, SLOT(radioButtonAllowFloodFillBiDirectional_onChange()));
-    connect(ui->checkBoxAStarBiDirectional,      SIGNAL(clicked()), this, SLOT(radioButtonAllowAStarBiDirectional_onChange()));
     connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     connect(ui->checkBoxAllowDiagonalBFS,        SIGNAL(clicked()), this, SLOT(checkBoxBFSAllowDiagonal_onChange()));
@@ -58,8 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxAstar->show();
     heuristicType = ASTAR_MANHATTAN_DISTANCE;
     allowDiagonal = false;
-    biDirectionalAStar = false;
-    biDirectionalFloodFill = false;
     showSearching = true;
 
     BFSHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
@@ -108,56 +103,6 @@ void MainWindow::DRAW_TRIANGLE(Cell *cell, int direction)
 void MainWindow::REMOVE_TRIANGLE()
 {
     triangle->setVisible(false);
-}
-
-void MainWindow::pushButtonRecursive_clicked()
-{
-    Cell *startCell;
-    Cell *finishCell;
-    bool startFound = false;
-    bool finishFound = false;
-
-    for(int i=0;i<16;i++)
-    {
-        for(int j=0;j<16;j++)
-        {
-            if(cells[j][i]->type == CELL_START)
-            {
-              startCell = cells[j][i];
-              startFound = true;
-              lastStartIndex = cells[j][i]->index;
-            }
-            if(cells[j][i]->type == CELL_FINISH)
-            {
-              finishCell = cells[j][i];
-              finishFound = true;
-              lastFinishIndexs.append(cells[j][i]->index);
-            }
-        }
-    }
-    goal_reached = false;
-
-    if((startFound && finishFound) == true)
-    {
-
-        goal_reached = RECURSIVE(startCell, finishCell);
-
-        if(goal_reached)
-        {
-            RECURSIVE_GENERATE_PATH(startCell, finishCell);
-            ui->pushButtonClearPath->setEnabled(true);
-
-        }
-    }
-    else
-    {
-        QMessageBox msgBox;
-        msgBox.setText("You need to define start and finish cells!");
-        msgBox.exec();
-    }
-
-
-
 }
 
 void MainWindow::pushButtonFloodFill_clicked()
@@ -515,30 +460,6 @@ void MainWindow::radioButtonAllowDiagonal_onChange()
            else
            {
             allowDiagonal = false;
-    }
-}
-
-void MainWindow::radioButtonAllowAStarBiDirectional_onChange()
-{
-    if(ui->checkBoxAStarBiDirectional->isChecked())
-           {
-            biDirectionalAStar = true;
-           }
-           else
-           {
-            biDirectionalAStar = false;
-    }
-}
-
-void MainWindow::radioButtonAllowFloodFillBiDirectional_onChange()
-{
-    if(ui->checkBoxFloodFillBiDirectional->isChecked())
-           {
-            biDirectionalFloodFill = true;
-           }
-           else
-           {
-            biDirectionalFloodFill = false;
     }
 }
 
@@ -949,141 +870,6 @@ void MainWindow::MAP_WALLS_UPDATE()
             if((cells[j][i]->walls & WEST) != 0)    cells[j][i]->wallWest->setVisible(true);
         }
     }
-}
-
-bool MainWindow::RECURSIVE(Cell *cell, Cell *finishCell)
-{
-    if(cell == finishCell) return true;
-    if(cell->visited) return false;
-
-    cell->visited = true;
-    cell->rect->setBrush(Qt::yellow);
-    if(showSearching) ui->graphicsView->repaint();
-
-    int j, i;
-
-    for(int x=0;x<16;x++)
-    {
-        for(int y=0;y<16;y++)
-        {
-            if(cell->index == cells[y][x]->index)
-            {
-                j = y;
-                i = x;
-            }
-        }
-    }
-
-    if(!cells[j][i]->IS_WALL_WEST())
-    {
-        if(RECURSIVE(cells[j][(i - 1 < 0) ? 0 : i - 1], finishCell))
-        {
-            cells[j][(i - 1 < 0) ? 0 : i - 1]->parent = cell;
-            if(showSearching) ui->graphicsView->repaint();
-            return true;
-        }
-    }
-    if(!cells[j][i]->IS_WALL_EAST())
-    {
-        if(RECURSIVE(cells[j][(i + 1 > 15) ? 15 : i + 1], finishCell))
-        {
-            cells[j][(i + 1 > 15) ? 15 : i + 1]->parent = cell;
-            if(showSearching) ui->graphicsView->repaint();
-            return true;
-        }
-    }
-    if(!cells[j][i]->IS_WALL_SOUTH())
-    {
-        if(RECURSIVE(cells[(j + 1 > 15) ? 15 : j + 1][i], finishCell))
-        {
-            cells[(j + 1 > 15) ? 15 : j + 1][i]->parent = cell;
-            if(showSearching) ui->graphicsView->repaint();
-            return true;
-        }
-    }
-    if(!cells[j][i]->IS_WALL_NORTH())
-    {
-        if(RECURSIVE(cells[(j - 1 < 0) ? 0 : j - 1][i], finishCell))
-        {
-            cells[(j - 1 < 0) ? 0 : j - 1][i]->parent = cell;
-            if(showSearching) ui->graphicsView->repaint();
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void MainWindow::RECURSIVE_GENERATE_PATH(Cell *startCell, Cell *finishCell)
-{
-    QList<Cell> path;
-    Cell *currentCell;
-    currentCell = finishCell;
-
-    int turnCount = 0;
-    bool travelAlongX = false;
-    bool travelAlongY = false;
-
-    int countCell = 0;
-    int countPath = 0;
-    for(int i=0;i<16;i++)
-    {
-        for(int j=0;j<16;j++)
-        {
-            if(cells[j][i]->rect->brush() != Qt::lightGray) countCell++;
-        }
-    }
-
-    UPDATE_CELL_COUNT(countCell);
-    ui->groupBoxSearchInfo->setEnabled(true);
-
-    while(currentCell->index != startCell->index)
-    {
-        path.append(*currentCell);
-        currentCell->type = CELL_PATH;
-        currentCell->SET_BRUSH();
-
-        if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
-        {
-            travelAlongY = true;
-        }
-        else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
-        {
-            travelAlongX = true;
-        }
-
-        if(travelAlongX && currentCell->x == currentCell->parent->x)
-        {
-            turnCount++;
-            travelAlongX = false;
-            travelAlongY = true;
-        }
-        else if(travelAlongY && currentCell->y == currentCell->parent->y)
-        {
-            turnCount++;
-            travelAlongX = true;
-            travelAlongY = false;
-        }
-
-        currentCell = currentCell->parent;
-
-        if(showSearching) ui->graphicsView->repaint();
-    }
-
-    currentCell->type = CELL_PATH;
-    currentCell->SET_BRUSH();
-
-    if(showSearching) ui->graphicsView->repaint();
-
-    for(int i=0;i<16;i++)
-    {
-        for(int j=0;j<16;j++)
-        {
-            if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
-        }
-    }
-    UPDATE_PATH_COUNT(countPath);
-    UPDATE_TURN_COUNT(turnCount);
 }
 
 void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
@@ -1777,7 +1563,7 @@ QList<Cell *> MainWindow::BFS_GET_NEIGHBOURS(Cell *cell)
         neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
     }
 
-    if(allowDiagonal)
+    if(allowDiagonalBFS)
     {
         if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited &&     // left top corner
                 ((!cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH()) ||

@@ -1056,7 +1056,8 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
 {
      QStack<Cell*> stack;
      Cell *currentCell;
-     int turnCount = 0;
+     int turnCount90 = 0;
+     int turnCount45 = 0;
      int countPath = 0;
      bool travelAlongX = false;
      bool travelAlongY = false;
@@ -1218,13 +1219,13 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
                 if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
                    (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
                 {
-                    turnCount++;
+                    turnCount45++;
                 }
             }
 
             if(travelAlongX && currentCell->x == stack.first()->x)
             {
-                turnCount++;
+                turnCount90++;
                 travelAlongX = false;
                 travelAlongY = true;
                 travelDiagonal = false;
@@ -1235,7 +1236,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
             else if(travelAlongY && currentCell->y == stack.first()->y)
             {
-                turnCount++;
+                turnCount90++;
                 travelAlongX = true;
                 travelAlongY = false;
                 travelDiagonal = false;
@@ -1246,7 +1247,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
             else if(travelDiagonal && ((currentCell->y == stack.first()->y) || (currentCell->x == stack.first()->x)))
             {
-                turnCount++;
+                turnCount45++;
                 travelDiagonal = false;
 
                 if(currentCell->y == stack.first()->y) travelAlongX = false;
@@ -1257,9 +1258,10 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
         if(showSearching) ui->graphicsView->repaint();
      }
 
-     UPDATE_TURN_COUNT(turnCount);
+
      UPDATE_PATH_COUNT(countPath);
-     UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
+     UPDATE_TURN_COUNT(turnCount90, turnCount45);
+     UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((countPath - (turnCount90 + turnCount45)) * oneCellForwardTime));
 
 }
 
@@ -1443,7 +1445,12 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     Cell *currentCell;
     currentCell = finishCell;
 
-    int turnCount = 0;
+    int turnCount90 = 0;
+    int turnCount45 = 0;
+
+    int travelStraightCounter = 0;
+    int travelDiagonalCounter = 0;
+
     bool travelAlongX = false;
     bool travelAlongY = false;
     bool travelDiagonal = false;
@@ -1480,14 +1487,18 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
         {
             travelAlongY = true;
+            travelDiagonal = false;
         }
         else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
         {
             travelAlongX = true;
+            travelDiagonal = false;
         }
         else if((currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x) && !travelDiagonal)
         {
             travelDiagonal = true;
+            travelAlongY = false;
+            travelAlongX = false;
         }
 
         if(travelDiagonal)
@@ -1531,13 +1542,13 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
             if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
                (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
             {
-                turnCount++;
+                turnCount45 += 2;
             }
         }
 
         if(travelAlongX && currentCell->x == currentCell->parent->x)
         {
-            turnCount++;
+            turnCount90++;
             travelAlongX = false;
             travelAlongY = true;
             travelDiagonal = false;
@@ -1548,7 +1559,7 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
         else if(travelAlongY && currentCell->y == currentCell->parent->y)
         {
-            turnCount++;
+            turnCount90++;
             travelAlongX = true;
             travelAlongY = false;
             travelDiagonal = false;
@@ -1559,7 +1570,7 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
         else if(travelDiagonal && ((currentCell->y == currentCell->parent->y) || (currentCell->x == currentCell->parent->x)))
         {
-            turnCount++;
+           // turnCount45++;
             travelDiagonal = false;
 
             if(currentCell->y == currentCell->parent->y) travelAlongX = false;
@@ -1567,6 +1578,17 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
 
         currentCell = currentCell->parent;
+
+        if(travelAlongX || travelAlongY)
+        {
+            travelStraightCounter++;
+
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+            else if(travelDiagonal) travelDiagonalCounter++;
 
         if(showSearching) ui->graphicsView->repaint();
     }
@@ -1584,8 +1606,8 @@ void MainWindow::A_STAR_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
     }
     UPDATE_PATH_COUNT(countPath);
-    UPDATE_TURN_COUNT(turnCount);
-    UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
+    UPDATE_TURN_COUNT(turnCount90, turnCount45);
+    UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((countPath - (turnCount90 + turnCount45)) * oneCellForwardTime));
 }
 
 int MainWindow::GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
@@ -1764,7 +1786,8 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     Cell *currentCell;
     currentCell = finishCell;
 
-    int turnCount = 0;
+    int turnCount90 = 0;
+    int turnCount45 = 0;
     bool travelAlongX = false;
     bool travelAlongY = false;
 
@@ -1853,13 +1876,13 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
             if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
                (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
             {
-                turnCount++;
+                turnCount45++;
             }
         }
 
         if(travelAlongX && currentCell->x == currentCell->parent->x)
         {
-            turnCount++;
+            turnCount90++;
             travelAlongX = false;
             travelAlongY = true;
             travelDiagonal = false;
@@ -1870,7 +1893,7 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
         else if(travelAlongY && currentCell->y == currentCell->parent->y)
         {
-            turnCount++;
+            turnCount90++;
             travelAlongX = true;
             travelAlongY = false;
             travelDiagonal = false;
@@ -1881,7 +1904,7 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
         else if(travelDiagonal && ((currentCell->y == currentCell->parent->y) || (currentCell->x == currentCell->parent->x)))
         {
-            turnCount++;
+            turnCount45++;
             travelDiagonal = false;
 
             if(currentCell->y == currentCell->parent->y) travelAlongX = false;
@@ -1906,8 +1929,8 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
         }
     }
     UPDATE_PATH_COUNT(countPath);
-    UPDATE_TURN_COUNT(turnCount);
-    UPDATE_RUN_TIME((turnCount * turnTime) + ((countPath - turnCount) * oneCellForwardTime));
+    UPDATE_TURN_COUNT(turnCount90, turnCount45);
+    UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((countPath - (turnCount90 + turnCount45)) * oneCellForwardTime));
 }
 
 int MainWindow::BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
@@ -1998,9 +2021,10 @@ void MainWindow::UPDATE_PATH_COUNT(int count)
     ui->labelPathCount->setText(QString::number(count));
 }
 
-void MainWindow::UPDATE_TURN_COUNT(int count)
+void MainWindow::UPDATE_TURN_COUNT(int count90, int count45)
 {
-    ui->labelTurnCount->setText(QString::number(count));
+    ui->labelTurnCount90->setText(QString::number(count90));
+    ui->labelTurnCount45->setText(QString::number(count45));
 }
 
 void MainWindow::UPDATE_RUN_TIME(float time)
@@ -2012,7 +2036,8 @@ void MainWindow::RESTART_SEARCH_COUNTS()
 {
     ui->labelCellCount->setText("0");
     ui->labelPathCount->setText("0");
-    ui->labelTurnCount->setText("0");
+    ui->labelTurnCount90->setText("0");
+    ui->labelTurnCount45->setText("0");
     ui->labelRunTime->setText("0");
     ui->groupBoxSearchInfo->setEnabled(false);
 }

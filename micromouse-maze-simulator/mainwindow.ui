@@ -432,9 +432,9 @@
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>330</y>
+      <y>290</y>
       <width>181</width>
-      <height>141</height>
+      <height>211</height>
      </rect>
     </property>
     <property name="font">
@@ -451,7 +451,7 @@
        <x>10</x>
        <y>30</y>
        <width>154</width>
-       <height>105</height>
+       <height>171</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
@@ -464,6 +464,68 @@
       <property name="spacing">
        <number>5</number>
       </property>
+      <item row="6" column="1">
+       <widget class="Line" name="line_15">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="labelTurnCount90">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="Line" name="line_8">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="Line" name="line_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="Line" name="line_11">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="labelRunTime">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="Line" name="line_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="Line" name="line_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="font">
@@ -483,72 +545,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="labelCellCount">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="font">
-         <font>
-          <italic>true</italic>
-         </font>
-        </property>
-        <property name="text">
-         <string>Run time</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="Line" name="line_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="labelTurnCount">
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="Line" name="line_6">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="Line" name="line_7">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="labelPathCount">
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="font">
@@ -561,10 +557,15 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="Line" name="line_10">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Run time</string>
         </property>
        </widget>
       </item>
@@ -583,19 +584,22 @@
          </font>
         </property>
         <property name="text">
-         <string>Turn count</string>
+         <string>Turn count 90°</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="Line" name="line_8">
+      <item row="8" column="1">
+       <widget class="Line" name="line_13">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="labelRunTime">
+      <item row="0" column="2">
+       <widget class="QLabel" name="labelCellCount">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
          <string>0</string>
         </property>
@@ -604,8 +608,18 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="Line" name="line_11">
+      <item row="6" column="2">
+       <widget class="QLabel" name="labelTurnCount45">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="Line" name="line_10">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -618,10 +632,39 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="Line" name="line_13">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Turn count 45°</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="labelPathCount">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="Line" name="line_14">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="Line" name="line_16">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>

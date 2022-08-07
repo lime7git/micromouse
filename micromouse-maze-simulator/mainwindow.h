@@ -119,11 +119,12 @@ private:
     int MAP_VALID_INDEX(int index);
 
     void UPDATE_CELL_COUNT(int count);
-    void UPDATE_PATH_COUNT(int count);
+    void UPDATE_PATH_COUNT(int count, int countStraight, int countDiagonal);
     void UPDATE_TURN_COUNT(int count90, int count45);
     void UPDATE_RUN_TIME(float time);
 
     float oneCellForwardTime = 1.0;
+    float oneCellDiagonalTime = 1.3;
     float turnTime90 = 2.0;
     float turnTime45 = 1.3;
 

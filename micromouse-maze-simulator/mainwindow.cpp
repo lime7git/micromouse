@@ -1242,7 +1242,7 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
             else if(travelAlongY && currentCell->y == stack.first()->y)
             {
-                //turnCount90++;
+                turnCount90++;
                 travelAlongX = true;
                 travelAlongY = false;
                 travelDiagonal = false;
@@ -1253,24 +1253,26 @@ void MainWindow::SOLVE_FLOOD_GENERATE_PATH(unsigned int finish_index)
             }
             else if(travelDiagonal && ((currentCell->y == stack.first()->y) || (currentCell->x == stack.first()->x)))
             {
-                turnCount45++;
+                //turnCount45++;
                 travelDiagonal = false;
 
                 if(currentCell->y == stack.first()->y) travelAlongX = false;
                     else if(currentCell->x == stack.first()->x) travelAlongY = false;
             }
+
+            if(travelAlongX || travelAlongY)
+            {
+                travelStraightCounter++;
+
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+                else if(travelDiagonal) travelDiagonalCounter++;
         }
 
-        if(travelAlongX || travelAlongY)
-        {
-            travelStraightCounter++;
 
-            travelDiagonalMM = false;
-            travelDiagonalMP = false;
-            travelDiagonalPP = false;
-            travelDiagonalPM = false;
-        }
-            else if(travelDiagonal) travelDiagonalCounter++;
 
         if(showSearching) ui->graphicsView->repaint();
      }
@@ -1965,7 +1967,7 @@ void MainWindow::BFS_GENERATE_PATH(Cell *startCell, Cell *finishCell)
     }
     UPDATE_PATH_COUNT(countPath, travelStraightCounter, travelDiagonalCounter);
     UPDATE_TURN_COUNT(turnCount90, turnCount45);
-    UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((countPath - (turnCount90 + turnCount45)) * oneCellForwardTime));
+    UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((travelStraightCounter * oneCellForwardTime) + (travelDiagonalCounter * oneCellDiagonalTime)));
 }
 
 int MainWindow::BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)

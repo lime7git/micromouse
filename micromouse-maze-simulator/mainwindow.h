@@ -36,6 +36,8 @@ public Q_SLOTS:
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
     void pushButtonClearPath_clicked();
+    void pushButtonNextStep_clicked();
+    void pushButtonAutoSearch_clicked();
     void pushButtonGenerate_clicked();
     void pushButtonAStar_clicked();
     void pushButtonBFS_clicked();
@@ -110,6 +112,9 @@ private:
     QMap<QString, eASTAR_HEURISTIC> BFSHeuristicOptions;
     eASTAR_HEURISTIC heuristicTypeBFS;
     bool allowDiagonalBFS;
+
+    bool nextStep = false;
+    bool autoSearch = false;
 
 
     unsigned int lastStartIndex;

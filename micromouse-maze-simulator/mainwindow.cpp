@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonFloodFill,        SIGNAL(clicked()), this, SLOT(pushButtonFloodFill_clicked()));
     connect(ui->pushButtonClearWalls,       SIGNAL(clicked()), this, SLOT(pushButtonClearWalls_clicked()));
     connect(ui->pushButtonClearPath,        SIGNAL(clicked()), this, SLOT(pushButtonClearPath_clicked()));
+    connect(ui->pushButtonNextStep,         SIGNAL(clicked()), this, SLOT(pushButtonNextStep_clicked()));
+    connect(ui->pushButtonAuto,             SIGNAL(clicked()), this, SLOT(pushButtonAutoSearch_clicked()));
     connect(ui->pushButtonGenerate,         SIGNAL(clicked()), this, SLOT(pushButtonGenerate_clicked()));
     connect(ui->pushButtonAStar,            SIGNAL(clicked()), this, SLOT(pushButtonAStar_clicked()));
     connect(ui->pushButtonSaveMaze,         SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
@@ -204,7 +206,19 @@ void MainWindow::pushButtonClearPath_clicked()
     lastFinishIndexs.clear();
     ui->pushButtonClearPath->setEnabled(false);
     RESTART_SEARCH_COUNTS();
+    nextStep = false;
+    autoSearch = false;
 
+}
+
+void MainWindow::pushButtonNextStep_clicked()
+{
+    nextStep = true;
+}
+
+void MainWindow::pushButtonAutoSearch_clicked()
+{
+    autoSearch = true;
 }
 
 void MainWindow::pushButtonGenerate_clicked()
@@ -662,6 +676,8 @@ void MainWindow::MAP_CLEAR()
 {
     cell_start_defined  = false;
     cell_finish_defined = false;
+    nextStep = false;
+    autoSearch = false;
     lastFinishIndexs.clear();
 
     for(int i=0;i<16;i++)
@@ -914,6 +930,13 @@ void MainWindow::SOLVE_FLOOD_FILL(Cell *startCell, Cell *finishCell)
                     }
                 }
             }
+        }
+
+        if(!autoSearch)
+        {
+        QEventLoop loop;
+        connect(ui->pushButtonNextStep, &QPushButton::pressed, &loop, &QEventLoop::quit);
+        loop.exec();
         }
     }
 
@@ -1370,6 +1393,13 @@ void MainWindow::A_STAR_FIND_PATH(unsigned int start_cell_index, unsigned int fi
                 if(showSearching) ui->graphicsView->repaint();
             }
         }
+
+        if(!autoSearch)
+        {
+        QEventLoop loop;
+        connect(ui->pushButtonNextStep, &QPushButton::pressed, &loop, &QEventLoop::quit);
+        loop.exec();
+        }
     }
 }
 
@@ -1728,6 +1758,13 @@ void MainWindow::BFS_FIND_PATH(Cell *startCell, Cell *finishCell)
 
                 if(showSearching) ui->graphicsView->repaint();
             }
+
+        if(!autoSearch)
+        {
+        QEventLoop loop;
+        connect(ui->pushButtonNextStep, &QPushButton::pressed, &loop, &QEventLoop::quit);
+        loop.exec();
+        }
     }
 }
 

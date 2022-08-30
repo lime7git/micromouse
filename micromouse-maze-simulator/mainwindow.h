@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
-#include <QSerialPort>
 #include "qgraphicsitem.h"
 #include "cell.h"
 
@@ -27,11 +26,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    QGraphicsPolygonItem *triangle;
-
-    void DRAW_TRIANGLE(Cell *cell, int direction);
-    void REMOVE_TRIANGLE(void);
-
 public Q_SLOTS:
     void pushButtonFloodFill_clicked();
     void pushButtonClearWalls_clicked();
@@ -41,25 +35,18 @@ public Q_SLOTS:
     void pushButtonGenerate_clicked();
     void pushButtonAStar_clicked();
     void pushButtonBFS_clicked();
+    void pushButtonDjikstra_clicked();
     void pushButtonSaveMaze_clicked();
     void pushButtonLoadMaze_clicked();
-    void pushButtonSerialConnect_clicked();
-    void pushButtonSend_clicked();
-
-    void pushButtonFWD_clicked();
-    void pushButtonN_clicked();
-    void pushButtonE_clicked();
-    void pushButtonS_clicked();
-    void pushButtonW_clicked();
 
     void comboBoxAStar_onChange(void);
     void comboBoxBFS_onChange(void);
+    void comboBoxDjikstra_onChange(void);
     void radioButtonAllowDiagonal_onChange(void);
     void checkBoxBFSAllowDiagonal_onChange(void);
+    void checkBoxDjikstraAllowDiagonal_onChange(void);
     void checkBoxFloodAllowDiagonal_onChange(void);
     void checkBoxShowSearching_onChange(void);
-
-    void serialReceived();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -68,8 +55,6 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-
-    QSerialPort serial;
 
     QGraphicsScene *scene;
     Cell *cells[16][16];
@@ -113,15 +98,23 @@ private:
     eASTAR_HEURISTIC heuristicTypeBFS;
     bool allowDiagonalBFS;
 
+    // Djikstra
+    void DJIKSTRA_FIND_PATH(Cell *startCell, Cell *finishCell);
+    QList<Cell*> DJIKSTRA_GET_NEIGHBOURS(Cell *cell);
+    void DJIKSTRA_GENERATE_PATH(Cell *startCell, Cell *finishCell);
+    int DJIKSTRA_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB);
+
+    QMap<QString, eASTAR_HEURISTIC> DjikstraHeuristicOptions;
+    eASTAR_HEURISTIC heuristicTypeDjikstra;
+    bool allowDiagonalDjikstra;
+
     bool nextStep = false;
     bool autoSearch = false;
-
 
     unsigned int lastStartIndex;
     QList<int> lastFinishIndexs;
 
     int random_in_range(int min, int max);
-    int MAP_VALID_INDEX(int index);
 
     void UPDATE_CELL_COUNT(int count);
     void UPDATE_PATH_COUNT(int count, int countStraight, int countDiagonal);

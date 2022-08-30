@@ -24,23 +24,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButtonAStar,            SIGNAL(clicked()), this, SLOT(pushButtonAStar_clicked()));
     connect(ui->pushButtonSaveMaze,         SIGNAL(clicked()), this, SLOT(pushButtonSaveMaze_clicked()));
     connect(ui->pushButtonLoadMaze,         SIGNAL(clicked()), this, SLOT(pushButtonLoadMaze_clicked()));
-    connect(ui->pushButtonSerialConnect,    SIGNAL(clicked()), this, SLOT(pushButtonSerialConnect_clicked()));
-    connect(ui->pushButtonSend,             SIGNAL(clicked()), this, SLOT(pushButtonSend_clicked()));
-
-    connect(ui->pushButtonFWD,              SIGNAL(clicked()), this, SLOT(pushButtonFWD_clicked()));
-    connect(ui->pushButtonN,                SIGNAL(clicked()), this, SLOT(pushButtonN_clicked()));
-    connect(ui->pushButtonE,                SIGNAL(clicked()), this, SLOT(pushButtonE_clicked()));
-    connect(ui->pushButtonS,                SIGNAL(clicked()), this, SLOT(pushButtonS_clicked()));
-    connect(ui->pushButtonW,                SIGNAL(clicked()), this, SLOT(pushButtonW_clicked()));
 
     connect(ui->comboBoxAstar,                   SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxAStar_onChange()));
     connect(ui->comboBoxBFS,                     SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxBFS_onChange()));
+    connect(ui->comboBoxDjikstra,                SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxDjikstra_onChange()));
     connect(ui->checkBoxAllowDiagonal,           SIGNAL(clicked()), this, SLOT(radioButtonAllowDiagonal_onChange()));
     connect(ui->checkBoxShowSearching,           SIGNAL(clicked()), this, SLOT(checkBoxShowSearching_onChange()));
 
     connect(ui->checkBoxAllowDiagonalBFS,        SIGNAL(clicked()), this, SLOT(checkBoxBFSAllowDiagonal_onChange()));
     connect(ui->checkBoxAllowDiagonalFlood,      SIGNAL(clicked()), this, SLOT(checkBoxFloodAllowDiagonal_onChange()));
     connect(ui->pushButtonBFS,                   SIGNAL(clicked()), this, SLOT(pushButtonBFS_clicked()));
+
+    connect(ui->checkBoxAllowDiagonalDjikstra,   SIGNAL(clicked()), this, SLOT(checkBoxDjikstraAllowDiagonal_onChange()));
+    connect(ui->pushButtonDjikstra,              SIGNAL(clicked()), this, SLOT(pushButtonDjikstra_clicked()));
 
     MAP_INIT_16x16();
     cell_start_defined  = false;
@@ -69,14 +65,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxBFS->show();
     heuristicTypeBFS = ASTAR_MANHATTAN_DISTANCE;
     allowDiagonalBFS = false;
-    allowDiagonalFlood = false;
 
-    QPolygonF polygon;
-    triangle = new QGraphicsPolygonItem();
-    triangle->setPolygon(polygon);
-    triangle->setBrush(Qt::red);
-    scene->addItem(triangle);
-    triangle->setVisible(false);
+    DjikstraHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
+    DjikstraHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
+    DjikstraHeuristicOptions.insert("Diagonal - Chebyshev distance", ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV);
+    DjikstraHeuristicOptions.insert("Diagonal - Octile distance", ASTAR_DIAGONAL_DISTANCE_OCTILE);
+    ui->comboBoxDjikstra->clear();
+    ui->comboBoxDjikstra->addItems(DjikstraHeuristicOptions.keys());
+    ui->comboBoxDjikstra->setCurrentIndex(3);
+    ui->comboBoxDjikstra->show();
+    heuristicTypeDjikstra = ASTAR_MANHATTAN_DISTANCE;
+    allowDiagonalDjikstra = false;
+
+    allowDiagonalFlood = false;
 
     COMBO_BOX_MAZES_UPDATE();
 }
@@ -84,28 +85,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete scene;
-    serial.close();
 }
 
-void MainWindow::DRAW_TRIANGLE(Cell *cell, int direction)
-{
-    int centerX = cell->x + ((POST_WIDTH + CELL_WIDTH) / 2);
-    int centerY = cell->y + ((POST_HEIGHT + CELL_HEIGHT) / 2);
-
-    triangle->polygon().clear();
-
-    QPolygonF polygon;
-    polygon << QPointF(centerX, centerY - 10) << QPointF(centerX + 5, centerY + 5) << QPointF(centerX - 5, centerY + 5);
-
-    polygon =  QTransform().translate(centerX, centerY).rotate(direction).translate(-centerX, -centerY).map(polygon);
-    triangle->setPolygon(polygon);
-    triangle->setVisible(true);
-}
-
-void MainWindow::REMOVE_TRIANGLE()
-{
-    triangle->setVisible(false);
-}
 
 void MainWindow::pushButtonFloodFill_clicked()
 {
@@ -302,6 +283,43 @@ void MainWindow::pushButtonBFS_clicked()
     }
 }
 
+void MainWindow::pushButtonDjikstra_clicked()
+{
+    Cell *startCell, *finishCell;
+    bool startFound = false, finishFound = false;
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->type == CELL_START)
+            {
+              startCell = cells[j][i];
+              startFound = true;
+              lastStartIndex = cells[j][i]->index;
+            }
+            if(cells[j][i]->type == CELL_FINISH)
+            {
+              finishCell = cells[j][i];
+              finishFound = true;
+              lastFinishIndexs.append(cells[j][i]->index);
+            }
+        }
+    }
+
+    if(startFound && finishFound)
+    {
+        DJIKSTRA_FIND_PATH(startCell, finishCell);
+        ui->pushButtonClearPath->setEnabled(true);
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You need to define start and finish cells!");
+        msgBox.exec();
+    }
+}
+
 void MainWindow::pushButtonSaveMaze_clicked()
 {
     QString dirPath("D:/github-repos/micromouse/micromouse-other/maze-files/");
@@ -386,65 +404,6 @@ void MainWindow::pushButtonLoadMaze_clicked()
     file.close();
 }
 
-void MainWindow::pushButtonSerialConnect_clicked()
-{
-    serial.setPortName("com9");
-    serial.setBaudRate(QSerialPort::Baud115200);
-    serial.setDataBits(QSerialPort::Data8);
-    serial.setParity(QSerialPort::NoParity);
-    serial.setStopBits(QSerialPort::OneStop);
-    serial.setFlowControl(QSerialPort::NoFlowControl);
-    bool status = serial.open(QIODevice::ReadWrite);
-
-    if(!status)
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Unable to connect!");
-        msgBox.exec();
-    }
-    else
-    {
-        ui->pushButtonSend->setEnabled(true);
-        ui->pushButtonFWD->setEnabled(true);
-        ui->pushButtonN->setEnabled(true);
-        ui->pushButtonE->setEnabled(true);
-        ui->pushButtonS->setEnabled(true);
-        ui->pushButtonW->setEnabled(true);
-        connect(&serial, &QSerialPort::readyRead, this, &MainWindow::serialReceived);
-    }
-
-}
-
-void MainWindow::pushButtonSend_clicked()
-{
-    serial.write(ui->plainTextEditSend->toPlainText().toUtf8());
-}
-
-void MainWindow::pushButtonFWD_clicked()
-{
-    serial.write("$MOVE=FWD,1#");
-}
-
-void MainWindow::pushButtonN_clicked()
-{
-    serial.write("$ROTATE=0#");
-}
-
-void MainWindow::pushButtonE_clicked()
-{
-    serial.write("$ROTATE=90#");
-}
-
-void MainWindow::pushButtonS_clicked()
-{
-    serial.write("$ROTATE=180#");
-}
-
-void MainWindow::pushButtonW_clicked()
-{
-    serial.write("$ROTATE=-90#");
-}
-
 void MainWindow::comboBoxAStar_onChange()
 {
     heuristicType = aStarHeuristicOptions.value(ui->comboBoxAstar->currentText());
@@ -453,6 +412,11 @@ void MainWindow::comboBoxAStar_onChange()
 void MainWindow::comboBoxBFS_onChange()
 {
     heuristicTypeBFS = BFSHeuristicOptions.value(ui->comboBoxBFS->currentText());
+}
+
+void MainWindow::comboBoxDjikstra_onChange()
+{
+    heuristicTypeDjikstra = DjikstraHeuristicOptions.value(ui->comboBoxDjikstra->currentText());
 }
 
 void MainWindow::radioButtonAllowDiagonal_onChange()
@@ -476,6 +440,18 @@ void MainWindow::checkBoxBFSAllowDiagonal_onChange()
            else
            {
             allowDiagonalBFS = false;
+    }
+}
+
+void MainWindow::checkBoxDjikstraAllowDiagonal_onChange()
+{
+    if(ui->checkBoxAllowDiagonalDjikstra->isChecked())
+           {
+            allowDiagonalDjikstra = true;
+           }
+           else
+           {
+            allowDiagonalDjikstra = false;
     }
 }
 
@@ -593,49 +569,6 @@ void MainWindow::COMBO_BOX_MAZES_UPDATE()
     ui->comboBoxLoad->show();
 }
 
-void MainWindow::serialReceived()
-{
-    QByteArray serialData = serial.readAll();
-    QString receivedData = QString::fromStdString(serialData.toStdString());
-    ui->textBrowserTerminal->append(receivedData);
-
-    QStringList splitedData = receivedData.split('=');
-    splitedData = splitedData.last().split(',');
-    splitedData.last().remove(QRegularExpression("#"));
-
-    if(splitedData.count() >= 3)
-    {
-        ui->textBrowserTerminal->append(splitedData.first() + "," + splitedData.at(1) + "," + splitedData.last());
-
-        int index = MAP_VALID_INDEX(splitedData.at(0).toInt());
-        int walls = splitedData.at(1).toInt();
-        int direction = splitedData.at(2).toInt();
-        int angle;
-
-        if(direction == NORTH) angle = 0;
-        else if(direction == EAST) angle = 90;
-        else if(direction == SOUTH) angle = 180;
-        else angle = -90;
-
-        for(int i=0;i<16;i++)
-        {
-            for(int j=0;j<16;j++)
-            {
-
-                if(cells[j][i]->index == index)
-                {
-                    cells[j][i]->walls = walls;
-                    cells[j][i]->rect->setBrush(Qt::yellow);
-                    DRAW_TRIANGLE(cells[j][i], angle);
-                    MAP_WALLS_UPDATE();
-                }
-
-                ui->graphicsView->repaint();
-            }
-        }
-    }
-}
-
 void MainWindow::MAP_INIT_16x16()
 {
     scene = new QGraphicsScene(this);
@@ -698,7 +631,6 @@ void MainWindow::MAP_CLEAR()
             cells[j][i]->wallSouth->setVisible(false);
             cells[j][i]->wallWest->setVisible(false);
             cells[j][i]->SET_BRUSH();
-            REMOVE_TRIANGLE();
         }
     }
 
@@ -852,7 +784,7 @@ void MainWindow::MAP_GENERATE_ITERATIVE(unsigned int j, unsigned int i)
             }
         }
 
-
+        if(showSearching) ui->graphicsView->repaint();
     }
 
     for(int i=0;i<16;i++)   // reset visit flag
@@ -2040,6 +1972,348 @@ int MainWindow::BFS_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
     }
 }
 
+void MainWindow::DJIKSTRA_FIND_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell*> openSet;
+    QList<Cell*> closeSet;
+
+
+    startCell->gCost = DJIKSTRA_GET_DISTANCE_BETWEEN_CELLS(*startCell,*startCell);
+    openSet.append(startCell);
+    startCell->visited = true;
+
+    while(!openSet.empty())
+    {
+        Cell *currentCell = nullptr;
+
+        currentCell = openSet.first();
+
+        for(auto cell : openSet)
+        {
+            if(cell->index == currentCell->index)
+            {
+                continue;
+            }
+            if(cell->gCost < currentCell->gCost)
+            {
+                currentCell = cell;
+            }
+        }
+
+        openSet.removeOne(currentCell);
+        closeSet.append(currentCell);
+        currentCell->rect->setBrush(Qt::magenta);
+        if(showSearching) ui->graphicsView->repaint();
+
+        for(auto neighbour : DJIKSTRA_GET_NEIGHBOURS(currentCell))
+        {
+            if(closeSet.contains(neighbour))
+            {
+                continue;
+            }
+
+            if(neighbour->index == finishCell->index)
+            {
+                neighbour->gCost = DJIKSTRA_GET_DISTANCE_BETWEEN_CELLS(*neighbour,*startCell);
+                neighbour->gText->setPlainText("g" + QString::number(neighbour->gCost));
+                neighbour->parent = currentCell;
+                neighbour->rect->setBrush(Qt::yellow);
+                DJIKSTRA_GENERATE_PATH(startCell, finishCell);
+                return;
+            }
+                if(!openSet.contains(neighbour))
+                {
+                neighbour->gCost = DJIKSTRA_GET_DISTANCE_BETWEEN_CELLS(*neighbour,*startCell);
+                neighbour->gText->setPlainText("g" + QString::number(neighbour->gCost));
+                neighbour->parent = currentCell;
+                neighbour->rect->setBrush(Qt::yellow);
+                openSet.append(neighbour);
+                }
+
+                if(showSearching) ui->graphicsView->repaint();
+            }
+
+        if(!autoSearch)
+        {
+        QEventLoop loop;
+        connect(ui->pushButtonNextStep, &QPushButton::pressed, &loop, &QEventLoop::quit);
+        loop.exec();
+        }
+    }
+}
+
+QList<Cell *> MainWindow::DJIKSTRA_GET_NEIGHBOURS(Cell *cell)
+{
+    QList<Cell*> neighbours;
+
+    int j, i;
+
+    for(int x=0;x<16;x++)
+    {
+        for(int y=0;y<16;y++)
+        {
+            if(cell->index == cells[y][x]->index)
+            {
+                j = y;
+                i = x;
+            }
+        }
+    }
+
+    if(!cells[j][(i - 1 < 0) ? 0 : i - 1]->visited && !cells[j][i]->IS_WALL_WEST())
+    {
+        neighbours.append(cells[j][(i - 1 < 0) ? 0 : i - 1]);
+    }
+    if(!cells[j][(i + 1 > 15) ? 15 : i + 1]->visited && !cells[j][i]->IS_WALL_EAST())
+    {
+        neighbours.append(cells[j][(i + 1 > 15) ? 15 : i + 1]);
+    }
+    if(!cells[(j + 1 > 15) ? 15 : j + 1][i]->visited && !cells[j][i]->IS_WALL_SOUTH())
+    {
+        neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][i]);
+    }
+    if(!cells[(j - 1 < 0) ? 0 : j - 1][i]->visited && !cells[j][i]->IS_WALL_NORTH())
+    {
+        neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][i]);
+    }
+
+    if(allowDiagonalDjikstra)
+    {
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->visited &&     // left top corner
+                ((!cells[j][i]->IS_WALL_WEST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_SOUTH()) ||
+                 (!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST())))
+        {
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+        if(!cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->visited &&   // right top corner
+                ((!cells[j][i]->IS_WALL_NORTH() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST()) ||
+                 (!cells[j][i]->IS_WALL_EAST() && !cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_SOUTH())))
+        {
+            neighbours.append(cells[(j - 1 < 0) ? 0 : j - 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->visited && // right bottom corner
+                ((!cells[j][i]->IS_WALL_EAST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_NORTH()) ||
+                 (!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]->IS_WALL_WEST())))
+        {
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i + 1 > 15) ? 15 : i + 1]);
+        }
+        if(!cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->visited &&   // left bottom corner
+                ((!cells[j][i]->IS_WALL_SOUTH() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_EAST()) ||
+                 (!cells[j][i]->IS_WALL_WEST() && !cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]->IS_WALL_NORTH())))
+        {
+            neighbours.append(cells[(j + 1 > 15) ? 15 : j + 1][(i - 1 < 0) ? 0 : i - 1]);
+        }
+
+    }
+
+    if(showSearching) ui->graphicsView->repaint();
+
+    return neighbours;
+}
+
+void MainWindow::DJIKSTRA_GENERATE_PATH(Cell *startCell, Cell *finishCell)
+{
+    QList<Cell> path;
+    Cell *currentCell;
+    currentCell = finishCell;
+
+    int turnCount90 = 0;
+    int turnCount45 = 0;
+    bool travelAlongX = false;
+    bool travelAlongY = false;
+
+    bool travelDiagonal = false;
+
+    bool travelDiagonalMM = false;
+    bool travelDiagonalMP = false;
+    bool travelDiagonalPP = false;
+    bool travelDiagonalPM = false;
+
+    bool prevTravelDiagonalMM = false;
+    bool prevTravelDiagonalMP = false;
+    bool prevTravelDiagonalPP = false;
+    bool prevTravelDiagonalPM = false;
+
+    int countCell = 0;
+    int countPath = 0;
+    int travelStraightCounter = 0;
+    int travelDiagonalCounter = 0;
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() != Qt::lightGray) countCell++;
+        }
+    }
+
+    UPDATE_CELL_COUNT(countCell);
+    ui->groupBoxSearchInfo->setEnabled(true);
+
+    while(currentCell->index != startCell->index)
+    {
+        path.append(*currentCell);
+        currentCell->type = CELL_PATH;
+        currentCell->SET_BRUSH();
+
+        if(currentCell->x == currentCell->parent->x && !travelAlongX && !travelAlongY)
+        {
+            travelAlongY = true;
+            travelDiagonal = false;
+        }
+        else if(currentCell->y == currentCell->parent->y && !travelAlongX && !travelAlongY)
+        {
+            travelAlongX = true;
+            travelDiagonal = false;
+        }
+        else if((currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x) && !travelDiagonal)
+        {
+            travelDiagonal = true;
+            travelAlongY = false;
+            travelAlongX = false;
+        }
+
+        if(travelDiagonal)
+        {
+            prevTravelDiagonalMM = travelDiagonalMM;
+            prevTravelDiagonalMP = travelDiagonalMP;
+            prevTravelDiagonalPP = travelDiagonalPP;
+            prevTravelDiagonalPM = travelDiagonalPM;
+
+            if(currentCell->y > currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = true;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x < currentCell->parent->x)
+            {
+                travelDiagonalMM = true;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+            else if(currentCell->y < currentCell->parent->y && currentCell->x > currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = false;
+                travelDiagonalPP = false;
+                travelDiagonalPM = true;
+            }
+            else if(currentCell->y != currentCell->parent->y && currentCell->x != currentCell->parent->x)
+            {
+                travelDiagonalMM = false;
+                travelDiagonalMP = true;
+                travelDiagonalPP = false;
+                travelDiagonalPM = false;
+            }
+
+
+
+            if((prevTravelDiagonalMM != travelDiagonalMM) || (prevTravelDiagonalMP != travelDiagonalMP) ||
+               (prevTravelDiagonalPP != travelDiagonalPP) || (prevTravelDiagonalPM != travelDiagonalPM))
+            {
+                turnCount45 += 2;
+            }
+        }
+
+        if(travelAlongX && currentCell->x == currentCell->parent->x)
+        {
+            turnCount90++;
+            travelAlongX = false;
+            travelAlongY = true;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+        else if(travelAlongY && currentCell->y == currentCell->parent->y)
+        {
+            turnCount90++;
+            travelAlongX = true;
+            travelAlongY = false;
+            travelDiagonal = false;
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+        else if(travelDiagonal && ((currentCell->y == currentCell->parent->y) || (currentCell->x == currentCell->parent->x)))
+        {
+           // turnCount45++;
+            travelDiagonal = false;
+
+            if(currentCell->y == currentCell->parent->y) travelAlongX = false;
+                else if(currentCell->x == currentCell->parent->x) travelAlongY = false;
+        }
+
+        currentCell = currentCell->parent;
+
+        if(travelAlongX || travelAlongY)
+        {
+            travelStraightCounter++;
+
+            travelDiagonalMM = false;
+            travelDiagonalMP = false;
+            travelDiagonalPP = false;
+            travelDiagonalPM = false;
+        }
+            else if(travelDiagonal) travelDiagonalCounter++;
+
+        if(showSearching) ui->graphicsView->repaint();
+    }
+
+    currentCell->type = CELL_PATH;
+    currentCell->SET_BRUSH();
+
+    if(showSearching) ui->graphicsView->repaint();
+
+    for(int i=0;i<16;i++)
+    {
+        for(int j=0;j<16;j++)
+        {
+            if(cells[j][i]->rect->brush() == Qt::darkGreen) countPath++;
+        }
+    }
+    UPDATE_PATH_COUNT(countPath, travelStraightCounter, travelDiagonalCounter);
+    UPDATE_TURN_COUNT(turnCount90, turnCount45);
+    UPDATE_RUN_TIME(((turnCount90 * turnTime90) + (turnCount45 * turnTime45)) + ((travelStraightCounter * oneCellForwardTime) + (travelDiagonalCounter * oneCellDiagonalTime)));
+}
+
+int MainWindow::DJIKSTRA_GET_DISTANCE_BETWEEN_CELLS(Cell cellA, Cell cellB)
+{
+    int distanceX = abs(cellA.x - cellB.x) / 50;
+    int distanceY = abs(cellA.y - cellB.y) / 50;
+
+    switch (heuristicTypeDjikstra)
+    {
+    case ASTAR_MANHATTAN_DISTANCE:
+            return (distanceX + distanceY) * 10;
+
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE_OCTILE:
+            return 10 * (distanceX + distanceY) + (14 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_DIAGONAL_DISTANCE_CHEBYSHEV:
+            return 10 * (distanceX + distanceY) + (10 - 2 * 10) * fmin(distanceX, distanceY);
+
+        break;
+
+    case ASTAR_EUCLIDEAN_DISTANE:
+            return sqrt((distanceX * distanceX) + (distanceY * distanceY)) * 10;
+
+        break;
+
+    default:
+            return (distanceX + distanceY) * 10;
+        break;
+    }
+}
+
 int MainWindow::random_in_range(int min, int max)
 {
     static bool first = true;
@@ -2049,40 +2323,6 @@ int MainWindow::random_in_range(int min, int max)
           first = false;
        }
        return min + rand() % (( max + 1 ) - min);
-}
-
-int MainWindow::MAP_VALID_INDEX(int index)
-{
-    int ret = 0;
-
-    switch (index) {
-        case 0: ret = 240;  break;
-        case 1: ret = 241;  break;
-        case 2: ret = 242;  break;
-
-        case 3: ret = 224;  break;
-        case 4: ret = 225;  break;
-        case 5: ret = 226;  break;
-
-        case 6: ret = 208;  break;
-        case 7: ret = 209;  break;
-        case 8: ret = 210;  break;
-
-        case 9: ret = 192;  break;
-        case 10: ret = 193;  break;
-        case 11: ret = 194;  break;
-
-        case 12: ret = 176;  break;
-        case 13: ret = 177;  break;
-        case 14: ret = 178;  break;
-
-        case 15: ret = 160;  break;
-        case 16: ret = 161;  break;
-        case 17: ret = 162;  break;
-    }
-
-
-    return ret;
 }
 
 void MainWindow::UPDATE_CELL_COUNT(int count)

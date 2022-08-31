@@ -52,8 +52,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxAstar->setCurrentIndex(3);
     ui->comboBoxAstar->show();
     heuristicType = ASTAR_MANHATTAN_DISTANCE;
-    allowDiagonal = false;
-    showSearching = true;
 
     BFSHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
     BFSHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
@@ -64,7 +62,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxBFS->setCurrentIndex(3);
     ui->comboBoxBFS->show();
     heuristicTypeBFS = ASTAR_MANHATTAN_DISTANCE;
-    allowDiagonalBFS = false;
 
     DjikstraHeuristicOptions.insert("Manhattan distance", ASTAR_MANHATTAN_DISTANCE);
     DjikstraHeuristicOptions.insert("Euclidean distance", ASTAR_EUCLIDEAN_DISTANE);
@@ -75,9 +72,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBoxDjikstra->setCurrentIndex(3);
     ui->comboBoxDjikstra->show();
     heuristicTypeDjikstra = ASTAR_MANHATTAN_DISTANCE;
-    allowDiagonalDjikstra = false;
 
+    allowDiagonalBFS = false;
+    allowDiagonalDjikstra = false;
+    allowDiagonal = false;
+    showSearching = true;
     allowDiagonalFlood = false;
+    ui->pushButtonAuto->setEnabled(true);
+    ui->pushButtonNextStep->setEnabled(true);
+    ui->pushButtonAuto->setChecked(true);
+    autoSearch = true;
 
     COMBO_BOX_MAZES_UPDATE();
 }
@@ -187,8 +191,8 @@ void MainWindow::pushButtonClearPath_clicked()
     lastFinishIndexs.clear();
     ui->pushButtonClearPath->setEnabled(false);
     RESTART_SEARCH_COUNTS();
-    nextStep = false;
-    autoSearch = false;
+    //nextStep = false;
+    //autoSearch = false;
 
 }
 
@@ -199,7 +203,14 @@ void MainWindow::pushButtonNextStep_clicked()
 
 void MainWindow::pushButtonAutoSearch_clicked()
 {
-    autoSearch = true;
+    if(ui->pushButtonAuto->isChecked())
+           {
+            autoSearch = true;
+           }
+           else
+           {
+            autoSearch = false;
+           }
 }
 
 void MainWindow::pushButtonGenerate_clicked()
@@ -472,11 +483,15 @@ void MainWindow::checkBoxShowSearching_onChange()
     if(ui->checkBoxShowSearching->isChecked())
            {
             showSearching = true;
+            ui->pushButtonAuto->setEnabled(true);
+            ui->pushButtonNextStep->setEnabled(true);
            }
            else
            {
             showSearching = false;
-    }
+            ui->pushButtonAuto->setEnabled(false);
+            ui->pushButtonNextStep->setEnabled(false);
+           }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)

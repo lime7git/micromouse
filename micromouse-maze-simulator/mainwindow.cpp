@@ -191,8 +191,6 @@ void MainWindow::pushButtonClearPath_clicked()
     lastFinishIndexs.clear();
     ui->pushButtonClearPath->setEnabled(false);
     RESTART_SEARCH_COUNTS();
-    //nextStep = false;
-    //autoSearch = false;
 
 }
 
@@ -624,8 +622,6 @@ void MainWindow::MAP_CLEAR()
 {
     cell_start_defined  = false;
     cell_finish_defined = false;
-    nextStep = false;
-    autoSearch = false;
     lastFinishIndexs.clear();
 
     for(int i=0;i<16;i++)

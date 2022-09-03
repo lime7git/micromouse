@@ -586,7 +586,7 @@ void MainWindow::MAP_INIT_16x16()
 {
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
-    ui->graphicsView->setGeometry(5, 5, 16 * (CELL_WIDTH - POST_WIDTH) + 10 , 16 * (CELL_HEIGHT - POST_HEIGHT) + 10);
+    ui->graphicsView->setGeometry(10, 20, 16 * (CELL_WIDTH - POST_WIDTH) + 10 , 16 * (CELL_HEIGHT - POST_HEIGHT) + 10);
 
     for(int i=0;i<16;i++)
     {

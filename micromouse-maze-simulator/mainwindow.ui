@@ -28,7 +28,7 @@
      <rect>
       <x>870</x>
       <y>400</y>
-      <width>500</width>
+      <width>551</width>
       <height>450</height>
      </rect>
     </property>
@@ -45,7 +45,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>481</width>
+       <width>531</width>
        <height>411</height>
       </rect>
      </property>
@@ -63,7 +63,7 @@
        <widget class="QLabel" name="label_8">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -83,7 +83,7 @@
        <widget class="QLabel" name="label_7">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -130,7 +130,7 @@
        <widget class="QLabel" name="label_4">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -197,7 +197,7 @@
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -217,7 +217,7 @@
        <widget class="QLabel" name="label_3">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -243,7 +243,7 @@
        <widget class="QLabel" name="label_6">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -318,7 +318,7 @@
        <widget class="QLabel" name="label_5">
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -373,7 +373,7 @@
      <rect>
       <x>870</x>
       <y>10</y>
-      <width>500</width>
+      <width>551</width>
       <height>350</height>
      </rect>
     </property>
@@ -390,7 +390,7 @@
       <rect>
        <x>10</x>
        <y>40</y>
-       <width>481</width>
+       <width>527</width>
        <height>301</height>
       </rect>
      </property>
@@ -636,7 +636,7 @@
          <string notr="true">background-color: rgb(230, 230, 230);</string>
         </property>
         <property name="text">
-         <string>Greedy Best-first search</string>
+         <string>Best-first search</string>
         </property>
        </widget>
       </item>
